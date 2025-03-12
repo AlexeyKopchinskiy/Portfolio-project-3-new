@@ -21,15 +21,7 @@ tasks = SHEET.worksheet('tasks')
 projects = SHEET.worksheet('project')
 categories = SHEET.worksheet('category')
 
-print("Projects Data:")
-print(projects.get_all_values())
-print("Categories Data:")
-print(categories.get_all_values())
-
-
 data = tasks.get_all_values()
-
-# print(data)
 
 def add_task(task_name, deadline, priority, category, project, notes=""):
     """
@@ -64,6 +56,7 @@ def add_task(task_name, deadline, priority, category, project, notes=""):
     # Append the new task to the tasks tab
     tasks.append_row(new_task)
     print(f"Task '{task_name}' added successfully!")
+
 
 # Example usage of the add_task function
 add_task(
