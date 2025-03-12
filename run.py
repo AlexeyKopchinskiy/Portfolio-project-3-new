@@ -7,6 +7,9 @@ import json
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
+from flask import Flask
+
+app = Flask(__name__)
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -66,11 +69,20 @@ def add_task(task_name, deadline, priority, category, project, notes=""):
 
 
 # Example usage of the add_task function
-add_task(
-    task_name="Complete Python project",
-    deadline="2025-03-15",
-    priority="High",
-    category="Work",
-    project="102",
-    notes="Focus on Google Sheets integration"
-)
+
+@app.route("/")
+def run_script():
+    # Your Python script logic here
+    add_task(
+        task_name="Complete Python project",
+        deadline="2025-03-15",
+        priority="High",
+        category="Work",
+        project="102",
+        notes="Focus on Google Sheets integration"
+    )
+    return "Task added successfully!"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
