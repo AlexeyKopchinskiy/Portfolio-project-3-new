@@ -64,3 +64,13 @@ def add_task(task_name, deadline, priority, category, project, notes=""):
     # Append the new task to the tasks tab
     tasks.append_row(new_task)
     print(f"Task '{task_name}' added successfully!")
+
+# Example usage of the add_task function
+add_task(
+    task_name="Complete Python project",
+    deadline="2025-03-15",
+    priority="High",
+    category="Work",
+    project="102",
+    notes="Focus on Google Sheets integration"
+)
