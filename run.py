@@ -18,8 +18,10 @@ SCOPE = [
 creds_json = os.environ.get("CREDS")
 creds_dict = json.loads(creds_json)
 
-CREDS = Credentials.from_service_account_file('creds.json')
-SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+# CREDS = Credentials.from_service_account_file('creds.json')
+# SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+# Authorize the credentials
+SCOPED_CREDS = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Python Task Manager')
 
