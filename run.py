@@ -7,9 +7,6 @@ import json
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
-from flask import Flask
-
-app = Flask(__name__)
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -21,9 +18,8 @@ SCOPE = [
 creds_json = os.environ.get("CREDS")
 creds_dict = json.loads(creds_json)
 
-#CREDS = Credentials.from_service_account_file('creds.json')
-SCOPED_CREDS = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
-# SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+CREDS = Credentials.from_service_account_file('creds.json')
+SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Python Task Manager')
 
@@ -69,20 +65,11 @@ def add_task(task_name, deadline, priority, category, project, notes=""):
 
 
 # Example usage of the add_task function
-
-@app.route("/")
-def run_script():
-    # Your Python script logic here
-    add_task(
-        task_name="Complete Python project",
-        deadline="2025-03-15",
-        priority="High",
-        category="Work",
-        project="102",
-        notes="Focus on Google Sheets integration"
-    )
-    return "Task added successfully!"
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-
+add_task(
+    task_name="Complete Python project",
+    deadline="2025-03-15",
+    priority="High",
+    category="Work",
+    project="102",
+    notes="Focus on Google Sheets integration"
+)
