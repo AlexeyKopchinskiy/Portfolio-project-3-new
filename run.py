@@ -16,6 +16,10 @@ SCOPE = [
 
 # Load credentials from the Heroku Config Var
 creds_json = os.environ.get("CREDS")
+if not creds_json:
+    print("CREDS environment variable is not set!")
+else:
+    print("CREDS environment variable is loaded successfully.")
 creds_dict = json.loads(creds_json)
 
 # CREDS = Credentials.from_service_account_file('creds.json')
