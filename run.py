@@ -62,11 +62,58 @@ def add_task(task_name, deadline, priority, category, project, notes=""):
 
 
 # Example usage of the add_task function
-add_task(
-    task_name="Complete Python project",
-    deadline="2025-03-15",
-    priority="High",
-    category="Work",
-    project="102",
-    notes="Focus on Google Sheets integration"
-)
+# add_task(
+#     task_name="Complete Python project",
+#     deadline="2025-03-15",
+#     priority="High",
+#     category="Work",
+#     project="102",
+#     notes="Focus on Google Sheets integration"
+# )
+
+def main():
+    """
+    Main function to initialize the program and ask the user for task input.
+    """
+    print("Welcome to the Task Manager!")
+
+    while True:
+        # Prompt the user to decide whether to add a task
+        user_choice = input("Would you like to add a new task? (yes/no): ").strip().lower()
+
+        if user_choice == "yes":
+            # Call the interactive add_task function
+            interactive_add_task()
+        elif user_choice == "no":
+            print("Exiting the Task Manager. Have a great day!")
+            break
+        else:
+            print("Invalid input. Please type 'yes' or 'no'.")
+
+def interactive_add_task():
+    """
+    Collect task details interactively via the console and add a task.
+    """
+    print("Please enter the task details:")
+
+    # Prompt user for task details
+    task_name = input("Task Name: ")
+    deadline = input("Deadline (YYYY-MM-DD): ")
+    priority = input("Priority (High, Medium, Low): ")
+    category = input("Category: ")
+    project = input("Project: ")
+    notes = input("Notes (Optional): ")
+
+    # Call the add_task function with user-provided input
+    add_task(
+        task_name=task_name,
+        deadline=deadline,
+        priority=priority,
+        category=category,
+        project=project,
+        notes=notes
+    )
+    print(f"Task '{task_name}' added successfully!")
+    print("Task added to Google Sheets.")
+
+main()
