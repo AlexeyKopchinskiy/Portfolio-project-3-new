@@ -2,6 +2,8 @@
 # You can delete these comments, but do not change the name of this file
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
 
+import os
+import json
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
@@ -12,8 +14,13 @@ SCOPE = [
     "https://www.googleapis.com/auth/drive"
     ]
 
-CREDS = Credentials.from_service_account_file('creds.json')
-SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+# Load credentials from the Heroku Config Var
+creds_json = os.environ.get("CREDS")
+creds_dict = json.loads(creds_json)
+
+#CREDS = Credentials.from_service_account_file('creds.json')
+SCOPED_CREDS = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
+# SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Python Task Manager')
 
