@@ -17,7 +17,15 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Python Task Manager')
 
 tasks = SHEET.worksheet('tasks')
+projects = SHEET.worksheet('project')
+categories = SHEET.worksheet('category')
+
+print("Projects Data:")
+print(projects.get_all_values())
+print("Categories Data:")
+print(categories.get_all_values())
+
 
 data = tasks.get_all_values()
 
-print(data)
+# print(data)
