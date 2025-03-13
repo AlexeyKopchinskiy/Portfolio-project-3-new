@@ -253,6 +253,14 @@ def update_task():
     if not task_row:
         print("Task ID not found.")
         return
+    
+    # Ask which field to update
+    print("\nWhat would you like to update?")
+    print("1 - Status")
+    print("2 - Deadline")
+    print("3 - Priority")
+    print("4 - Notes")
+    choice = input("Enter the number of your choice: ").strip()
 
 # Entry point for the program
 main()
