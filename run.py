@@ -73,22 +73,31 @@ def add_task(task_name, deadline, priority, category, project, notes=""):
 
 def main():
     """
-    Main function to initialize the program and ask the user for task input.
+    Main function to initialize the program and display a menu of options.
     """
     print("Welcome to the Task Manager!")
 
     while True:
-        # Prompt the user to decide whether to add a task
-        user_choice = input("Would you like to add a new task? (yes/no): ").strip().lower()
+        print("\nPlease select an option:")
+        print("1 - Add a new task")
+        print("2 - Review deadlines")
+        print("3 - View tasks list")
+        print("4 - Exit")
 
-        if user_choice == "yes":
-            # Call the interactive add_task function
+        # Get the user's choice
+        user_choice = input("Enter the number of your choice: ").strip()
+
+        if user_choice == "1":
             interactive_add_task()
-        elif user_choice == "no":
+        elif user_choice == "2":
+            review_deadlines()  # Placeholder function for now
+        elif user_choice == "3":
+            view_tasks_list()  # Placeholder function for now
+        elif user_choice == "4":
             print("Exiting the Task Manager. Have a great day!")
             break
         else:
-            print("Invalid input. Please type 'yes' or 'no'.")
+            print("Invalid input. Please enter a number between 1 and 4.")
 
 def interactive_add_task():
     """
@@ -96,7 +105,6 @@ def interactive_add_task():
     """
     print("Please enter the task details:")
 
-    # Prompt user for task details
     task_name = input("Task Name: ")
     deadline = input("Deadline (YYYY-MM-DD): ")
     priority = input("Priority (High, Medium, Low): ")
@@ -104,16 +112,15 @@ def interactive_add_task():
     project = input("Project: ")
     notes = input("Notes (Optional): ")
 
-    # Call the add_task function with user-provided input
-    add_task(
-        task_name=task_name,
-        deadline=deadline,
-        priority=priority,
-        category=category,
-        project=project,
-        notes=notes
-    )
+    add_task(task_name, deadline, priority, category, project, notes)
     print(f"Task '{task_name}' added successfully!")
-    print("Task added to Google Sheets.")
 
+# Placeholder functions for upcoming features
+def review_deadlines():
+    print("Feature under construction: Review deadlines.")
+
+def view_tasks_list():
+    print("Feature under construction: View tasks list.")
+
+# Entry point for the program
 main()
