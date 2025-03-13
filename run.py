@@ -76,7 +76,15 @@ if use_oop:
             if not name or len(name) > 50:
                 return "Task name must be non-empty and 50 characters or less."
 
-
+            # Validate deadline
+            try:
+                deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
+                if deadline_date < datetime.now():
+                    return "Deadline cannot be in the past."
+            except ValueError:
+                return "Invalid deadline format. Please use YYYY-MM-DD."
+            
+            
             return None  # No validation errors
 
 
