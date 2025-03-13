@@ -130,6 +130,12 @@ if use_oop:
             Create a new Task object, add it to the list of tasks,
             and save it to the Google Sheet.
             """
+            # Call the validation method
+            # error = self.validate_task_data(name, deadline, priority, category, project)
+            # if error:  # If validation fails, print the error message and stop
+            #     print(f"Error: {error}")
+            #     return
+
             # Generate a unique task ID (use length of tasks list + 1 for simplicity)
             task_id = len(self.tasks) + 1
 
@@ -164,68 +170,76 @@ if use_oop:
 
         def create_task_from_input(self):
             """
-            Collect task details interactively from the user and create a new task.
+            Collect task details interactively from the user with validation 
+            after each step, and create a new task if all inputs are valid.
             """
             print("\n--- Create a New Task ---")
 
             # Task Name
             while True:
                 name = input("Enter task name: ").strip()
-                if not name:
-                    print("Task name cannot be empty. Please try again.")
-                elif len(name) > 50:
-                    print("Task name must be 50 characters or less. Please try again.")
+                error = self.validate_task_data(name, "2025-01-01", "High", "1", "1")  # Pass dummy values for other fields
+                if "Task name" in (error or ""):  # Only check for name validation
+                    print(f"Error: {error}")
                 else:
                     break
 
             # Deadline
             while True:
                 deadline = input("Enter deadline (YYYY-MM-DD): ").strip()
-                try:
-                    deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
-                    if deadline_date < datetime.now():
-                        print("Deadline cannot be in the past. Please try again.")
-                    else:
-                        break
-                except ValueError:
-                    print("Invalid date format. Please use YYYY-MM-DD.")
+                error = self.validate_task_data(name, deadline, "High", "1", "1")  # Pass dummy values for other fields
+                if "Deadline" in (error or ""):  # Only check for deadline validation
+                    print(f"Error: {error}")
+                else:
+                    break
 
             # Priority
             while True:
                 priority = input("Enter priority (High, Medium, Low): ").strip().capitalize()
-                if priority not in ["High", "Medium", "Low"]:
-                    print("Invalid priority. Please choose from High, Medium, or Low.")
+                error = self.validate_task_data(name, deadline, priority, "1", "1")  # Pass dummy values for other fields
+                if "priority" in (error or "").lower():  # Only check for priority validation
+                    print(f"Error: {error}")
                 else:
                     break
 
             # Category
-            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[1:]]  # Skip header
+            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[1:]]
             print(f"Available Categories: {', '.join(category_ids)}")
             while True:
-                category = input("Enter category ID: ").strip()
-                if category not in category_ids:
-                    print("Invalid category ID. Please try again.")
+                category_id = input("Enter category ID: ").strip()
+                if category_id not in category_ids:
+                    print("Invalid category ID. Please choose from the available categories.")
                 else:
                     break
 
             # Project
-            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]  # Skip header
+            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]
             print(f"Available Projects: {', '.join(project_ids)}")
             while True:
-                project = input("Enter project ID: ").strip()
-                if project not in project_ids:
-                    print("Invalid project ID. Please try again.")
+                project_id = input("Enter project ID: ").strip()
+                if project_id not in project_ids:
+                    print("Invalid project ID. Please choose from the available projects.")
                 else:
                     break
 
             # Notes (Optional)
-            notes = input("Enter notes (optional, max 250 characters): ").strip()
+            notes = input("Enter notes (optional): ").strip()
             if len(notes) > 250:
                 print("Warning: Notes exceeded 250 characters. It will be truncated.")
                 notes = notes[:250]
 
-            # Add the task
-            self.add_task(name, deadline, priority, category, project, notes)
+            # Final validation before adding the task
+            error = self.validate_task_data(name, deadline, priority, category_id, project_id)
+            if error:
+                print(f"Error: {error}")
+                return
+
+            # Add the task if all validations pass
+            self.add_task(name, deadline, priority, category_id, project_id, notes)
+            print(f"Task '{name}' added successfully!")
+
+
+
 
         def view_tasks(self):
             """
