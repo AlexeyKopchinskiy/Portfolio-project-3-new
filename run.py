@@ -378,7 +378,14 @@ def view_tasks_by_project():
     # Filter tasks belonging to the selected project
     filtered_tasks = [task for task in task_data if task[8] == project_id]
 
-
+    # Display the tasks for the selected project
+    if filtered_tasks:
+        print(f"\nTasks for Project ID {project_id}:")
+        for task in filtered_tasks:
+            print(f"- ID: {task[0]}, Name: {task[1]}, Deadline: {task[3]}, "
+                  f"Status: {task[5]}, Priority: {task[6]}, Notes: {task[9]}")
+    else:
+        print(f"No tasks found for Project ID {project_id}.")
 
 def main():
     """
