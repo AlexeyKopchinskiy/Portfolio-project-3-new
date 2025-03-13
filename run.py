@@ -17,7 +17,6 @@ if use_oop:
     print("Running Task Manager in OOP mode...")
     
     # Add the new functionality here
-
     class Task:
         """
         Represents an individual task with related attributes and methods.
@@ -53,8 +52,9 @@ if use_oop:
         """
         Manages tasks and their interactions with the Task class.
         """
-        def __init__(self):
-            self.tasks = []  # Placeholder for Task objects
+        def __init__(self, tasks_sheet):
+            self.tasks_sheet = tasks_sheet  # Connect to the Google Sheet
+            self.tasks = self.load_tasks()
 
         def add_task(self, name, deadline, priority, category, project, notes=""):
             """
@@ -88,6 +88,33 @@ if use_oop:
                 print("\nTasks List:")
                 for task in self.tasks:
                     print(task)
+    
+
+    # Initialize the TaskManager
+    manager = TaskManager()
+
+    # Test adding and viewing tasks (use sample data for now)
+    manager.add_task(
+        name="Sample Task",
+        deadline="2025-03-30",
+        priority="High",
+        category="1",
+        project="1",
+        notes="This is a sample task."
+    )
+    
+    manager.add_task(
+        name="Another Task",
+        deadline="2025-04-10",
+        priority="Medium",
+        category="2",
+        project="2",
+        notes="Second task for testing."
+    )
+    
+    manager.view_tasks()
+
+
 
 else:
     print("Running Task Manager in procedural mode...")
@@ -651,31 +678,3 @@ else:
     # --- OLD CODE END ---
 
 
-
-if __name__ == "__main__":
-    print("Testing the Task class...")
-
-    # Create a sample task
-    task = Task(
-        task_id=1,
-        name="Test Task",
-        deadline="2025-03-20",
-        priority="High",
-        status="Pending",
-        notes="This is a test note.",
-        category="1",
-        project="1"
-    )
-    
-    # Print the task to verify attributes
-    print(task)
-
-    # Mark the task as completed
-    task.mark_as_completed()
-    print("After marking as completed:")
-    print(task)
-
-    # Update the task
-    task.update(name="Updated Task Name", priority="Medium")
-    print("After updating attributes:")
-    print(task)
