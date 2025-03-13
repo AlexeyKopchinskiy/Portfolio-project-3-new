@@ -312,6 +312,9 @@ def mark_task_completed():
     print("\nAvailable Tasks:")
     for row in task_data[1:]:
         print(f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
+    
+     # Ask user for the task ID to mark as completed
+    task_id = input("\nEnter the ID of the task you want to mark as completed: ").strip()
 
 
 def main():
