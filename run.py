@@ -26,6 +26,8 @@ categories = SHEET.worksheet('category')
 
 data = tasks.get_all_values()
 
+
+
 def add_task(task_name, deadline, priority, category, project, notes=""):
     """
     Add a new task to the 'tasks' tab.
@@ -59,45 +61,6 @@ def add_task(task_name, deadline, priority, category, project, notes=""):
     # Append the new task to the tasks tab
     tasks.append_row(new_task)
     print(f"Task '{task_name}' added successfully!")
-
-
-# Example usage of the add_task function
-# add_task(
-#     task_name="Complete Python project",
-#     deadline="2025-03-15",
-#     priority="High",
-#     category="Work",
-#     project="102",
-#     notes="Focus on Google Sheets integration"
-# )
-
-def main():
-    """
-    Main function to initialize the program and display a menu of options.
-    """
-    print("Welcome to the Task Manager!")
-
-    while True:
-        print("\nPlease select an option:")
-        print("1 - Add a new task")
-        print("2 - Review deadlines")
-        print("3 - View tasks list")
-        print("4 - Exit")
-
-        # Get the user's choice
-        user_choice = input("Enter the number of your choice: ").strip()
-
-        if user_choice == "1":
-            interactive_add_task()
-        elif user_choice == "2":
-            review_deadlines()  # Placeholder function for now
-        elif user_choice == "3":
-            view_tasks_list()  # Placeholder function for now
-        elif user_choice == "4":
-            print("Exiting the Task Manager. Have a great day!")
-            break
-        else:
-            print("Invalid input. Please enter a number between 1 and 4.")
 
 def interactive_add_task():
     """
@@ -268,7 +231,69 @@ def update_task():
         tasks.update_cell(task_row, 2, new_task_name)  # Column 2 is 'Task Name'
         print("Task name updated successfully!")
     
+    elif choice == "2":
+        new_status = input("Enter new status (Pending/In Progress/Complete): ").strip()
+        tasks.update_cell(task_row, 6, new_status)  # Column 6 is 'Status'
+        print("Task status updated successfully!")
     
+    elif choice == "3":
+        new_deadline = input("Enter new deadline (YYYY-MM-DD or DD-MM-YYYY): ").strip()
+        try:
+            # Validate and standardize the date format
+            new_deadline = datetime.strptime(new_deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
+        except ValueError:
+            try:
+                new_deadline = datetime.strptime(new_deadline, "%d-%m-%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                print("Invalid date format. Update aborted.")
+                return
+        tasks.update_cell(task_row, 4, new_deadline)  # Column 4 is 'Deadline'
+        print("Task deadline updated successfully!")
+
+    elif choice == "4":
+        new_priority = input("Enter new priority (High/Medium/Low): ").strip()
+        tasks.update_cell(task_row, 7, new_priority)  # Column 7 is 'Priority'
+        print("Task priority updated successfully!")
+
+    elif choice == "5":
+        new_notes = input("Enter new notes: ").strip()
+        tasks.update_cell(task_row, 10, new_notes)  # Column 10 is 'Notes'
+        print("Task notes updated successfully!")
+
+    else:
+        print("Invalid choice. Update aborted.")
+
+def main():
+    """
+    Main function to initialize the program and display a menu of options.
+    """
+    print("Welcome to the Task Manager!")
+
+    while True:
+        print("\nPlease select an option:")
+        print("1 - Add a new task")
+        print("2 - Review deadlines")
+        print("3 - View tasks list")
+        print("4 - Update a task")
+        print("5 - Exit")
+
+        # Get the user's choice
+        user_choice = input("Enter the number of your choice: ").strip()
+
+        if user_choice == "1":
+            interactive_add_task()
+        elif user_choice == "2":
+            review_deadlines()
+        elif user_choice == "3":
+            view_tasks_list()
+        elif user_choice == "4":
+            update_task()
+        elif user_choice == "5":
+            print("Exiting the Task Manager. Have a great day!")
+            break
+        else:
+            print("Invalid input. Please enter a number between 1 and 5.")
+
 
 # Entry point for the program
 main()
