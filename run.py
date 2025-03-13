@@ -13,7 +13,7 @@ if use_oop:
     import gspread
     from google.oauth2.service_account import Credentials
     from datetime import datetime
-    
+
     print("Running Task Manager in OOP mode...")
     
     # Add the new functionality here
@@ -49,7 +49,12 @@ if use_oop:
             return (f"Task(ID: {self.task_id}, Name: {self.name}, Deadline: {self.deadline}, "
                     f"Priority: {self.priority}, Status: {self.status}, Notes: {self.notes})")
         
-
+    class TaskManager:
+        """
+        Manages tasks and their interactions with the Task class.
+        """
+        def __init__(self):
+            self.tasks = []  # Placeholder for Task objects
 
 
 
