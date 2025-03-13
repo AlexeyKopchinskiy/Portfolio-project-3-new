@@ -31,6 +31,11 @@ if use_oop:
             self.status = "Completed"
             self.complete_date = datetime.now().strftime("%Y-%m-%d")
 
+        def update(self, **kwargs):
+            """Dynamically updates attributes of the task."""
+            for key, value in kwargs.items():
+                if hasattr(self, key):
+                    setattr(self, key, value)
 
         
 
