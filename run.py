@@ -198,7 +198,30 @@ def view_tasks_list():
         print("No tasks found in the sheet.")
         return
 
-    
+    # Iterate through tasks and format their output
+    print("\nTasks List:")
+    for row in task_data:
+        # Parse the deadline and complete date to handle various formats
+        try:
+            deadline = datetime.strptime(row[3], "%Y-%m-%d").strftime("%Y-%m-%d")
+        except ValueError:
+            try:
+                deadline = datetime.strptime(row[3], "%d-%m-%Y").strftime("%d-%m-%Y")
+            except ValueError:
+                deadline = "Invalid Format"
+
+        try:
+            complete_date = datetime.strptime(row[4], "%Y-%m-%d").strftime("%Y-%m-%d")
+        except ValueError:
+            try:
+                complete_date = datetime.strptime(row[4], "%d-%m-%Y").strftime("%d-%m-%Y")
+            except ValueError:
+                complete_date = "Invalid Format"
+
+        # Print task details
+        print(f"- ID: {row[0]}, Name: {row[1]}, Created: {row[2]}, Deadline: {deadline}, "
+              f"Complete Date: {complete_date}, Status: {row[5]}, Priority: {row[6]}, "
+              f"Category: {row[7]}, Project: {row[8]}, Notes: {row[9]}")
     
 
 
