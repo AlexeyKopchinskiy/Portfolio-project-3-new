@@ -279,11 +279,11 @@ def view_tasks_list():
 # Update task
 def update_task():
     """
-    Update an existing task in the 'tasks' sheet.
+    Update an existing task in the 'tasks' sheet with validation for inputs.
     """
     print("\nUpdate Task Details")
 
-     # Fetch all tasks (excluding the header row)
+    # Fetch all tasks (excluding the header row)
     task_data = tasks.get_all_values()
     if len(task_data) <= 1:  # Check if there are no tasks
         print("No tasks found to update.")
@@ -293,8 +293,8 @@ def update_task():
     print("\nAvailable Tasks:")
     for row in task_data[1:]:
         print(f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
-    
-    # Ask user for the task ID to update
+
+    # Ask the user for the task ID to update
     task_id = input("\nEnter the ID of the task you want to update: ").strip()
 
     # Find the task row based on the ID
@@ -307,7 +307,7 @@ def update_task():
     if not task_row:
         print("Task ID not found.")
         return
-    
+
     # Ask which field to update
     print("\nWhat would you like to update?")
     print("1 - Task Name")
@@ -317,42 +317,68 @@ def update_task():
     print("5 - Notes")
     choice = input("Enter the number of your choice: ").strip()
 
+    # Perform the update based on the user's choice
     if choice == "1":
-        new_task_name = input("Enter new task name: ").strip()
-        tasks.update_cell(task_row, 2, new_task_name)  # Column 2 is 'Task Name'
-        print("Task name updated successfully!")
-    
+        # Validate and update Task Name
+        while True:
+            new_task_name = input("Enter new task name: ").strip()
+            error = validate_task_name(new_task_name)
+            if error:
+                print(f"Error: {error}")
+            else:
+                tasks.update_cell(task_row, 2, new_task_name)  # Column 2 is 'Task Name'
+                print("Task name updated successfully!")
+                break
+
     elif choice == "2":
-        new_status = input("Enter new status (Pending/In Progress/Complete): ").strip()
-        tasks.update_cell(task_row, 6, new_status)  # Column 6 is 'Status'
-        print("Task status updated successfully!")
-    
+        # Validate and update Status
+        while True:
+            new_status = input("Enter new status (Pending/In Progress/Completed): ").strip()
+            if new_status not in ["Pending", "In Progress", "Completed"]:
+                print("Error: Status must be 'Pending', 'In Progress', or 'Completed'.")
+            else:
+                tasks.update_cell(task_row, 6, new_status)  # Column 6 is 'Status'
+                print("Task status updated successfully!")
+                break
+
     elif choice == "3":
-        new_deadline = input("Enter new deadline (YYYY-MM-DD or DD-MM-YYYY): ").strip()
-        try:
-            # Validate and standardize the date format
-            new_deadline = datetime.strptime(new_deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
-        except ValueError:
-            try:
-                new_deadline = datetime.strptime(new_deadline, "%d-%m-%Y").strftime("%Y-%m-%d")
-            except ValueError:
-                print("Invalid date format. Update aborted.")
-                return
-        tasks.update_cell(task_row, 4, new_deadline)  # Column 4 is 'Deadline'
-        print("Task deadline updated successfully!")
+        # Validate and update Deadline
+        while True:
+            new_deadline = input("Enter new deadline (YYYY-MM-DD or DD-MM-YYYY): ").strip()
+            error = validate_deadline(new_deadline)
+            if error:
+                print(f"Error: {error}")
+            else:
+                new_deadline = datetime.strptime(new_deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
+                tasks.update_cell(task_row, 4, new_deadline)  # Column 4 is 'Deadline'
+                print("Task deadline updated successfully!")
+                break
 
     elif choice == "4":
-        new_priority = input("Enter new priority (High/Medium/Low): ").strip()
-        tasks.update_cell(task_row, 7, new_priority)  # Column 7 is 'Priority'
-        print("Task priority updated successfully!")
+        # Validate and update Priority
+        while True:
+            new_priority = input("Enter new priority (High/Medium/Low): ").strip().capitalize()
+            error = validate_priority(new_priority)
+            if error:
+                print(f"Error: {error}")
+            else:
+                tasks.update_cell(task_row, 7, new_priority)  # Column 7 is 'Priority'
+                print("Task priority updated successfully!")
+                break
 
     elif choice == "5":
+        # Validate and update Notes
         new_notes = input("Enter new notes: ").strip()
+        error = validate_notes(new_notes)
+        if error:
+            print(f"Warning: {error}")
+            new_notes = new_notes[:250]  # Trim to 250 characters if too long
         tasks.update_cell(task_row, 10, new_notes)  # Column 10 is 'Notes'
         print("Task notes updated successfully!")
 
     else:
         print("Invalid choice. Update aborted.")
+
 
 # Delete task
 def delete_task():
