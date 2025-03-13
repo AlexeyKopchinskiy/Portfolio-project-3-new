@@ -56,6 +56,25 @@ if use_oop:
             self.tasks_sheet = tasks_sheet  # Connect to the Google Sheet
             self.tasks = self.load_tasks()
 
+        def load_tasks(self):
+            """
+            Load tasks from the Google Sheets into Task objects.
+            """
+            task_data = self.tasks_sheet.get_all_values()[1:]  # Skip header row
+            tasks = []
+            for row in task_data:
+                tasks.append(Task(
+                    task_id=row[0],
+                    name=row[1],
+                    deadline=row[3],
+                    priority=row[6],
+                    status=row[5],
+                    notes=row[9],
+                    category=row[7],
+                    project=row[8]
+                ))
+            return tasks
+
         def add_task(self, name, deadline, priority, category, project, notes=""):
             """
             Create a new Task object and add it to the list of tasks.
