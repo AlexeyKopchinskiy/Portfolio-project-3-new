@@ -104,8 +104,7 @@ if use_oop:
                 return "Invalid project ID. Please choose from the available projects."
             return None
 
-        # Note: this methot is not used and can be deleted:
-        def validate_task_data(self, name, deadline, priority, category_id, project_id):
+ 
             # Validate name
             if not name or len(name) > 50:
                 return "Task name must be non-empty and 50 characters or less."
