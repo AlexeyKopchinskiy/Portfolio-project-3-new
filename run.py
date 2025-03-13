@@ -333,6 +333,22 @@ def mark_task_completed():
     tasks.update_cell(task_row, 6, "Completed")   # Column 6 is 'Status'
     print(f"Task (ID: {task_id}) has been marked as 'Completed'.")
 
+    # Ask if the user wants to move the task to the 'completed' sheet
+    move_task = input("Do you want to move this task to the 'completed' tab? (yes/no): ").strip().lower()
+    if move_task == "yes":
+        # Fetch the task details
+        task_details = tasks.row_values(task_row)
+
+        # Move the task to the 'completed' sheet
+        completed_sheet = SHEET.worksheet('completed')
+        completed_sheet.append_row(task_details)
+
+        # Delete the task from the 'tasks' sheet
+        tasks.delete_rows(task_row)
+        print(f"Task '{task_details[1]}' (ID: {task_id}) has been moved to the 'completed' tab.")
+    else:
+        print("Task remains in the 'tasks' sheet as 'Completed'.")
+
 def main():
     """
     Main function to initialize the program and display a menu of options.
