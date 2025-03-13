@@ -133,8 +133,6 @@ if use_oop:
             
             return None  # No validation errors
 
-
-
         def __init__(self, tasks_sheet, projects_sheet, categories_sheet):
             self.tasks_sheet = tasks_sheet
             self.projects_sheet = projects_sheet
@@ -394,8 +392,6 @@ if use_oop:
                 # Exit the update loop after successful editing
                 break
 
-
-
         def delete_task(self):
             """
             Archive a task by moving it to the 'Deleted' tab in Google Sheets
@@ -517,8 +513,6 @@ if use_oop:
                         f"Status: {task.status}, Priority: {task.priority}, Notes: {task.notes}")
 
 
-
-
     # Initialize the TaskManager
     manager = TaskManager(tasks, projects, categories)
 
@@ -554,7 +548,6 @@ if use_oop:
         else:
             print("Option not yet implemented. Stay tuned!")
     
-    # manager.view_tasks()
 
 
 
