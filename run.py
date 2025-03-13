@@ -223,7 +223,13 @@ def view_tasks_list():
               f"Complete Date: {complete_date}, Status: {row[5]}, Priority: {row[6]}, "
               f"Category: {row[7]}, Project: {row[8]}, Notes: {row[9]}")
     
+def update_task():
+    """
+    Update an existing task in the 'tasks' sheet.
+    """
+    print("\nUpdate Task Details")
 
+    
 
 # Entry point for the program
 main()
