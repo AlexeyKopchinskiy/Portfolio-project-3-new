@@ -369,7 +369,14 @@ def view_tasks_by_project():
     for row in project_data:
         print(f"- ID: {row[0]}, Name: {row[1]}")
 
+    # Ask the user to select a project by ID
+    project_id = input("\nEnter the ID of the project to view its tasks: ").strip()
 
+    # Fetch all task data (excluding the header row)
+    task_data = tasks.get_all_values()[1:]  # Skip header row
+
+    # Filter tasks belonging to the selected project
+    filtered_tasks = [task for task in task_data if task[8] == project_id]
 
 
 
