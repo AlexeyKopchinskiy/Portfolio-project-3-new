@@ -26,8 +26,54 @@ categories = SHEET.worksheet('category')
 
 data = tasks.get_all_values()
 
+# Helper function to prevent empty and too long task names
+def validate_task_name(task_name):
+    if not task_name.strip():
+        return "Task name cannot be empty."
+    if len(task_name) > 50:
+        return "Task name must be 50 characters or less."
+    return None
+
+# Helper function to validate deadline
+def validate_deadline(deadline):
+    try:
+        deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
+    except ValueError:
+        try:
+            deadline_date = datetime.strptime(deadline, "%d-%m-%Y")
+        except ValueError:
+            return "Invalid date format. Use YYYY-MM-DD or DD-MM-YYYY."
+    if deadline_date < datetime.now():
+        return "Deadline cannot be in the past."
+    return None
+
+# Helper function for validation of proirity 
+def validate_priority(priority):
+    if priority not in ["High", "Medium", "Low"]:
+        return "Priority must be 'High', 'Medium', or 'Low'."
+    return None
+
+# Helper function for validation of category 
+def validate_category(category, valid_categories):
+    if category not in valid_categories:
+        return "Invalid category ID."
+    return None
+
+# Helper function to check if the project is valid
+def validate_project(project, valid_projects):
+    if project not in valid_projects:
+        return "Invalid project ID."
+    return None
+
+# Helper function to control notes length
+def validate_notes(notes):
+    if len(notes) > 250:
+        return "Notes exceeded 250 characters. It will be truncated."
+    return None
+
+
 # Add task to the Google sheet
-def interactive_add_task():
+def add_task():
     """
     Collect task details interactively via the console and add a new task
     directly to the 'tasks' sheet.
@@ -408,7 +454,7 @@ def main():
         user_choice = input("Enter the number of your choice: ").strip()
 
         if user_choice == "1":
-            interactive_add_task()
+            add_task()
         elif user_choice == "2":
             review_deadlines()
         elif user_choice == "3":
