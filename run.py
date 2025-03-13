@@ -240,7 +240,19 @@ def update_task():
     for row in task_data[1:]:
         print(f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
     
-    
+    # Ask user for the task ID to update
+    task_id = input("\nEnter the ID of the task you want to update: ").strip()
+
+    # Find the task row based on the ID
+    task_row = None
+    for index, row in enumerate(task_data[1:], start=2):  # Start from row 2 in the sheet
+        if row[0] == task_id:
+            task_row = index
+            break
+
+    if not task_row:
+        print("Task ID not found.")
+        return
 
 # Entry point for the program
 main()
