@@ -357,6 +357,22 @@ def view_tasks_by_project():
     """
     print("\nView Tasks by Project")
 
+    # Fetch all projects (excluding the header row)
+    project_data = projects.get_all_values()[1:]  # Skip header row
+
+    if not project_data:
+        print("No projects found.")
+        return
+
+    # Display the list of projects
+    print("\nAvailable Projects:")
+    for row in project_data:
+        print(f"- ID: {row[0]}, Name: {row[1]}")
+
+
+
+
+
 def main():
     """
     Main function to initialize the program and display a menu of options.
