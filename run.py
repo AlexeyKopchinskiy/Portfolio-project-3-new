@@ -401,7 +401,8 @@ def main():
         print("4 - Update a task")
         print("5 - Delete (archive) a task")
         print("6 - Mark a task as completed")
-        print("7 - Exit")
+        print("7 - View tasks by project")
+        print("8 - Exit")
 
         # Get the user's choice
         user_choice = input("Enter the number of your choice: ").strip()
@@ -419,6 +420,8 @@ def main():
         elif user_choice == "6":
             mark_task_completed()
         elif user_choice == "7":
+            view_tasks_by_project()
+        elif user_choice == "8":
             print("Exiting the Task Manager. Have a great day!")
             break
         else:
