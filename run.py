@@ -235,6 +235,11 @@ def update_task():
         print("No tasks found to update.")
         return
 
+    # Display all tasks
+    print("\nAvailable Tasks:")
+    for row in task_data[1:]:
+        print(f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
+    
     
 
 # Entry point for the program
