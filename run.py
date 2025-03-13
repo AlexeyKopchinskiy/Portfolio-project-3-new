@@ -25,6 +25,11 @@ if use_oop:
             self.category = category
             self.project = project
             self.complete_date = None
+        
+        def mark_as_completed(self):
+            """Marks the task as completed and sets the completion date."""
+            self.status = "Completed"
+            self.complete_date = datetime.now().strftime("%Y-%m-%d")
 
 
         
