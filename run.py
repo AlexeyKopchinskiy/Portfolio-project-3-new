@@ -77,11 +77,12 @@ if use_oop:
 
         def add_task(self, name, deadline, priority, category, project, notes=""):
             """
-            Create a new Task object and add it to the list of tasks.
+            Create a new Task object, add it to the list of tasks,
+            and save it to the Google Sheet.
             """
             # Generate a unique task ID (use length of tasks list + 1 for simplicity)
             task_id = len(self.tasks) + 1
-            
+
             # Create a new Task object
             new_task = Task(
                 task_id=task_id,
@@ -92,21 +93,24 @@ if use_oop:
                 project=project,
                 notes=notes
             )
-            
-            # Add the task to the tasks list
-            self.tasks.append(new_task)
-            print(f"Task '{name}' added successfully with ID {task_id}.")
 
-        def view_tasks(self):
-            """
-            Print a list of all tasks with their details.
-            """
-            if not self.tasks:
-                print("No tasks found.")
-            else:
-                print("\nTasks List:")
-                for task in self.tasks:
-                    print(task)
+            # Add task to the in-memory list
+            self.tasks.append(new_task)
+
+            # Save task data to the Google Sheet
+            self.tasks_sheet.append_row([
+                task_id,                    # Task ID
+                name,                       # Task Name
+                datetime.now().strftime("%Y-%m-%d"),  # Creation Date
+                deadline,                   # Deadline
+                "",                         # Complete Date (default empty)
+                "Pending",                  # Status (default: Pending)
+                priority,                   # Priority
+                category,                   # Category ID
+                project,                    # Project ID
+                notes                       # Notes
+            ])
+            print(f"Task '{name}' added successfully with ID {task_id} and saved to the Google Sheet.")
     
 
     # Initialize the TaskManager
