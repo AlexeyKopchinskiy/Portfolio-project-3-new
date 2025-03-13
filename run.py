@@ -316,6 +316,16 @@ def mark_task_completed():
      # Ask user for the task ID to mark as completed
     task_id = input("\nEnter the ID of the task you want to mark as completed: ").strip()
 
+    # Find the task row based on the ID
+    task_row = None
+    for index, row in enumerate(task_data[1:], start=2):  # Start from row 2 in the sheet
+        if row[0] == task_id:
+            task_row = index
+            break
+
+    if not task_row:
+        print("Task ID not found.")
+        return
 
 def main():
     """
