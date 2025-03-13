@@ -14,6 +14,24 @@ if use_oop:
     from google.oauth2.service_account import Credentials
     from datetime import datetime
 
+    SCOPE = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/drive"
+        ]
+
+
+    CREDS = Credentials.from_service_account_file('creds.json')
+    SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+    GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
+    SHEET = GSPREAD_CLIENT.open('Python Task Manager')
+
+    tasks = SHEET.worksheet('tasks')
+    projects = SHEET.worksheet('project')
+    categories = SHEET.worksheet('category')
+
+    data = tasks.get_all_values()
+
     print("Running Task Manager in OOP mode...")
     
     # Add the new functionality here
@@ -50,10 +68,12 @@ if use_oop:
         
     class TaskManager:
         """
-        Manages tasks and their interactions with the Task class.
+        Manages tasks and their interactions with the Task class and Google Sheets.
         """
-        def __init__(self, tasks_sheet):
-            self.tasks_sheet = tasks_sheet  # Connect to the Google Sheet
+        def __init__(self, tasks_sheet, projects_sheet, categories_sheet):
+            self.tasks_sheet = tasks_sheet
+            self.projects_sheet = projects_sheet
+            self.categories_sheet = categories_sheet
             self.tasks = self.load_tasks()
 
         def load_tasks(self):
@@ -94,10 +114,10 @@ if use_oop:
                 notes=notes
             )
 
-            # Add task to the in-memory list
+            # Add the task to the in-memory list
             self.tasks.append(new_task)
 
-            # Save task data to the Google Sheet
+            # Save the task data to the Google Sheet
             self.tasks_sheet.append_row([
                 task_id,                    # Task ID
                 name,                       # Task Name
@@ -111,10 +131,22 @@ if use_oop:
                 notes                       # Notes
             ])
             print(f"Task '{name}' added successfully with ID {task_id} and saved to the Google Sheet.")
+
+        def view_tasks(self):
+            """
+            Display all tasks with details.
+            """
+            if not self.tasks:
+                print("No tasks found.")
+            else:
+                print("\nTasks List:")
+                for task in self.tasks:
+                    print(task)
+
     
 
     # Initialize the TaskManager
-    manager = TaskManager()
+    manager = TaskManager(tasks, projects, categories)
 
     # Test adding and viewing tasks (use sample data for now)
     manager.add_task(
