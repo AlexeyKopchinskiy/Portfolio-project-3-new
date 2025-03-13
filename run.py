@@ -197,7 +197,6 @@ if use_oop:
             # Add the task
             self.add_task(name, deadline, priority, category, project, notes)
 
-
         def view_tasks(self):
             """
             Display all tasks with details.
@@ -209,27 +208,53 @@ if use_oop:
                 for task in self.tasks:
                     print(task)
 
-    
+        def review_deadlines(self):
+            """
+            Display tasks sorted by their deadlines.
+            """
+            if not self.tasks:
+                print("No tasks found.")
+                return
+
+            # Sort tasks by deadline (convert to datetime for proper sorting)
+            sorted_tasks = sorted(
+                self.tasks,
+                key=lambda task: datetime.strptime(task.deadline, "%Y-%m-%d")
+            )
+
+            # Display the sorted tasks
+            print("\n--- Tasks Sorted by Deadline ---")
+            for task in sorted_tasks:
+                print(f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, "
+                    f"Priority: {task.priority}, Status: {task.status}")
+
 
     # Initialize the TaskManager
     manager = TaskManager(tasks, projects, categories)
 
     while True:
         print("\nPlease select an option:")
-        print("1 - Create a new task")
-        print("2 - View tasks")
-        print("3 - Exit")
+        print("1 - Add a new task")
+        print("2 - Review deadlines")
+        print("3 - View tasks list")
+        print("4 - Update a task")
+        print("5 - Delete (archive) a task")
+        print("6 - Mark a task as completed")
+        print("7 - View tasks by project")
+        print("8 - Exit")
 
         choice = input("Enter your choice: ").strip()
         if choice == "1":
             manager.create_task_from_input()
         elif choice == "2":
-            manager.view_tasks()
+            manager.review_deadlines()
         elif choice == "3":
+            manager.view_tasks()
+        elif choice == "8":
             print("Exiting Task Manager. Goodbye!")
             break
         else:
-            print("Invalid choice. Please try again.")
+            print("Option not yet implemented. Stay tuned!")
     
     # manager.view_tasks()
 
