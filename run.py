@@ -253,6 +253,14 @@ def update_task():
     else:
         print("Invalid choice. Update aborted.")
 
+def delete_task():
+    """
+    Move a task from the 'tasks' sheet to the 'deleted' sheet based on task ID.
+    """
+    print("\nDelete (Archive) a Task")
+
+    
+
 def main():
     """
     Main function to initialize the program and display a menu of options.
