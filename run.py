@@ -150,7 +150,19 @@ def review_deadlines():
     upcoming_tasks = []
     for row in task_data:
         if row[3]:  # Check if a deadline exists (index 3 in your task structure)
-            deadline_date = datetime.strptime(row[3], "%Y-%m-%d")
+            try:
+                # Try parsing the date in the expected format
+                deadline_date = datetime.strptime(row[3], "%Y-%m-%d")
+            except ValueError:
+                try:
+                    # Try parsing the date in the alternate format (day-month-year)
+                    deadline_date = datetime.strptime(row[3], "%d-%m-%Y")
+                except ValueError:
+                    # Skip invalid date formats
+                    print(f"Invalid date format for task '{row[1]}'. Skipping...")
+                    continue
+
+            # Append the valid task
             upcoming_tasks.append({
                 "ID": row[0],  # Task ID
                 "Name": row[1],  # Task Name
@@ -159,7 +171,7 @@ def review_deadlines():
                 "Status": row[5],  # Status
                 "Notes": row[9]   # Notes
             })
-    
+
     # Sort tasks by deadline
     sorted_tasks = sorted(upcoming_tasks, key=lambda x: x["Deadline"])
 
@@ -171,7 +183,8 @@ def review_deadlines():
             print(f"- ID: {task['ID']}, Name: {task['Name']}, Deadline: {deadline_str}, "
                   f"Priority: {task['Priority']}, Status: {task['Status']}, Notes: {task['Notes']}")
     else:
-        print("No tasks with deadlines found.")
+        print("No tasks with valid deadlines found.")
+
 
 def view_tasks_list():
     print("Feature under construction: View tasks list.")
