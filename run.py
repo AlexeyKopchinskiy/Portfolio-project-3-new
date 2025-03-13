@@ -7,6 +7,13 @@
 use_oop = True  # Set to False to run the old code.
 if use_oop:
      # --- NEW OOP CODE START ---
+
+    import os
+    import json
+    import gspread
+    from google.oauth2.service_account import Credentials
+    from datetime import datetime
+    
     print("Running Task Manager in OOP mode...")
     
     # Add the new functionality here
@@ -606,3 +613,33 @@ else:
     main()
 
     # --- OLD CODE END ---
+
+
+
+if __name__ == "__main__":
+    print("Testing the Task class...")
+
+    # Create a sample task
+    task = Task(
+        task_id=1,
+        name="Test Task",
+        deadline="2025-03-20",
+        priority="High",
+        status="Pending",
+        notes="This is a test note.",
+        category="1",
+        project="1"
+    )
+    
+    # Print the task to verify attributes
+    print(task)
+
+    # Mark the task as completed
+    task.mark_as_completed()
+    print("After marking as completed:")
+    print(task)
+
+    # Update the task
+    task.update(name="Updated Task Name", priority="Medium")
+    print("After updating attributes:")
+    print(task)
