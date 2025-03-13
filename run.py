@@ -27,7 +27,7 @@ categories = SHEET.worksheet('category')
 data = tasks.get_all_values()
 
 
-
+# Basic function for adding task
 def add_task(task_name, deadline, priority, category, project, notes=""):
     """
     Add a new task to the 'tasks' tab.
@@ -62,13 +62,15 @@ def add_task(task_name, deadline, priority, category, project, notes=""):
     tasks.append_row(new_task)
     print(f"Task '{task_name}' added successfully!")
 
+# Add task to the Google sheet
 def interactive_add_task():
     """
-    Collect task details interactively via the console and add a task.
+    Collect task details interactively via the console and add a new task
+    directly to the 'tasks' sheet.
     """
     print("Please enter the task details:")
 
-    # Fetch category and project data
+    # Fetch category and project data for user-friendly prompts
     categories_data = categories.get_all_values()[1:]  # Skip header row
     projects_data = projects.get_all_values()[1:]  # Skip header row
 
@@ -81,22 +83,44 @@ def interactive_add_task():
 
     # Prompt user for task details
     task_name = input("Task Name: ")
-    deadline = input("Deadline (YYYY-MM-DD): ")
+    deadline = input("Deadline (YYYY-MM-DD or DD-MM-YYYY): ")
     priority = input("Priority (High, Medium, Low): ")
     category = input(f"Category (Choose ID from: {category_options}): ")
     project = input(f"Project (Choose ID from: {project_options}): ")
     notes = input("Notes (Optional): ")
 
-    # Call the add_task function with user-provided input
-    add_task(
-        task_name=task_name,
-        deadline=deadline,
-        priority=priority,
-        category=category,
-        project=project,
-        notes=notes
-    )
-   
+    # Validate and format the deadline
+    try:
+        deadline = datetime.strptime(deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
+    except ValueError:
+        try:
+            deadline = datetime.strptime(deadline, "%d-%m-%Y").strftime("%Y-%m-%d")
+        except ValueError:
+            print("Invalid date format. Task creation aborted.")
+            return
+
+    # Auto-increment the task ID based on the number of rows
+    new_id = len(tasks.get_all_values())
+
+    # Get the current date as the creation date
+    create_date = datetime.now().strftime("%Y-%m-%d")
+
+    # Prepare the new task as a list
+    new_task = [
+        new_id,         # Task ID
+        task_name,      # Task name
+        create_date,    # Creation date
+        deadline,       # Deadline
+        "",             # Complete date (empty by default)
+        "Pending",      # Default status
+        priority,       # Priority
+        category,       # Category
+        project,        # Project
+        notes           # Notes
+    ]
+
+    # Append the new task directly to the tasks tab
+    tasks.append_row(new_task)
     print(f"Task '{task_name}' added successfully!")
 
 # Placeholder functions for upcoming features
@@ -148,6 +172,7 @@ def review_deadlines():
     else:
         print("No tasks with valid deadlines found.")
 
+# View task list
 def view_tasks_list():
     """
     Display all tasks from the 'tasks' sheet in a user-friendly format.
@@ -185,7 +210,8 @@ def view_tasks_list():
         print(f"- ID: {row[0]}, Name: {row[1]}, Created: {row[2]}, Deadline: {deadline}, "
               f"Complete Date: {complete_date}, Status: {row[5]}, Priority: {row[6]}, "
               f"Category: {row[7]}, Project: {row[8]}, Notes: {row[9]}")
-    
+
+# Update task
 def update_task():
     """
     Update an existing task in the 'tasks' sheet.
