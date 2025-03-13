@@ -346,14 +346,57 @@ if use_oop:
                 task.notes     # Notes
             ])
 
+            # Find the row in the "Tasks" tab
+            task_rows = self.tasks_sheet.get_all_values()
+            for i, row in enumerate(task_rows):
+                if row[0] == task.task_id:  # Match the Task ID
+                    self.tasks_sheet.delete_rows(i + 1)  # Row index is 1-based
+                    print(f"Task '{task.name}' has been removed from the 'Tasks' tab.")
+                    break
+
             # Remove the task from the in-memory list
             self.tasks.remove(task)
 
-            # Find and delete the corresponding row in the "Tasks" tab
-            task_row = int(task.task_id) + 1  # Account for header row
-            self.tasks_sheet.delete_rows(task_row)
-
             print(f"Task '{task.name}' has been archived and moved to the 'Deleted' tab.")
+
+        def mark_task_completed(self):
+            """
+            Mark a task as completed by updating the status and completion date.
+            """
+            if not self.tasks:
+                print("No tasks available to mark as completed.")
+                return
+
+            # Display tasks to help the user choose
+            print("\n--- Mark a Task as Completed ---")
+            print("Available Tasks:")
+            for task in self.tasks:
+                if task.status != "Completed":  # Only show incomplete tasks
+                    print(f"ID: {task.task_id}, Name: {task.name}, Status: {task.status}")
+
+            # Get Task ID from the user
+            task_id = input("Enter the ID of the task you want to mark as completed: ").strip()
+            task = next((t for t in self.tasks if str(t.task_id) == task_id), None)
+
+            if not task:
+                print("Task ID not found. Please try again.")
+                return
+
+            if task.status == "Completed":
+                print(f"Task '{task.name}' is already marked as completed.")
+                return
+
+            # Update the task's status and completion date
+            task.mark_as_completed()
+
+            # Update the Google Sheet
+            task_row = int(task.task_id) + 1  # Account for header row
+            self.tasks_sheet.update_cell(task_row, 6, "Completed")  # Update Status column
+            self.tasks_sheet.update_cell(task_row, 5, task.complete_date)  # Update Complete Date column
+
+            print(f"Task '{task.name}' has been marked as completed successfully!")
+
+
 
 
     # Initialize the TaskManager
@@ -381,6 +424,8 @@ if use_oop:
             manager.update_task()
         elif choice == "5":
             manager.delete_task()
+        elif choice == "6":
+            manager.mark_task_completed()
         elif choice == "8":
             print("Exiting Task Manager. Goodbye!")
             break
