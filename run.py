@@ -159,6 +159,9 @@ def review_deadlines():
                 "Status": row[5],  # Status
                 "Notes": row[9]   # Notes
             })
+    
+    # Sort tasks by deadline
+    sorted_tasks = sorted(upcoming_tasks, key=lambda x: x["Deadline"])
 
 def view_tasks_list():
     print("Feature under construction: View tasks list.")
