@@ -291,7 +291,9 @@ def delete_task():
     deleted_sheet = SHEET.worksheet('deleted')
     deleted_sheet.append_row(task_details)
 
-    
+    # Delete the task from the 'tasks' sheet
+    tasks.delete_rows(task_row)
+    print(f"Task '{task_details[1]}' (ID: {task_id}) has been successfully archived in the 'deleted' tab.")
 
 def main():
     """
