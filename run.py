@@ -56,6 +56,27 @@ if use_oop:
         def __init__(self):
             self.tasks = []  # Placeholder for Task objects
 
+        def add_task(self, name, deadline, priority, category, project, notes=""):
+            """
+            Create a new Task object and add it to the list of tasks.
+            """
+            # Generate a unique task ID (use length of tasks list + 1 for simplicity)
+            task_id = len(self.tasks) + 1
+            
+            # Create a new Task object
+            new_task = Task(
+                task_id=task_id,
+                name=name,
+                deadline=deadline,
+                priority=priority,
+                category=category,
+                project=project,
+                notes=notes
+            )
+            
+            # Add the task to the tasks list
+            self.tasks.append(new_task)
+            print(f"Task '{name}' added successfully with ID {task_id}.")
 
 
 else:
