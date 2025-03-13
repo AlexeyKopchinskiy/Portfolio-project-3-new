@@ -1,42 +1,8 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# Task Manager Project
 
-Welcome,
+Welcome to the `Task Manager`, a Python command-line application designed to create, organize, and manage tasks effectively. This project interacts with Google Sheets to store and process data, making it both powerful and dynamic. The last update to this file was: `March 13, 2025.`
 
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **May 14, 2024**
-
-## Reminders
-
-- Your code must be placed in the `run.py` file
-- Your dependencies must be placed in the `requirements.txt` file
-- Do not edit any of the other files or your code may not deploy properly
-
-## Creating the Heroku app
-
-When you create the app, you will need to add two buildpacks from the _Settings_ tab. The ordering is as follows:
-
-1. `heroku/python`
-2. `heroku/nodejs`
-
-You must then create a _Config Var_ called `PORT`. Set this to `8000`
-
-If you have credentials, such as in the Love Sandwiches project, you must create another _Config Var_ called `CREDS` and paste the JSON into the value field.
-
-Connect your GitHub repository and deploy as normal.
-
-## Constraints
-
-The deployment terminal is set to 80 columns by 24 rows. That means that each line of text needs to be 80 characters or less otherwise it will be wrapped onto a second line.
-
----
-
-Happy coding!
-
-
-## Task Manager Project
-
-Welcome to the Task Manager, a Python command-line application designed to create, organize, and manage tasks effectively. This project interacts with Google Sheets to store and process data, making it both powerful and dynamic. The last update to this file was: March 13, 2025.
-
-### Features
+## Features
 
 - Add Tasks: Easily create new tasks with validation for name, deadline, priority, category, and project.
 - Review Deadlines: View upcoming tasks sorted by their deadlines.
@@ -45,44 +11,44 @@ Welcome to the Task Manager, a Python command-line application designed to creat
 - Task Completion: Mark tasks as completed and optionally archive them in a dedicated tab.
 - Delete (Archive) Tasks: Move unnecessary tasks to a "Deleted" tab without permanently erasing them.
 
-### Reminders
+## Reminders
 
-- Code Placement: Your code should reside in the run.py file.
-- Dependencies: Include all required dependencies in the requirements.txt file.
+- Code Placement: Your code should reside in the `run.py` file.
+- Dependencies: Include all required dependencies in the `requirements.txt` file.
 - Google Sheets API Setup: Configure the connection to Google Sheets by adding the necessary credentials in your environment variables.
 - Data Validation: Built-in validation ensures accurate and clean data input.
 
-### Deployment
+## Deployment
 
 To deploy the application to Heroku, follow these steps:
 
 **1. Set Up Your Heroku Environment:**
 
 - Create a new Heroku app.
-- Go to the Settings tab of your Heroku app.
+- Go to the _Settings_ tab of your Heroku app.
 - Add the following buildpacks in this order:
-  - heroku/python
-  - heroku/nodejs
+  - `heroku/python`
+  - `heroku/nodejs`
 
 **2. Set Config Vars:**
 
-- Add a Config Var called PORT and set it to 8000.
-- If you use Google Sheets credentials, add another Config Var called CREDS and paste the JSON credentials into the value field.
+- Add a Config Var called `PORT` and set it to `8000`.
+- If you use Google Sheets credentials, add another _Config Var_ called `CREDS` and paste the `JSON` credentials into the value field.
 
 **3. Prepare Your Repository:**
 
-- Ensure your code is properly committed to a GitHub repository.
+- Ensure your code is properly committed to a _GitHub_ repository.
 - Your main script file must be named run.py.
 - Include a requirements.txt file listing all your dependencies.
 
 **4. Connect Heroku to GitHub:**
 
-- Under the Deploy tab in Heroku, connect your GitHub repository.
+- Under the Deploy tab in Heroku, connect your _GitHub_ repository.
 - Select the branch you want to deploy (usually main).
 
 **5. Deploy the Application:**
 
-- Click on Deploy Branch in the Heroku dashboard.
+- Click on `Deploy Branch` in the _Heroku_ dashboard.
 - Once deployed, your application can be accessed here.
 
 **6. Test Your Application:**
@@ -90,7 +56,7 @@ To deploy the application to Heroku, follow these steps:
 - Make sure all features are functional in the deployed environment.
 - Verify your integration with Google Sheets works as intended.
 
-### Using the Task Manager
+## Using the Task Manager
 
 1. Launch the application in the terminal.
 2. Choose from the intuitive menu options:
@@ -104,19 +70,19 @@ To deploy the application to Heroku, follow these steps:
 
 3. Follow the prompts to interact with the application features.
 
-### Project Constraints
+## Project Constraints
 
 The command-line interface is set to 80 columns by 24 rows. Ensure all outputs stay within these constraints for better readability.
 
-### Requirements
+## Requirements
 
 To run this project, you’ll need:
 
 - Python 3.8 or higher
-- Required libraries (install using pip install -r requirements.txt)
+- Required libraries (install using `pip install -r requirements.txt`)
 - Google Sheets credentials for API integration
 
-### How It Works
+## How It Works
 
 This application uses the Google Sheets API to store and organize task data:
 
