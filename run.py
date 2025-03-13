@@ -104,7 +104,7 @@ if use_oop:
                 return "Invalid project ID. Please choose from the available projects."
             return None
 
-
+        # Note: this methot is not used and can be deleted:
         def validate_task_data(self, name, deadline, priority, category_id, project_id):
             # Validate name
             if not name or len(name) > 50:
@@ -199,16 +199,15 @@ if use_oop:
 
         def create_task_from_input(self):
             """
-            Collect task details interactively from the user with validation 
-            after each step, and create a new task if all inputs are valid.
+            Collect task details interactively from the user with real-time validation.
             """
             print("\n--- Create a New Task ---")
 
             # Task Name
             while True:
                 name = input("Enter task name: ").strip()
-                error = self.validate_task_data(name, "2025-01-01", "High", "1", "1")  # Pass dummy values for other fields
-                if "Task name" in (error or ""):  # Only check for name validation
+                error = self.validate_task_name(name)
+                if error:
                     print(f"Error: {error}")
                 else:
                     break
@@ -216,8 +215,8 @@ if use_oop:
             # Deadline
             while True:
                 deadline = input("Enter deadline (YYYY-MM-DD): ").strip()
-                error = self.validate_task_data(name, deadline, "High", "1", "1")  # Pass dummy values for other fields
-                if "Deadline" in (error or ""):  # Only check for deadline validation
+                error = self.validate_deadline(deadline)
+                if error:
                     print(f"Error: {error}")
                 else:
                     break
@@ -225,29 +224,31 @@ if use_oop:
             # Priority
             while True:
                 priority = input("Enter priority (High, Medium, Low): ").strip().capitalize()
-                error = self.validate_task_data(name, deadline, priority, "1", "1")  # Pass dummy values for other fields
-                if "priority" in (error or "").lower():  # Only check for priority validation
+                error = self.validate_priority(priority)
+                if error:
                     print(f"Error: {error}")
                 else:
                     break
 
             # Category
-            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[1:]]
+            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[1:]]  # Skip header row
             print(f"Available Categories: {', '.join(category_ids)}")
             while True:
                 category_id = input("Enter category ID: ").strip()
-                if category_id not in category_ids:
-                    print("Invalid category ID. Please choose from the available categories.")
+                error = self.validate_category_id(category_id)
+                if error:
+                    print(f"Error: {error}")
                 else:
                     break
 
             # Project
-            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]
+            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]  # Skip header row
             print(f"Available Projects: {', '.join(project_ids)}")
             while True:
                 project_id = input("Enter project ID: ").strip()
-                if project_id not in project_ids:
-                    print("Invalid project ID. Please choose from the available projects.")
+                error = self.validate_project_id(project_id)
+                if error:
+                    print(f"Error: {error}")
                 else:
                     break
 
@@ -257,15 +258,10 @@ if use_oop:
                 print("Warning: Notes exceeded 250 characters. It will be truncated.")
                 notes = notes[:250]
 
-            # Final validation before adding the task
-            error = self.validate_task_data(name, deadline, priority, category_id, project_id)
-            if error:
-                print(f"Error: {error}")
-                return
-
-            # Add the task if all validations pass
+            # Add the task after all inputs are validated
             self.add_task(name, deadline, priority, category_id, project_id, notes)
             print(f"Task '{name}' added successfully!")
+
 
 
 
