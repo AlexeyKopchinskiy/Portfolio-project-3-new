@@ -214,26 +214,24 @@ if use_oop:
     # Initialize the TaskManager
     manager = TaskManager(tasks, projects, categories)
 
-    # Test adding and viewing tasks (use sample data for now)
-    manager.add_task(
-        name="Sample Task",
-        deadline="2025-03-30",
-        priority="High",
-        category="1",
-        project="1",
-        notes="This is a sample task."
-    )
+    while True:
+        print("\nPlease select an option:")
+        print("1 - Create a new task")
+        print("2 - View tasks")
+        print("3 - Exit")
+
+        choice = input("Enter your choice: ").strip()
+        if choice == "1":
+            manager.create_task_from_input()
+        elif choice == "2":
+            manager.view_tasks()
+        elif choice == "3":
+            print("Exiting Task Manager. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
     
-    manager.add_task(
-        name="Another Task",
-        deadline="2025-04-10",
-        priority="Medium",
-        category="2",
-        project="2",
-        notes="Second task for testing."
-    )
-    
-    manager.view_tasks()
+    # manager.view_tasks()
 
 
 
