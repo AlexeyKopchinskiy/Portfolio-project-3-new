@@ -326,6 +326,12 @@ def mark_task_completed():
     if not task_row:
         print("Task ID not found.")
         return
+    
+    # Update the task's status to 'Completed' and add the completion date
+    complete_date = datetime.now().strftime("%Y-%m-%d")
+    tasks.update_cell(task_row, 5, complete_date)  # Column 5 is 'Complete Date'
+    tasks.update_cell(task_row, 6, "Completed")   # Column 6 is 'Status'
+    print(f"Task (ID: {task_id}) has been marked as 'Completed'.")
 
 def main():
     """
