@@ -296,6 +296,7 @@ def delete_task():
     tasks.delete_rows(task_row)
     print(f"Task '{task_details[1]}' (ID: {task_id}) has been successfully archived in the 'deleted' tab.")
 
+# Mark tasks as completed
 def mark_task_completed():
     """
     Mark a task as 'Completed' and optionally move it to the 'completed' sheet.
@@ -349,6 +350,13 @@ def mark_task_completed():
     else:
         print("Task remains in the 'tasks' sheet as 'Completed'.")
 
+# Show tasks from selected projects
+def view_tasks_by_project():
+    """
+    Display tasks that belong to a specific project.
+    """
+    print("\nView Tasks by Project")
+
 def main():
     """
     Main function to initialize the program and display a menu of options.
@@ -384,7 +392,7 @@ def main():
             print("Exiting the Task Manager. Have a great day!")
             break
         else:
-            print("Invalid input. Please enter a number between 1 and 5.")
+            print("Invalid input. Please enter a number between 1 and 7.")
 
 
 # Entry point for the program
