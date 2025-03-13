@@ -253,6 +253,7 @@ def update_task():
     else:
         print("Invalid choice. Update aborted.")
 
+# Delete task
 def delete_task():
     """
     Move a task from the 'tasks' sheet to the 'deleted' sheet based on task ID.
@@ -294,6 +295,15 @@ def delete_task():
     # Delete the task from the 'tasks' sheet
     tasks.delete_rows(task_row)
     print(f"Task '{task_details[1]}' (ID: {task_id}) has been successfully archived in the 'deleted' tab.")
+
+def mark_task_completed():
+    """
+    Mark a task as 'Completed' and optionally move it to the 'completed' sheet.
+    """
+    print("\nMark Task as Completed")
+
+    
+
 
 def main():
     """
