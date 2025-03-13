@@ -10,6 +10,28 @@ if use_oop:
     print("Running Task Manager in OOP mode...")
     
     # Add the new functionality here
+
+    class Task:
+        """
+        Represents an individual task with related attributes and methods.
+        """
+        def __init__(self, task_id, name, deadline, priority, status="Pending", notes="", category=None, project=None):
+            self.task_id = task_id
+            self.name = name
+            self.deadline = deadline
+            self.priority = priority
+            self.status = status
+            self.notes = notes
+            self.category = category
+            self.project = project
+            self.complete_date = None
+
+
+        
+
+
+
+
 else:
     print("Running Task Manager in procedural mode...")
     # Call old functions and retain the existing workflow
