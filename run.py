@@ -256,11 +256,19 @@ def update_task():
     
     # Ask which field to update
     print("\nWhat would you like to update?")
-    print("1 - Status")
-    print("2 - Deadline")
-    print("3 - Priority")
-    print("4 - Notes")
+    print("1 - Task Name")
+    print("2 - Status")
+    print("3 - Deadline")
+    print("4 - Priority")
+    print("5 - Notes")
     choice = input("Enter the number of your choice: ").strip()
+
+    if choice == "1":
+        new_task_name = input("Enter new task name: ").strip()
+        tasks.update_cell(task_row, 2, new_task_name)  # Column 2 is 'Task Name'
+        print("Task name updated successfully!")
+    
+    
 
 # Entry point for the program
 main()
