@@ -283,6 +283,15 @@ def delete_task():
     if not task_row:
         print("Task ID not found.")
         return
+    
+    # Fetch the task details
+    task_details = tasks.row_values(task_row)
+
+    # Move the task to the 'deleted' sheet
+    deleted_sheet = SHEET.worksheet('deleted')
+    deleted_sheet.append_row(task_details)
+
+    
 
 def main():
     """
