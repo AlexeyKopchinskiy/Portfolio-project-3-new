@@ -185,9 +185,22 @@ def review_deadlines():
     else:
         print("No tasks with valid deadlines found.")
 
-
 def view_tasks_list():
-    print("Feature under construction: View tasks list.")
+    """
+    Display all tasks from the 'tasks' sheet in a user-friendly format.
+    """
+    print("\nFetching tasks list...")
+
+    # Fetch all task data (excluding the header row)
+    task_data = tasks.get_all_values()[1:]  # Skip header row
+
+    if not task_data:
+        print("No tasks found in the sheet.")
+        return
+
+    
+    
+
 
 # Entry point for the program
 main()
