@@ -84,6 +84,18 @@ if use_oop:
             except ValueError:
                 return "Invalid deadline format. Please use YYYY-MM-DD."
             
+            # Validate priority
+            valid_priorities = ["High", "Medium", "Low"]
+            if priority not in valid_priorities:
+                return "Invalid priority. Please choose from High, Medium, or Low."
+
+            # Validate category and project IDs
+            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[1:]]
+            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]
+            if category_id not in category_ids:
+                return "Invalid category ID."
+            if project_id not in project_ids:
+                return "Invalid project ID."
             
             return None  # No validation errors
 
