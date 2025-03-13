@@ -37,6 +37,10 @@ if use_oop:
                 if hasattr(self, key):
                     setattr(self, key, value)
 
+        def __str__(self):
+            """String representation of a task."""
+            return (f"Task(ID: {self.task_id}, Name: {self.name}, Deadline: {self.deadline}, "
+                    f"Priority: {self.priority}, Status: {self.status}, Notes: {self.notes})")
         
 
 
