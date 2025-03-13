@@ -70,6 +70,16 @@ if use_oop:
         """
         Manages tasks and their interactions with the Task class and Google Sheets.
         """
+
+        def validate_task_data(self, name, deadline, priority, category_id, project_id):
+            # Validate name
+            if not name or len(name) > 50:
+                return "Task name must be non-empty and 50 characters or less."
+
+
+            return None  # No validation errors
+
+
         def __init__(self, tasks_sheet, projects_sheet, categories_sheet):
             self.tasks_sheet = tasks_sheet
             self.projects_sheet = projects_sheet
