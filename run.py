@@ -270,6 +270,9 @@ def delete_task():
     for row in task_data[1:]:
         print(f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
     
+    # Ask user for the task ID to delete
+    task_id = input("\nEnter the ID of the task you want to delete: ").strip()
+
     
 
 def main():
