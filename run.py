@@ -260,6 +260,102 @@ if use_oop:
 
             choice = input("Enter the number of your choice: ").strip()
 
+            # Perform the update based on user's choice
+            if choice == "1":
+                new_name = input("Enter the new task name: ").strip()
+                if new_name and len(new_name) <= 50:
+                    task.update(name=new_name)
+                    self.tasks_sheet.update_cell(int(task.task_id) + 1, 2, new_name)
+                    print("Task name updated successfully!")
+                else:
+                    print("Invalid task name. Update failed.")
+            elif choice == "2":
+                new_deadline = input("Enter the new deadline (YYYY-MM-DD): ").strip()
+                try:
+                    deadline_date = datetime.strptime(new_deadline, "%Y-%m-%d")
+                    if deadline_date >= datetime.now():
+                        task.update(deadline=new_deadline)
+                        self.tasks_sheet.update_cell(int(task.task_id) + 1, 4, new_deadline)
+                        print("Task deadline updated successfully!")
+                    else:
+                        print("Deadline cannot be in the past.")
+                except ValueError:
+                    print("Invalid date format. Update failed.")
+            elif choice == "3":
+                new_priority = input("Enter the new priority (High, Medium, Low): ").strip().capitalize()
+                if new_priority in ["High", "Medium", "Low"]:
+                    task.update(priority=new_priority)
+                    self.tasks_sheet.update_cell(int(task.task_id) + 1, 7, new_priority)
+                    print("Task priority updated successfully!")
+                else:
+                    print("Invalid priority. Update failed.")
+            elif choice == "4":
+                new_notes = input("Enter the new notes: ").strip()
+                if len(new_notes) > 250:
+                    print("Notes truncated to 250 characters.")
+                    new_notes = new_notes[:250]
+                task.update(notes=new_notes)
+                self.tasks_sheet.update_cell(int(task.task_id) + 1, 10, new_notes)
+                print("Task notes updated successfully!")
+            elif choice == "5":
+                new_status = input("Enter the new status (Pending, In Progress, Completed): ").strip()
+                if new_status in ["Pending", "In Progress", "Completed"]:
+                    task.update(status=new_status)
+                    self.tasks_sheet.update_cell(int(task.task_id) + 1, 6, new_status)
+                    print("Task status updated successfully!")
+                else:
+                    print("Invalid status. Update failed.")
+            else:
+                print("Invalid choice. Update aborted.")
+
+        def delete_task(self):
+            """
+            Archive a task by moving it to the 'Deleted' tab in Google Sheets
+            and removing it from the 'Tasks' tab and in-memory list.
+            """
+            if not self.tasks:
+                print("No tasks available to delete.")
+                return
+
+            # Display tasks to help the user choose
+            print("\n--- Delete (Archive) a Task ---")
+            print("Available Tasks:")
+            for task in self.tasks:
+                print(f"ID: {task.task_id}, Name: {task.name}, Status: {task.status}")
+
+            # Get Task ID from the user
+            task_id = input("Enter the ID of the task you want to delete: ").strip()
+            task = next((t for t in self.tasks if str(t.task_id) == task_id), None)
+
+            if not task:
+                print("Task ID not found. Please try again.")
+                return
+
+            # Move the task to the "Deleted" tab
+            deleted_tab = SHEET.worksheet("deleted")
+            deleted_tab.append_row([
+                task.task_id,  # Task ID
+                task.name,     # Task Name
+                datetime.now().strftime("%Y-%m-%d"),  # Deletion Date
+                task.deadline, # Deadline
+                task.complete_date if task.complete_date else "",  # Complete Date
+                task.status,   # Status
+                task.priority, # Priority
+                task.category, # Category ID
+                task.project,  # Project ID
+                task.notes     # Notes
+            ])
+
+            # Remove the task from the in-memory list
+            self.tasks.remove(task)
+
+            # Find and delete the corresponding row in the "Tasks" tab
+            task_row = int(task.task_id) + 1  # Account for header row
+            self.tasks_sheet.delete_rows(task_row)
+
+            print(f"Task '{task.name}' has been archived and moved to the 'Deleted' tab.")
+
+
     # Initialize the TaskManager
     manager = TaskManager(tasks, projects, categories)
 
@@ -281,6 +377,10 @@ if use_oop:
             manager.review_deadlines()
         elif choice == "3":
             manager.view_tasks()
+        elif choice == "4":
+            manager.update_task()
+        elif choice == "5":
+            manager.delete_task()
         elif choice == "8":
             print("Exiting Task Manager. Goodbye!")
             break
