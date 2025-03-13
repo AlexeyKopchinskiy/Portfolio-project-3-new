@@ -105,14 +105,35 @@ def interactive_add_task():
     """
     print("Please enter the task details:")
 
+    # Fetch category and project data
+    categories_data = categories.get_all_values()[1:]  # Skip header row
+    projects_data = projects.get_all_values()[1:]  # Skip header row
+
+    # Prepare category and project options
+    category_options = ", ".join([f"{row[0]}: {row[1]}" for row in categories_data])
+    project_options = ", ".join([f"{row[0]}: {row[1]}" for row in projects_data])
+
+    print(f"Available Categories: {category_options}")
+    print(f"Available Projects: {project_options}")
+
+    # Prompt user for task details
     task_name = input("Task Name: ")
     deadline = input("Deadline (YYYY-MM-DD): ")
     priority = input("Priority (High, Medium, Low): ")
-    category = input("Category: ")
-    project = input("Project: ")
+    category = input(f"Category (Choose ID from: {category_options}): ")
+    project = input(f"Project (Choose ID from: {project_options}): ")
     notes = input("Notes (Optional): ")
 
-    add_task(task_name, deadline, priority, category, project, notes)
+    # Call the add_task function with user-provided input
+    add_task(
+        task_name=task_name,
+        deadline=deadline,
+        priority=priority,
+        category=category,
+        project=project,
+        notes=notes
+    )
+   
     print(f"Task '{task_name}' added successfully!")
 
 # Placeholder functions for upcoming features
