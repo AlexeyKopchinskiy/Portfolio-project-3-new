@@ -146,6 +146,20 @@ def review_deadlines():
     # Fetch all task data (excluding the header row)
     task_data = tasks.get_all_values()[1:]  # Skip header row
 
+    # Filter tasks with deadlines and convert the deadline to datetime objects
+    upcoming_tasks = []
+    for row in task_data:
+        if row[3]:  # Check if a deadline exists (index 3 in your task structure)
+            deadline_date = datetime.strptime(row[3], "%Y-%m-%d")
+            upcoming_tasks.append({
+                "ID": row[0],  # Task ID
+                "Name": row[1],  # Task Name
+                "Deadline": deadline_date,
+                "Priority": row[6],  # Priority
+                "Status": row[5],  # Status
+                "Notes": row[9]   # Notes
+            })
+
 def view_tasks_list():
     print("Feature under construction: View tasks list.")
 
