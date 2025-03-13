@@ -229,6 +229,12 @@ def update_task():
     """
     print("\nUpdate Task Details")
 
+     # Fetch all tasks (excluding the header row)
+    task_data = tasks.get_all_values()
+    if len(task_data) <= 1:  # Check if there are no tasks
+        print("No tasks found to update.")
+        return
+
     
 
 # Entry point for the program
