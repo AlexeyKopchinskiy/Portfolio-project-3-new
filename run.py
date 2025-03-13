@@ -91,6 +91,61 @@ def add_task():
     print(f"Available Categories: {category_options}")
     print(f"Available Projects: {project_options}")
 
+    # Validate Task Name
+    while True:
+        task_name = input("Task Name: ").strip()
+        error = validate_task_name(task_name)
+        if error:
+            print(f"Error: {error}")
+        else:
+            break
+
+    # Validate Deadline
+    while True:
+        deadline = input("Deadline (YYYY-MM-DD or DD-MM-YYYY): ").strip()
+        error = validate_deadline(deadline)
+        if error:
+            print(f"Error: {error}")
+        else:
+            deadline = datetime.strptime(deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
+            break
+
+    # Validate Priority
+    while True:
+        priority = input("Priority (High, Medium, Low): ").strip().capitalize()
+        error = validate_priority(priority)
+        if error:
+            print(f"Error: {error}")
+        else:
+            break
+
+    # Validate Category
+    valid_categories = [row[0] for row in categories_data]
+    while True:
+        category = input(f"Category (Choose ID from: {category_options}): ").strip()
+        error = validate_category(category, valid_categories)
+        if error:
+            print(f"Error: {error}")
+        else:
+            break
+
+    # Validate Project
+    valid_projects = [row[0] for row in projects_data]
+    while True:
+        project = input(f"Project (Choose ID from: {project_options}): ").strip()
+        error = validate_project(project, valid_projects)
+        if error:
+            print(f"Error: {error}")
+        else:
+            break
+
+    # Validate Notes (Optional)
+    notes = input("Notes (Optional, max 250 characters): ").strip()
+    error = validate_notes(notes)
+    if error:
+        print(f"Warning: {error}")
+        notes = notes[:250]  # Trim to 250 characters if too long
+
     # Prompt user for task details
     task_name = input("Task Name: ")
     deadline = input("Deadline (YYYY-MM-DD or DD-MM-YYYY): ")
