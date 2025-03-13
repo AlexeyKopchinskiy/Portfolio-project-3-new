@@ -228,6 +228,37 @@ if use_oop:
                 print(f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, "
                     f"Priority: {task.priority}, Status: {task.status}")
 
+        def update_task(self):
+            """
+            Update an existing task in the Google Sheet.
+            """
+            if not self.tasks:
+                print("No tasks available to update.")
+                return
+
+            # Display tasks to help the user choose
+            print("\n--- Update a Task ---")
+            print("Available Tasks:")
+            for task in self.tasks:
+                print(f"ID: {task.task_id}, Name: {task.name}, Status: {task.status}")
+
+            # Get Task ID from the user
+            task_id = input("Enter the ID of the task you want to update: ").strip()
+            task = next((t for t in self.tasks if str(t.task_id) == task_id), None)
+
+            if not task:
+                print("Task ID not found. Please try again.")
+                return
+
+            # Show update options
+            print("\nWhat would you like to update?")
+            print("1 - Task Name")
+            print("2 - Deadline")
+            print("3 - Priority")
+            print("4 - Notes")
+            print("5 - Status")
+
+            choice = input("Enter the number of your choice: ").strip()
 
     # Initialize the TaskManager
     manager = TaskManager(tasks, projects, categories)
