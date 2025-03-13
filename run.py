@@ -71,6 +71,40 @@ if use_oop:
         Manages tasks and their interactions with the Task class and Google Sheets.
         """
 
+        # Helper methods for data validation
+        def validate_task_name(self, name):
+            if not name or len(name) > 50:
+                return "Task name must be non-empty and 50 characters or less."
+            return None
+
+        def validate_deadline(self, deadline):
+            try:
+                deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
+                if deadline_date < datetime.now():
+                    return "Deadline cannot be in the past."
+            except ValueError:
+                return "Invalid deadline format. Please use YYYY-MM-DD."
+            return None
+
+        def validate_priority(self, priority):
+            valid_priorities = ["High", "Medium", "Low"]
+            if priority not in valid_priorities:
+                return "Invalid priority. Please choose from High, Medium, or Low."
+            return None
+
+        def validate_category_id(self, category_id):
+            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[1:]]  # Skip header
+            if category_id not in category_ids:
+                return "Invalid category ID. Please choose from the available categories."
+            return None
+
+        def validate_project_id(self, project_id):
+            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]  # Skip header
+            if project_id not in project_ids:
+                return "Invalid project ID. Please choose from the available projects."
+            return None
+
+
         def validate_task_data(self, name, deadline, priority, category_id, project_id):
             # Validate name
             if not name or len(name) > 50:
@@ -98,6 +132,7 @@ if use_oop:
                 return "Invalid project ID."
             
             return None  # No validation errors
+
 
 
         def __init__(self, tasks_sheet, projects_sheet, categories_sheet):
@@ -130,12 +165,6 @@ if use_oop:
             Create a new Task object, add it to the list of tasks,
             and save it to the Google Sheet.
             """
-            # Call the validation method
-            # error = self.validate_task_data(name, deadline, priority, category, project)
-            # if error:  # If validation fails, print the error message and stop
-            #     print(f"Error: {error}")
-            #     return
-
             # Generate a unique task ID (use length of tasks list + 1 for simplicity)
             task_id = len(self.tasks) + 1
 
