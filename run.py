@@ -396,6 +396,38 @@ if use_oop:
 
             print(f"Task '{task.name}' has been marked as completed successfully!")
 
+        def view_tasks_by_project(self):
+            """
+            Display tasks filtered by a specific project ID.
+            """
+            if not self.tasks:
+                print("No tasks available to view.")
+                return
+
+            # Display available projects
+            print("\n--- View Tasks by Project ---")
+            print("Available Projects:")
+            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]  # Skip header
+            for row in self.projects_sheet.get_all_values()[1:]:  # Skip header
+                print(f"ID: {row[0]}, Name: {row[1]}")
+
+            # Get the project ID from the user
+            project_id = input("Enter the Project ID to view tasks for: ").strip()
+            if project_id not in project_ids:
+                print("Invalid Project ID. Please try again.")
+                return
+
+            # Filter tasks by project ID
+            filtered_tasks = [task for task in self.tasks if task.project == project_id]
+
+            if not filtered_tasks:
+                print(f"No tasks found for Project ID {project_id}.")
+            else:
+                print(f"\n--- Tasks for Project ID {project_id} ---")
+                for task in filtered_tasks:
+                    print(f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, "
+                        f"Status: {task.status}, Priority: {task.priority}, Notes: {task.notes}")
+
 
 
 
@@ -426,6 +458,8 @@ if use_oop:
             manager.delete_task()
         elif choice == "6":
             manager.mark_task_completed()
+        elif choice == "7":
+            manager.view_tasks_by_project()
         elif choice == "8":
             print("Exiting Task Manager. Goodbye!")
             break
