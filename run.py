@@ -302,7 +302,16 @@ def mark_task_completed():
     """
     print("\nMark Task as Completed")
 
-    
+    # Fetch all tasks (excluding the header row)
+    task_data = tasks.get_all_values()
+    if len(task_data) <= 1:  # Check if there are no tasks
+        print("No tasks found to mark as completed.")
+        return
+
+    # Display all tasks
+    print("\nAvailable Tasks:")
+    for row in task_data[1:]:
+        print(f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
 
 
 def main():
