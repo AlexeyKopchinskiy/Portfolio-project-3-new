@@ -78,6 +78,16 @@ if use_oop:
             self.tasks.append(new_task)
             print(f"Task '{name}' added successfully with ID {task_id}.")
 
+        def view_tasks(self):
+            """
+            Print a list of all tasks with their details.
+            """
+            if not self.tasks:
+                print("No tasks found.")
+            else:
+                print("\nTasks List:")
+                for task in self.tasks:
+                    print(task)
 
 else:
     print("Running Task Manager in procedural mode...")
