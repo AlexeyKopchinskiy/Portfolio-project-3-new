@@ -138,7 +138,13 @@ def interactive_add_task():
 
 # Placeholder functions for upcoming features
 def review_deadlines():
-    print("Feature under construction: Review deadlines.")
+    """
+    Fetch tasks from the 'tasks' sheet and display them sorted by deadlines.
+    """
+    print("\nReviewing upcoming deadlines...")
+
+    # Fetch all task data (excluding the header row)
+    task_data = tasks.get_all_values()[1:]  # Skip header row
 
 def view_tasks_list():
     print("Feature under construction: View tasks list.")
