@@ -163,6 +163,16 @@ def review_deadlines():
     # Sort tasks by deadline
     sorted_tasks = sorted(upcoming_tasks, key=lambda x: x["Deadline"])
 
+    # Display sorted tasks
+    if sorted_tasks:
+        print("\nUpcoming Deadlines:")
+        for task in sorted_tasks:
+            deadline_str = task["Deadline"].strftime("%Y-%m-%d")
+            print(f"- ID: {task['ID']}, Name: {task['Name']}, Deadline: {deadline_str}, "
+                  f"Priority: {task['Priority']}, Status: {task['Status']}, Notes: {task['Notes']}")
+    else:
+        print("No tasks with deadlines found.")
+
 def view_tasks_list():
     print("Feature under construction: View tasks list.")
 
