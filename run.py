@@ -4,7 +4,23 @@
 
 # --- CONFIGURATION ---
 # Toggle between the OOP implementation and the old procedural code.
-use_oop = True  # Set to False to run the old code.
+# use_oop = True  # Set to False to run the old code.
+
+# Get the user's choice for use_oop
+while True:
+    user_choice = input("Do you want to use OOP mode? (yes/no): ").strip().lower()
+    if user_choice in ["yes", "y"]:
+        use_oop = True
+        print("OOP mode enabled.")
+        break
+    elif user_choice in ["no", "n"]:
+        use_oop = False
+        print("Procedural mode enabled.")
+        break
+    else:
+        print("Invalid input. Please enter 'yes' or 'no'.")
+
+
 if use_oop:
      # --- NEW OOP CODE START ---
 
