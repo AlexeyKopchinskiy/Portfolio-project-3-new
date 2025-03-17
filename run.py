@@ -8,7 +8,8 @@
 
 # Get the user's choice for use_oop
 while True:
-    user_choice = input("Do you want to use OOP mode? (yes/no): ").strip().lower()
+    user_choice = input(
+        "Do you want to use OOP mode? (yes/no): ").strip().lower()
     if user_choice in ["yes", "y"]:
         use_oop = True
         print("OOP mode enabled.")
@@ -22,7 +23,7 @@ while True:
 
 
 if use_oop:
-     # --- NEW OOP CODE START ---
+    # --- NEW OOP CODE START ---
 
     import os
     import json
@@ -34,8 +35,7 @@ if use_oop:
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive.file",
         "https://www.googleapis.com/auth/drive"
-        ]
-
+    ]
 
     CREDS = Credentials.from_service_account_file('creds.json')
     SCOPED_CREDS = CREDS.with_scopes(SCOPE)
@@ -49,12 +49,13 @@ if use_oop:
     data = tasks.get_all_values()
 
     print("Running Task Manager in OOP mode...")
-    
+
     # Add the new functionality here
     class Task:
         """
         Represents an individual task with related attributes and methods.
         """
+
         def __init__(self, task_id, name, deadline, priority, status="Pending", notes="", category=None, project=None):
             self.task_id = task_id
             self.name = name
@@ -65,7 +66,7 @@ if use_oop:
             self.category = category
             self.project = project
             self.complete_date = None
-        
+
         def mark_as_completed(self):
             """Marks the task as completed and sets the completion date."""
             self.status = "Completed"
@@ -81,7 +82,7 @@ if use_oop:
             """String representation of a task."""
             return (f"Task(ID: {self.task_id}, Name: {self.name}, Deadline: {self.deadline}, "
                     f"Priority: {self.priority}, Status: {self.status}, Notes: {self.notes})")
-        
+
     class TaskManager:
         """
         Manages tasks and their interactions with the Task class and Google Sheets.
@@ -109,18 +110,19 @@ if use_oop:
             return None
 
         def validate_category_id(self, category_id):
-            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[1:]]  # Skip header
+            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[
+                1:]]  # Skip header
             if category_id not in category_ids:
                 return "Invalid category ID. Please choose from the available categories."
             return None
 
         def validate_project_id(self, project_id):
-            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]  # Skip header
+            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[
+                1:]]  # Skip header
             if project_id not in project_ids:
                 return "Invalid project ID. Please choose from the available projects."
             return None
 
- 
             # Validate name
             if not name or len(name) > 50:
                 return "Task name must be non-empty and 50 characters or less."
@@ -132,20 +134,22 @@ if use_oop:
                     return "Deadline cannot be in the past."
             except ValueError:
                 return "Invalid deadline format. Please use YYYY-MM-DD."
-            
+
             # Validate priority
             valid_priorities = ["High", "Medium", "Low"]
             if priority not in valid_priorities:
                 return "Invalid priority. Please choose from High, Medium, or Low."
 
             # Validate category and project IDs
-            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[1:]]
-            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]
+            category_ids = [row[0]
+                            for row in self.categories_sheet.get_all_values()[1:]]
+            project_ids = [row[0]
+                           for row in self.projects_sheet.get_all_values()[1:]]
             if category_id not in category_ids:
                 return "Invalid category ID."
             if project_id not in project_ids:
                 return "Invalid project ID."
-            
+
             return None  # No validation errors
 
         def __init__(self, tasks_sheet, projects_sheet, categories_sheet):
@@ -158,7 +162,8 @@ if use_oop:
             """
             Load tasks from the Google Sheets into Task objects.
             """
-            task_data = self.tasks_sheet.get_all_values()[1:]  # Skip header row
+            task_data = self.tasks_sheet.get_all_values()[
+                1:]  # Skip header row
             tasks = []
             for row in task_data:
                 tasks.append(Task(
@@ -208,7 +213,8 @@ if use_oop:
                 project,                    # Project ID
                 notes                       # Notes
             ])
-            print(f"Task '{name}' added successfully with ID {task_id} and saved to the Google Sheet.")
+            print(
+                f"Task '{name}' added successfully with ID {task_id} and saved to the Google Sheet.")
 
         def create_task_from_input(self):
             """
@@ -236,7 +242,8 @@ if use_oop:
 
             # Priority
             while True:
-                priority = input("Enter priority (High, Medium, Low): ").strip().capitalize()
+                priority = input(
+                    "Enter priority (High, Medium, Low): ").strip().capitalize()
                 error = self.validate_priority(priority)
                 if error:
                     print(f"Error: {error}")
@@ -244,7 +251,8 @@ if use_oop:
                     break
 
             # Category
-            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[1:]]  # Skip header row
+            category_ids = [row[0] for row in self.categories_sheet.get_all_values()[
+                1:]]  # Skip header row
             print(f"Available Categories: {', '.join(category_ids)}")
             while True:
                 category_id = input("Enter category ID: ").strip()
@@ -255,7 +263,8 @@ if use_oop:
                     break
 
             # Project
-            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]  # Skip header row
+            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[
+                1:]]  # Skip header row
             print(f"Available Projects: {', '.join(project_ids)}")
             while True:
                 project_id = input("Enter project ID: ").strip()
@@ -272,7 +281,8 @@ if use_oop:
                 notes = notes[:250]
 
             # Add the task after all inputs are validated
-            self.add_task(name, deadline, priority, category_id, project_id, notes)
+            self.add_task(name, deadline, priority,
+                          category_id, project_id, notes)
             print(f"Task '{name}' added successfully!")
 
         def view_tasks(self):
@@ -304,7 +314,7 @@ if use_oop:
             print("\n--- Tasks Sorted by Deadline ---")
             for task in sorted_tasks:
                 print(f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, "
-                    f"Priority: {task.priority}, Status: {task.status}")
+                      f"Priority: {task.priority}, Status: {task.status}")
 
         def update_task(self):
             """
@@ -319,12 +329,15 @@ if use_oop:
             print("\n--- Update a Task ---")
             print("Available Tasks:")
             for task in self.tasks:
-                print(f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, Priority: {task.priority}, Status: {task.status}")
+                print(
+                    f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, Priority: {task.priority}, Status: {task.status}")
 
             # Get Task ID from the user
             while True:
-                task_id = input("Enter the ID of the task you want to update: ").strip()
-                task = next((t for t in self.tasks if str(t.task_id) == task_id), None)
+                task_id = input(
+                    "Enter the ID of the task you want to update: ").strip()
+                task = next((t for t in self.tasks if str(
+                    t.task_id) == task_id), None)
                 if not task:
                     print("Task ID not found. Please try again.")
                 else:
@@ -350,31 +363,36 @@ if use_oop:
                             print(f"Error: {error}")
                         else:
                             task.name = new_name
-                            self.tasks_sheet.update_cell(int(task.task_id) + 1, 2, new_name)
+                            self.tasks_sheet.update_cell(
+                                int(task.task_id) + 1, 2, new_name)
                             print("Task name updated successfully!")
                             break
 
                 elif choice == "2":  # Update Deadline
                     while True:
-                        new_deadline = input("Enter the new deadline (YYYY-MM-DD): ").strip()
+                        new_deadline = input(
+                            "Enter the new deadline (YYYY-MM-DD): ").strip()
                         error = self.validate_deadline(new_deadline)
                         if error:
                             print(f"Error: {error}")
                         else:
                             task.deadline = new_deadline
-                            self.tasks_sheet.update_cell(int(task.task_id) + 1, 4, new_deadline)
+                            self.tasks_sheet.update_cell(
+                                int(task.task_id) + 1, 4, new_deadline)
                             print("Task deadline updated successfully!")
                             break
 
                 elif choice == "3":  # Update Priority
                     while True:
-                        new_priority = input("Enter the new priority (High, Medium, Low): ").strip().capitalize()
+                        new_priority = input(
+                            "Enter the new priority (High, Medium, Low): ").strip().capitalize()
                         error = self.validate_priority(new_priority)
                         if error:
                             print(f"Error: {error}")
                         else:
                             task.priority = new_priority
-                            self.tasks_sheet.update_cell(int(task.task_id) + 1, 7, new_priority)
+                            self.tasks_sheet.update_cell(
+                                int(task.task_id) + 1, 7, new_priority)
                             print("Task priority updated successfully!")
                             break
 
@@ -382,21 +400,26 @@ if use_oop:
                     while True:
                         new_notes = input("Enter the new notes: ").strip()
                         if len(new_notes) > 250:
-                            print("Warning: Notes exceeded 250 characters and will be truncated.")
+                            print(
+                                "Warning: Notes exceeded 250 characters and will be truncated.")
                             new_notes = new_notes[:250]
                         task.notes = new_notes
-                        self.tasks_sheet.update_cell(int(task.task_id) + 1, 10, new_notes)
+                        self.tasks_sheet.update_cell(
+                            int(task.task_id) + 1, 10, new_notes)
                         print("Task notes updated successfully!")
                         break
 
                 elif choice == "5":  # Update Status
                     while True:
-                        new_status = input("Enter the new status (Pending, In Progress, Completed): ").strip()
+                        new_status = input(
+                            "Enter the new status (Pending, In Progress, Completed): ").strip()
                         if new_status not in ["Pending", "In Progress", "Completed"]:
-                            print("Invalid status. Please choose from Pending, In Progress, or Completed.")
+                            print(
+                                "Invalid status. Please choose from Pending, In Progress, or Completed.")
                         else:
                             task.status = new_status
-                            self.tasks_sheet.update_cell(int(task.task_id) + 1, 6, new_status)
+                            self.tasks_sheet.update_cell(
+                                int(task.task_id) + 1, 6, new_status)
                             print("Task status updated successfully!")
                             break
 
@@ -420,11 +443,14 @@ if use_oop:
             print("\n--- Delete (Archive) a Task ---")
             print("Available Tasks:")
             for task in self.tasks:
-                print(f"ID: {task.task_id}, Name: {task.name}, Status: {task.status}")
+                print(
+                    f"ID: {task.task_id}, Name: {task.name}, Status: {task.status}")
 
             # Get Task ID from the user
-            task_id = input("Enter the ID of the task you want to delete: ").strip()
-            task = next((t for t in self.tasks if str(t.task_id) == task_id), None)
+            task_id = input(
+                "Enter the ID of the task you want to delete: ").strip()
+            task = next((t for t in self.tasks if str(
+                t.task_id) == task_id), None)
 
             if not task:
                 print("Task ID not found. Please try again.")
@@ -436,11 +462,11 @@ if use_oop:
                 task.task_id,  # Task ID
                 task.name,     # Task Name
                 datetime.now().strftime("%Y-%m-%d"),  # Deletion Date
-                task.deadline, # Deadline
+                task.deadline,  # Deadline
                 task.complete_date if task.complete_date else "",  # Complete Date
                 task.status,   # Status
-                task.priority, # Priority
-                task.category, # Category ID
+                task.priority,  # Priority
+                task.category,  # Category ID
                 task.project,  # Project ID
                 task.notes     # Notes
             ])
@@ -450,13 +476,15 @@ if use_oop:
             for i, row in enumerate(task_rows):
                 if row[0] == task.task_id:  # Match the Task ID
                     self.tasks_sheet.delete_rows(i + 1)  # Row index is 1-based
-                    print(f"Task '{task.name}' has been removed from the 'Tasks' tab.")
+                    print(
+                        f"Task '{task.name}' has been removed from the 'Tasks' tab.")
                     break
 
             # Remove the task from the in-memory list
             self.tasks.remove(task)
 
-            print(f"Task '{task.name}' has been archived and moved to the 'Deleted' tab.")
+            print(
+                f"Task '{task.name}' has been archived and moved to the 'Deleted' tab.")
 
         def mark_task_completed(self):
             """
@@ -471,11 +499,14 @@ if use_oop:
             print("Available Tasks:")
             for task in self.tasks:
                 if task.status != "Completed":  # Only show incomplete tasks
-                    print(f"ID: {task.task_id}, Name: {task.name}, Status: {task.status}")
+                    print(
+                        f"ID: {task.task_id}, Name: {task.name}, Status: {task.status}")
 
             # Get Task ID from the user
-            task_id = input("Enter the ID of the task you want to mark as completed: ").strip()
-            task = next((t for t in self.tasks if str(t.task_id) == task_id), None)
+            task_id = input(
+                "Enter the ID of the task you want to mark as completed: ").strip()
+            task = next((t for t in self.tasks if str(
+                t.task_id) == task_id), None)
 
             if not task:
                 print("Task ID not found. Please try again.")
@@ -490,10 +521,13 @@ if use_oop:
 
             # Update the Google Sheet
             task_row = int(task.task_id) + 1  # Account for header row
-            self.tasks_sheet.update_cell(task_row, 6, "Completed")  # Update Status column
-            self.tasks_sheet.update_cell(task_row, 5, task.complete_date)  # Update Complete Date column
+            self.tasks_sheet.update_cell(
+                task_row, 6, "Completed")  # Update Status column
+            # Update Complete Date column
+            self.tasks_sheet.update_cell(task_row, 5, task.complete_date)
 
-            print(f"Task '{task.name}' has been marked as completed successfully!")
+            print(
+                f"Task '{task.name}' has been marked as completed successfully!")
 
         def view_tasks_by_project(self):
             """
@@ -506,18 +540,21 @@ if use_oop:
             # Display available projects
             print("\n--- View Tasks by Project ---")
             print("Available Projects:")
-            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[1:]]  # Skip header
+            project_ids = [row[0] for row in self.projects_sheet.get_all_values()[
+                1:]]  # Skip header
             for row in self.projects_sheet.get_all_values()[1:]:  # Skip header
                 print(f"ID: {row[0]}, Name: {row[1]}")
 
             # Get the project ID from the user
-            project_id = input("Enter the Project ID to view tasks for: ").strip()
+            project_id = input(
+                "Enter the Project ID to view tasks for: ").strip()
             if project_id not in project_ids:
                 print("Invalid Project ID. Please try again.")
                 return
 
             # Filter tasks by project ID
-            filtered_tasks = [task for task in self.tasks if task.project == project_id]
+            filtered_tasks = [
+                task for task in self.tasks if task.project == project_id]
 
             if not filtered_tasks:
                 print(f"No tasks found for Project ID {project_id}.")
@@ -525,8 +562,7 @@ if use_oop:
                 print(f"\n--- Tasks for Project ID {project_id} ---")
                 for task in filtered_tasks:
                     print(f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, "
-                        f"Status: {task.status}, Priority: {task.priority}, Notes: {task.notes}")
-
+                          f"Status: {task.status}, Priority: {task.priority}, Notes: {task.notes}")
 
     # Initialize the TaskManager
     manager = TaskManager(tasks, projects, categories)
@@ -562,8 +598,6 @@ if use_oop:
             break
         else:
             print("Option not yet implemented. Stay tuned!")
-    
-
 
 
 else:
@@ -581,8 +615,7 @@ else:
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive.file",
         "https://www.googleapis.com/auth/drive"
-        ]
-
+    ]
 
     CREDS = Credentials.from_service_account_file('creds.json')
     SCOPED_CREDS = CREDS.with_scopes(SCOPE)
@@ -616,13 +649,13 @@ else:
             return "Deadline cannot be in the past."
         return None
 
-    # Helper function for validation of proirity 
+    # Helper function for validation of proirity
     def validate_priority(priority):
         if priority not in ["High", "Medium", "Low"]:
             return "Priority must be 'High', 'Medium', or 'Low'."
         return None
 
-    # Helper function for validation of category 
+    # Helper function for validation of category
     def validate_category(category, valid_categories):
         if category not in valid_categories:
             return "Invalid category ID."
@@ -653,8 +686,10 @@ else:
         projects_data = projects.get_all_values()[1:]  # Skip header row
 
         # Prepare category and project options
-        category_options = ", ".join([f"{row[0]}: {row[1]}" for row in categories_data])
-        project_options = ", ".join([f"{row[0]}: {row[1]}" for row in projects_data])
+        category_options = ", ".join(
+            [f"{row[0]}: {row[1]}" for row in categories_data])
+        project_options = ", ".join(
+            [f"{row[0]}: {row[1]}" for row in projects_data])
 
         print(f"Available Categories: {category_options}")
         print(f"Available Projects: {project_options}")
@@ -675,12 +710,14 @@ else:
             if error:
                 print(f"Error: {error}")
             else:
-                deadline = datetime.strptime(deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
+                deadline = datetime.strptime(
+                    deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
                 break
 
         # Validate Priority
         while True:
-            priority = input("Priority (High, Medium, Low): ").strip().capitalize()
+            priority = input(
+                "Priority (High, Medium, Low): ").strip().capitalize()
             error = validate_priority(priority)
             if error:
                 print(f"Error: {error}")
@@ -690,7 +727,8 @@ else:
         # Validate Category
         valid_categories = [row[0] for row in categories_data]
         while True:
-            category = input(f"Category (Choose ID from: {category_options}): ").strip()
+            category = input(
+                f"Category (Choose ID from: {category_options}): ").strip()
             error = validate_category(category, valid_categories)
             if error:
                 print(f"Error: {error}")
@@ -700,7 +738,8 @@ else:
         # Validate Project
         valid_projects = [row[0] for row in projects_data]
         while True:
-            project = input(f"Project (Choose ID from: {project_options}): ").strip()
+            project = input(
+                f"Project (Choose ID from: {project_options}): ").strip()
             error = validate_project(project, valid_projects)
             if error:
                 print(f"Error: {error}")
@@ -724,10 +763,12 @@ else:
 
         # Validate and format the deadline
         try:
-            deadline = datetime.strptime(deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
+            deadline = datetime.strptime(
+                deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
         except ValueError:
             try:
-                deadline = datetime.strptime(deadline, "%d-%m-%Y").strftime("%Y-%m-%d")
+                deadline = datetime.strptime(
+                    deadline, "%d-%m-%Y").strftime("%Y-%m-%d")
             except ValueError:
                 print("Invalid date format. Task creation aborted.")
                 return
@@ -769,7 +810,8 @@ else:
         # Filter tasks with deadlines and convert the deadline to datetime objects
         upcoming_tasks = []
         for row in task_data:
-            if row[3]:  # Check if a deadline exists (index 3 in your task structure)
+            # Check if a deadline exists (index 3 in your task structure)
+            if row[3]:
                 try:
                     # Try parsing the date in the expected format
                     deadline_date = datetime.strptime(row[3], "%Y-%m-%d")
@@ -779,7 +821,8 @@ else:
                         deadline_date = datetime.strptime(row[3], "%d-%m-%Y")
                     except ValueError:
                         # Skip invalid date formats
-                        print(f"Invalid date format for task '{row[1]}'. Skipping...")
+                        print(
+                            f"Invalid date format for task '{row[1]}'. Skipping...")
                         continue
 
                 # Append the valid task
@@ -801,7 +844,7 @@ else:
             for task in sorted_tasks:
                 deadline_str = task["Deadline"].strftime("%Y-%m-%d")
                 print(f"- ID: {task['ID']}, Name: {task['Name']}, Deadline: {deadline_str}, "
-                    f"Priority: {task['Priority']}, Status: {task['Status']}, Notes: {task['Notes']}")
+                      f"Priority: {task['Priority']}, Status: {task['Status']}, Notes: {task['Notes']}")
         else:
             print("No tasks with valid deadlines found.")
 
@@ -824,25 +867,29 @@ else:
         for row in task_data:
             # Parse the deadline and complete date to handle various formats
             try:
-                deadline = datetime.strptime(row[3], "%Y-%m-%d").strftime("%Y-%m-%d")
+                deadline = datetime.strptime(
+                    row[3], "%Y-%m-%d").strftime("%Y-%m-%d")
             except ValueError:
                 try:
-                    deadline = datetime.strptime(row[3], "%d-%m-%Y").strftime("%d-%m-%Y")
+                    deadline = datetime.strptime(
+                        row[3], "%d-%m-%Y").strftime("%d-%m-%Y")
                 except ValueError:
                     deadline = "Invalid Format"
 
             try:
-                complete_date = datetime.strptime(row[4], "%Y-%m-%d").strftime("%Y-%m-%d")
+                complete_date = datetime.strptime(
+                    row[4], "%Y-%m-%d").strftime("%Y-%m-%d")
             except ValueError:
                 try:
-                    complete_date = datetime.strptime(row[4], "%d-%m-%Y").strftime("%d-%m-%Y")
+                    complete_date = datetime.strptime(
+                        row[4], "%d-%m-%Y").strftime("%d-%m-%Y")
                 except ValueError:
                     complete_date = "Invalid Format"
 
             # Print task details
             print(f"- ID: {row[0]}, Name: {row[1]}, Created: {row[2]}, Deadline: {deadline}, "
-                f"Complete Date: {complete_date}, Status: {row[5]}, Priority: {row[6]}, "
-                f"Category: {row[7]}, Project: {row[8]}, Notes: {row[9]}")
+                  f"Complete Date: {complete_date}, Status: {row[5]}, Priority: {row[6]}, "
+                  f"Category: {row[7]}, Project: {row[8]}, Notes: {row[9]}")
 
     # Update task
     def update_task():
@@ -860,14 +907,17 @@ else:
         # Display all tasks
         print("\nAvailable Tasks:")
         for row in task_data[1:]:
-            print(f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
+            print(
+                f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
 
         # Ask the user for the task ID to update
-        task_id = input("\nEnter the ID of the task you want to update: ").strip()
+        task_id = input(
+            "\nEnter the ID of the task you want to update: ").strip()
 
         # Find the task row based on the ID
         task_row = None
-        for index, row in enumerate(task_data[1:], start=2):  # Start from row 2 in the sheet
+        # Start from row 2 in the sheet
+        for index, row in enumerate(task_data[1:], start=2):
             if row[0] == task_id:
                 task_row = index
                 break
@@ -894,43 +944,52 @@ else:
                 if error:
                     print(f"Error: {error}")
                 else:
-                    tasks.update_cell(task_row, 2, new_task_name)  # Column 2 is 'Task Name'
+                    # Column 2 is 'Task Name'
+                    tasks.update_cell(task_row, 2, new_task_name)
                     print("Task name updated successfully!")
                     break
 
         elif choice == "2":
             # Validate and update Status
             while True:
-                new_status = input("Enter new status (Pending/In Progress/Completed): ").strip()
+                new_status = input(
+                    "Enter new status (Pending/In Progress/Completed): ").strip()
                 if new_status not in ["Pending", "In Progress", "Completed"]:
-                    print("Error: Status must be 'Pending', 'In Progress', or 'Completed'.")
+                    print(
+                        "Error: Status must be 'Pending', 'In Progress', or 'Completed'.")
                 else:
-                    tasks.update_cell(task_row, 6, new_status)  # Column 6 is 'Status'
+                    # Column 6 is 'Status'
+                    tasks.update_cell(task_row, 6, new_status)
                     print("Task status updated successfully!")
                     break
 
         elif choice == "3":
             # Validate and update Deadline
             while True:
-                new_deadline = input("Enter new deadline (YYYY-MM-DD or DD-MM-YYYY): ").strip()
+                new_deadline = input(
+                    "Enter new deadline (YYYY-MM-DD or DD-MM-YYYY): ").strip()
                 error = validate_deadline(new_deadline)
                 if error:
                     print(f"Error: {error}")
                 else:
-                    new_deadline = datetime.strptime(new_deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
-                    tasks.update_cell(task_row, 4, new_deadline)  # Column 4 is 'Deadline'
+                    new_deadline = datetime.strptime(
+                        new_deadline, "%Y-%m-%d").strftime("%Y-%m-%d")
+                    # Column 4 is 'Deadline'
+                    tasks.update_cell(task_row, 4, new_deadline)
                     print("Task deadline updated successfully!")
                     break
 
         elif choice == "4":
             # Validate and update Priority
             while True:
-                new_priority = input("Enter new priority (High/Medium/Low): ").strip().capitalize()
+                new_priority = input(
+                    "Enter new priority (High/Medium/Low): ").strip().capitalize()
                 error = validate_priority(new_priority)
                 if error:
                     print(f"Error: {error}")
                 else:
-                    tasks.update_cell(task_row, 7, new_priority)  # Column 7 is 'Priority'
+                    # Column 7 is 'Priority'
+                    tasks.update_cell(task_row, 7, new_priority)
                     print("Task priority updated successfully!")
                     break
 
@@ -940,7 +999,8 @@ else:
             error = validate_notes(new_notes)
             if error:
                 print(f"Warning: {error}")
-                new_notes = new_notes[:250]  # Trim to 250 characters if too long
+                # Trim to 250 characters if too long
+                new_notes = new_notes[:250]
             tasks.update_cell(task_row, 10, new_notes)  # Column 10 is 'Notes'
             print("Task notes updated successfully!")
 
@@ -959,18 +1019,21 @@ else:
         if len(task_data) <= 1:  # Check if there are no tasks
             print("No tasks found to delete.")
             return
-        
+
         # Display all tasks
         print("\nAvailable Tasks:")
         for row in task_data[1:]:
-            print(f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
-        
+            print(
+                f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
+
         # Ask user for the task ID to delete
-        task_id = input("\nEnter the ID of the task you want to delete: ").strip()
+        task_id = input(
+            "\nEnter the ID of the task you want to delete: ").strip()
 
         # Find the task row based on the ID
         task_row = None
-        for index, row in enumerate(task_data[1:], start=2):  # Start from row 2 in the sheet
+        # Start from row 2 in the sheet
+        for index, row in enumerate(task_data[1:], start=2):
             if row[0] == task_id:
                 task_row = index
                 break
@@ -978,7 +1041,7 @@ else:
         if not task_row:
             print("Task ID not found.")
             return
-        
+
         # Fetch the task details
         task_details = tasks.row_values(task_row)
 
@@ -988,7 +1051,8 @@ else:
 
         # Delete the task from the 'tasks' sheet
         tasks.delete_rows(task_row)
-        print(f"Task '{task_details[1]}' (ID: {task_id}) has been successfully archived in the 'deleted' tab.")
+        print(
+            f"Task '{task_details[1]}' (ID: {task_id}) has been successfully archived in the 'deleted' tab.")
 
     # Mark tasks as completed
     def mark_task_completed():
@@ -1006,14 +1070,17 @@ else:
         # Display all tasks
         print("\nAvailable Tasks:")
         for row in task_data[1:]:
-            print(f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
-        
+            print(
+                f"- ID: {row[0]}, Name: {row[1]}, Status: {row[5]}, Deadline: {row[3]}")
+
         # Ask user for the task ID to mark as completed
-        task_id = input("\nEnter the ID of the task you want to mark as completed: ").strip()
+        task_id = input(
+            "\nEnter the ID of the task you want to mark as completed: ").strip()
 
         # Find the task row based on the ID
         task_row = None
-        for index, row in enumerate(task_data[1:], start=2):  # Start from row 2 in the sheet
+        # Start from row 2 in the sheet
+        for index, row in enumerate(task_data[1:], start=2):
             if row[0] == task_id:
                 task_row = index
                 break
@@ -1021,15 +1088,17 @@ else:
         if not task_row:
             print("Task ID not found.")
             return
-        
+
         # Update the task's status to 'Completed' and add the completion date
         complete_date = datetime.now().strftime("%Y-%m-%d")
-        tasks.update_cell(task_row, 5, complete_date)  # Column 5 is 'Complete Date'
+        # Column 5 is 'Complete Date'
+        tasks.update_cell(task_row, 5, complete_date)
         tasks.update_cell(task_row, 6, "Completed")   # Column 6 is 'Status'
         print(f"Task (ID: {task_id}) has been marked as 'Completed'.")
 
         # Ask if the user wants to move the task to the 'completed' sheet
-        move_task = input("Do you want to move this task to the 'completed' tab? (yes/no): ").strip().lower()
+        move_task = input(
+            "Do you want to move this task to the 'completed' tab? (yes/no): ").strip().lower()
         if move_task == "yes":
             # Fetch the task details
             task_details = tasks.row_values(task_row)
@@ -1040,7 +1109,8 @@ else:
 
             # Delete the task from the 'tasks' sheet
             tasks.delete_rows(task_row)
-            print(f"Task '{task_details[1]}' (ID: {task_id}) has been moved to the 'completed' tab.")
+            print(
+                f"Task '{task_details[1]}' (ID: {task_id}) has been moved to the 'completed' tab.")
         else:
             print("Task remains in the 'tasks' sheet as 'Completed'.")
 
@@ -1064,7 +1134,8 @@ else:
             print(f"- ID: {row[0]}, Name: {row[1]}")
 
         # Ask the user to select a project by ID
-        project_id = input("\nEnter the ID of the project to view its tasks: ").strip()
+        project_id = input(
+            "\nEnter the ID of the project to view its tasks: ").strip()
 
         # Fetch all task data (excluding the header row)
         task_data = tasks.get_all_values()[1:]  # Skip header row
@@ -1077,7 +1148,7 @@ else:
             print(f"\nTasks for Project ID {project_id}:")
             for task in filtered_tasks:
                 print(f"- ID: {task[0]}, Name: {task[1]}, Deadline: {task[3]}, "
-                    f"Status: {task[5]}, Priority: {task[6]}, Notes: {task[9]}")
+                      f"Status: {task[5]}, Priority: {task[6]}, Notes: {task[9]}")
         else:
             print(f"No tasks found for Project ID {project_id}.")
 
@@ -1121,10 +1192,7 @@ else:
             else:
                 print("Invalid input. Please enter a number between 1 and 7.")
 
-
     # Entry point for the program
     main()
 
     # --- OLD CODE END ---
-
-
