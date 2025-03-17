@@ -101,41 +101,60 @@ class TaskManager:
             return "Invalid category ID. Please choose from the available categories."
         return None
 
-    def validate_project_id(self, project_id):
+    def validate_project_id(self, project_id, name=None, deadline=None, priority=None, category_id=None):
+        """
+        Validates various aspects of a task, including project ID, task name, deadline, priority, 
+        and category ID.
+
+        Args:
+            project_id (str): The project ID to validate.
+            name (str, optional): The name of the task to validate. Defaults to None.
+            deadline (str, optional): The deadline for the task in the format YYYY-MM-DD. Defaults to None.
+            priority (str, optional): The priority level of the task ('High', 'Medium', 'Low'). Defaults to None.
+            category_id (str, optional): The category ID to validate. Defaults to None.
+
+        Returns:
+            str: An error message if any validation fails, or None if all validations succeed.
+        """
+
+        # Fetch valid project IDs and category IDs
         project_ids = [row[0] for row in self.projects_sheet.get_all_values()[
-            1:]]  # Skip header
+            1:]]  # Skip header row
+        category_ids = [row[0] for row in self.categories_sheet.get_all_values()[
+            1:]]  # Skip header row
+
+        # Validate project ID
         if project_id not in project_ids:
             return "Invalid project ID. Please choose from the available projects."
-        # return None
 
-        # Validate name
-        if not name or len(name) > 50:
-            return "Task name must be non-empty and 50 characters or less."
+        # Validate name if provided
+        if name is not None:
+            if not name.strip() or len(name) > 50:
+                return "Task name must be non-empty and 50 characters or less."
 
-        # Validate deadline
-        try:
-            deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
-            if deadline_date < datetime.now():
-                return "Deadline cannot be in the past."
-        except ValueError:
-            return "Invalid deadline format. Please use YYYY-MM-DD."
+        # Validate deadline if provided
+        if deadline is not None:
+            try:
+                deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
+                if deadline_date < datetime.now():
+                    return "Deadline cannot be in the past."
+            except ValueError:
+                return "Invalid deadline format. Please use YYYY-MM-DD."
 
-        # Validate priority
-        valid_priorities = ["High", "Medium", "Low"]
-        if priority not in valid_priorities:
-            return "Invalid priority. Please choose from High, Medium, or Low."
+        # Validate priority if provided
+        if priority is not None:
+            valid_priorities = ["High", "Medium", "Low"]
+            if priority not in valid_priorities:
+                return "Invalid priority. Please choose from High, Medium, or Low."
 
-        # Validate category and project IDs
-        category_ids = [row[0]
-                        for row in self.categories_sheet.get_all_values()[1:]]
-        project_ids = [row[0]
-                       for row in self.projects_sheet.get_all_values()[1:]]
-        if category_id not in category_ids:
-            return "Invalid category ID."
-        if project_id not in project_ids:
-            return "Invalid project ID."
+        # Validate category ID if provided
+        if category_id is not None:
+            if category_id not in category_ids:
+                return "Invalid category ID."
 
-        return None  # No validation errors
+        # If all validations pass
+        return None
+
 
     def load_tasks(self):
         """
