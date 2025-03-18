@@ -238,7 +238,7 @@ class TaskManager:
         project_dict = {row[0]: row[1]
                         # Create a dictionary of ID: Name
                         for row in project_data}
-        return project_dict.get(project_id, "Unknown Project")
+        return project_dict.get(project_id, "Single task")
 
     def get_category_name(self, category_id):
         """
@@ -429,27 +429,28 @@ class TaskManager:
     def view_tasks(self):
         """
         Display all tasks in a table-like format with field names as the header.
+        Excludes notes and category fields, and adds ': ' after the project name if present.
         """
         if not self.tasks:
             print("No tasks found.")
             return
 
         # Define the header row for the table
-        headers = [
-            "ID", "Name", "Deadline", "Priority", "Status",
-            "Notes", "Category", "Project"
-        ]
+        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
 
         # Print the header row
-        print(f"{headers[0]:<5} {headers[1]:<20} {headers[2]:<12} {headers[3]:<10} {headers[4]:<12} "
-              f"{headers[5]:<25} {headers[6]:<15} {headers[7]:<15}")
-        print("-" * 120)
+        print(
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+        print("-" * 130)
 
         # Print each task as a row in the table
         for task in self.tasks:
-            print(f"{task.task_id:<5} {task.name:<20} {task.deadline:<12} {task.priority:<10} "
-                  f"{task.status:<12} {task.notes[:25]:<25} {task.category['name']:<15} "
-                  f"{task.project['name']:<15}")
+            project_display = f"{task.project['name']}: " if task.project["name"] else ""
+            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
+                  f"{project_display:<25} {task.name:<40}")
+
+
+
 
 
     def review_deadlines(self):
