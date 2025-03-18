@@ -124,7 +124,6 @@ class TaskManager:
             return "Task name must be non-empty and 50 characters or less."
         return None
 
-
     def validate_deadline(self, deadline):
         """
         Validates the task deadline to ensure it is in the correct date format (YYYY-MM-DD)
@@ -141,7 +140,6 @@ class TaskManager:
             return "Invalid deadline format. Please use YYYY-MM-DD."
         return None
 
-
     def validate_priority(self, priority):
         """
         Validates the task priority to ensure it is one of the allowed values:
@@ -154,7 +152,6 @@ class TaskManager:
         if priority not in valid_priorities:
             return "Invalid priority. Please choose from High, Medium, or Low."
         return None
-
 
     def validate_category_id(self, category_id):
         """
@@ -229,13 +226,34 @@ class TaskManager:
         # If all validations pass
         return None
 
+    def get_project_name(self, project_id):
+        """
+        Fetches the project name corresponding to a given project ID.
+        Args: project_id (str): The ID of the project.
+        Returns: str: The name of the project, or 'Unknown Project' if the ID is not found.
+        """
+        project_data = self.projects_sheet.get_all_values()[1:]  # Skip header
+        project_dict = {row[0]: row[1]
+                        # Create a dictionary of ID: Name
+                        for row in project_data}
+        return project_dict.get(project_id, "Unknown Project")
+
+    def get_category_name(self, category_id):
+        """
+        Fetches the category name corresponding to a given category ID.
+        Args: category_id (str): The ID of the category.
+        Returns: str: The name of the category, or 'Unknown Category' if the ID is not found.
+        """
+        category_data = self.categories_sheet.get_all_values()[
+            1:]  # Skip header
+        # Create a dictionary of ID: Name
+        category_dict = {row[0]: row[1] for row in category_data}
+        return category_dict.get(category_id, "Unknown Category")
 
     def load_tasks(self):
         """
         Load tasks from the Google Sheets into Task objects.
-        
-        Returns:
-            list: A list of Task objects populated with data from the Google Sheets.
+        Returns: list: A list of Task objects populated with data from the Google Sheets.
         """
         task_data = self.tasks_sheet.get_all_values()[1:]  # Skip header row
         loaded_tasks = []  # Renamed the local variable to avoid conflict with outer 'tasks'
@@ -265,21 +283,25 @@ class TaskManager:
             new_id += 1  # Increment until an unused ID is found
         return str(new_id)
 
-    def add_task(self, name, deadline, priority, category, project, notes=""):
+    def add_task(self, name, deadline, priority, category_id, project_id, notes=""):
         """
-        Create a new task and add it to the task list, ensuring a unique task ID is assigned.
+        Create a new task and add it to the task list, assuming all inputs have been validated.
 
         Args:
             name (str): Name of the task.
             deadline (str): Deadline of the task in YYYY-MM-DD format.
             priority (str): Task priority ('High', 'Medium', 'Low').
-            category (str): Task category ID.
-            project (str): Task project ID.
+            category_id (str): Task category ID.
+            project_id (str): Task project ID.
             notes (str): Optional notes for the task. Default is an empty string.
 
         Returns:
             None
         """
+        # Fetch category and project names
+        category_name = self.get_category_name(category_id)
+        project_name = self.get_project_name(project_id)
+
         # Generate a unique task ID
         new_task_id = self.generate_unique_task_id()
 
@@ -291,19 +313,21 @@ class TaskManager:
             priority=priority,
             status="Pending",  # Default status
             notes=notes,
-            category=category,
-            project=project
+            category={"id": category_id, "name": category_name},
+            project={"id": project_id, "name": project_name}
         )
 
         # Add the new task to the task list
         self.tasks.append(new_task)
 
-        # Optionally sync with Google Sheets or other storage
+        # Sync with Google Sheets or other storage
         self.tasks_sheet.append_row([
             new_task.task_id, new_task.name, "", new_task.deadline, "", new_task.status,
-            new_task.priority, new_task.category, new_task.project, new_task.notes
+            new_task.priority, new_task.category["name"], new_task.project["name"], new_task.notes
         ])
-        print(f"Task '{name}' added successfully with ID {new_task_id}.")
+        print(f"Task '{name}' added successfully with ID {new_task_id}, "
+              f"Category '{category_name}', and Project '{project_name}'.")
+
 
 
     def create_task_from_input(self):
