@@ -2,11 +2,12 @@
 # You can delete these comments, but do not change the name of this file
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
 
+from datetime import datetime
+
 # import os
 # import json
 import gspread
 from google.oauth2.service_account import Credentials
-from datetime import datetime
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -159,12 +160,15 @@ class TaskManager:
     def load_tasks(self):
         """
         Load tasks from the Google Sheets into Task objects.
+        
+        Returns:
+            list: A list of Task objects populated with data from the Google Sheets.
         """
-        task_data = self.tasks_sheet.get_all_values()[
-            1:]  # Skip header row
-        tasks = []
+        task_data = self.tasks_sheet.get_all_values()[1:]  # Skip header row
+        loaded_tasks = []  # Renamed the local variable to avoid conflict with outer 'tasks'
+
         for row in task_data:
-            tasks.append(Task(
+            loaded_tasks.append(Task(
                 task_id=row[0],
                 name=row[1],
                 deadline=row[3],
@@ -174,7 +178,9 @@ class TaskManager:
                 category=row[7],
                 project=row[8]
             ))
-        return tasks
+
+        return loaded_tasks
+
 
     def add_task(self, name, deadline, priority, category, project, notes=""):
         """
