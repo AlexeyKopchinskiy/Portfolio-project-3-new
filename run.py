@@ -65,7 +65,15 @@ class Task:
     Represents an individual task with related attributes and methods.
     """
 
-    def __init__(self, task_id, name, deadline, priority, status="Pending", notes="", category=None, project=None):
+    def __init__(self,
+                 task_id,
+                 name,
+                 deadline,
+                 priority,
+                 status="Pending",
+                 notes="",
+                 category=None,
+                 project=None):
         self.task_id = task_id
         self.name = name
         self.deadline = deadline
@@ -106,11 +114,25 @@ class TaskManager:
 
     # Helper methods for data validation
     def validate_task_name(self, name):
+        """
+        Validates the task name to ensure it is not empty and does not exceed 50 characters.
+        Args: name (str): The name of the task to validate.
+        Returns: str: An error message if the task name is invalid, 
+            or None if the validation succeeds.
+        """
         if not name or len(name) > 50:
             return "Task name must be non-empty and 50 characters or less."
         return None
 
+
     def validate_deadline(self, deadline):
+        """
+        Validates the task deadline to ensure it is in the correct date format (YYYY-MM-DD)
+        and not set in the past.
+        Args: deadline (str): The deadline date as a string in the format YYYY-MM-DD.
+        Returns: str: An error message if the deadline is invalid, 
+            or None if the validation succeeds.
+        """
         try:
             deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
             if deadline_date < datetime.now():
@@ -119,31 +141,52 @@ class TaskManager:
             return "Invalid deadline format. Please use YYYY-MM-DD."
         return None
 
+
     def validate_priority(self, priority):
+        """
+        Validates the task priority to ensure it is one of the allowed values:
+        'High', 'Medium', or 'Low'.
+        Args: priority (str): The priority level of the task.
+        Returns: str: An error message if the priority is invalid, 
+            or None if the validation succeeds.
+        """
         valid_priorities = ["High", "Medium", "Low"]
         if priority not in valid_priorities:
             return "Invalid priority. Please choose from High, Medium, or Low."
         return None
 
+
     def validate_category_id(self, category_id):
+        """
+        Validates the category ID to ensure it exists within the valid categories
+        retrieved from the categories sheet.
+        Args: category_id (str): The ID of the category to validate.
+        Returns: str: An error message if the category ID is invalid, 
+            or None if the validation succeeds.
+        """
         category_ids = [row[0] for row in self.categories_sheet.get_all_values()[
-            1:]]  # Skip header
+            1:]]  # Skip header row
         if category_id not in category_ids:
             return "Invalid category ID. Please choose from the available categories."
         return None
 
-    def validate_project_id(self, project_id, name=None, deadline=None, priority=None, category_id=None):
+    def validate_project_id(self,
+                            project_id,
+                            name=None,
+                            deadline=None,
+                            priority=None,
+                            category_id=None):
         """
         Validates various aspects of a task, including project ID, task name, deadline, priority, 
         and category ID.
-
         Args:
             project_id (str): The project ID to validate.
             name (str, optional): The name of the task to validate. Defaults to None.
-            deadline (str, optional): The deadline for the task in the format YYYY-MM-DD. Defaults to None.
-            priority (str, optional): The priority level of the task ('High', 'Medium', 'Low'). Defaults to None.
+            deadline (str, optional): The deadline for the task in the format YYYY-MM-DD. 
+                Defaults to None.
+            priority (str, optional): The priority level of the task ('High', 'Medium', 'Low'). 
+                Defaults to None.
             category_id (str, optional): The category ID to validate. Defaults to None.
-
         Returns:
             str: An error message if any validation fails, or None if all validations succeed.
         """
@@ -364,7 +407,8 @@ class TaskManager:
         print("Available Tasks:")
         for task in self.tasks:
             print(
-                f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, Priority: {task.priority}, Status: {task.status}")
+                f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, \
+                    Priority: {task.priority}, Status: {task.status}")
 
         # Get Task ID from the user
         while True:
@@ -449,7 +493,8 @@ class TaskManager:
                         "Enter the new status (Pending, In Progress, Completed): ").strip()
                     if new_status not in ["Pending", "In Progress", "Completed"]:
                         print(
-                            "Invalid status. Please choose from Pending, In Progress, or Completed.")
+                            "Invalid status. Please choose from Pending, \
+                                In Progress, or Completed.")
                     else:
                         task.status = new_status
                         self.tasks_sheet.update_cell(
