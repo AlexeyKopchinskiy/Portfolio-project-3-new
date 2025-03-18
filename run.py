@@ -512,14 +512,14 @@ class TaskManager:
 
     def update_task(self):
         """
-        Update an existing task by modifying its attributes, with a retry mechanism
-        for invalid inputs. Changes are saved to both the in-memory list and Google Sheets.
+        Update an existing task by modifying its attributes.
+        Changes are saved to both the in-memory list and Google Sheets.
         """
         if not self.tasks:
             print("No tasks available to update.")
             return
 
-        # Display tasks in a table-like format
+        # Display tasks in a formatted table-like format (like Option 3)
         print("\n--- Update a Task ---")
         headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
         print(
@@ -556,8 +556,17 @@ class TaskManager:
 
             if loaded_choice == "1":  # Update Task Name
                 while True:
-                    new_name = input("Enter the new task name: ").strip()
-                    error = self.validate_task_name(new_name)
+                    print(
+                        "Enter the new task name or type 'cancel' to go back to the task list.")
+                    new_name = input("New task name: ").strip()
+
+                    if new_name.lower() == "cancel":  # Check for cancellation
+                        print(
+                            "Task name update canceled. Returning to the task list...")
+                        return  # Exit this operation and go back to the main task list
+
+                    error = self.validate_task_name(
+                        new_name)  # Validate task name
                     if error:
                         print(f"Error: {error}")
                     else:
@@ -597,16 +606,27 @@ class TaskManager:
 
             elif loaded_choice == "4":  # Update Notes
                 while True:
-                    new_notes = input("Enter the new notes: ").strip()
+                    print(
+                        "Enter the new notes or type 'cancel' to go back to the task list.")
+                    new_notes = input("New notes: ").strip()
+
+                    if new_notes.lower() == "cancel":  # Check for cancellation
+                        print("Notes update canceled. Returning to the task list...")
+                        return  # Exit the notes update operation and return to the main task list
+
+                    # Check for maximum length
                     if len(new_notes) > 250:
                         print(
                             "Warning: Notes exceeded 250 characters and will be truncated.")
                         new_notes = new_notes[:250]
+
+                    # Update the task and the sheet
                     task.notes = new_notes
                     self.tasks_sheet.update_cell(
                         int(task.task_id) + 1, 10, new_notes)
                     print("Task notes updated successfully!")
                     break
+
 
             elif loaded_choice == "5":  # Update Status
                 while True:
@@ -628,6 +648,7 @@ class TaskManager:
 
             # Exit the update loop after successful editing
             break
+
 
 
     def delete_task(self):
@@ -776,38 +797,47 @@ class TaskManager:
                   f"{project_display:<25} {task.name:<40}")
 
 
-
 # Initialize the TaskManager
-manager = TaskManager(tasks, projects, categories)
+def main():
+    """
+    Entry point for the Task Manager application.
+    """
+    # Initialize the TaskManager
+    manager = TaskManager(tasks, projects, categories)
 
-while True:
-    print("\nPlease select an option:")
-    print("1 - Add a new task")
-    print("2 - Review deadlines")
-    print("3 - View tasks list")
-    print("4 - Update a task")
-    print("5 - Delete (archive) a task")
-    print("6 - Mark a task as completed")
-    print("7 - View tasks by project")
-    print("8 - Exit")
+    while True:
+        print("\nPlease select an option:")
+        print("1 - Add a new task")
+        print("2 - Review deadlines")
+        print("3 - View tasks list")
+        print("4 - Update a task")
+        print("5 - Delete (archive) a task")
+        print("6 - Mark a task as completed")
+        print("7 - View tasks by project")
+        print("8 - Exit")
 
-    choice = input("Enter your choice: ").strip()
-    if choice == "1":
-        manager.create_task_from_input()
-    elif choice == "2":
-        manager.review_deadlines()
-    elif choice == "3":
-        manager.view_tasks()
-    elif choice == "4":
-        manager.update_task()
-    elif choice == "5":
-        manager.delete_task()
-    elif choice == "6":
-        manager.mark_task_completed()
-    elif choice == "7":
-        manager.view_tasks_by_project()
-    elif choice == "8":
-        print("Exiting Task Manager. Goodbye!")
-        break
-    else:
-        print("Option not yet implemented. Stay tuned!")
+        choice = input("Enter your choice: ").strip()
+        if choice == "1":
+            manager.create_task_from_input()
+        elif choice == "2":
+            manager.review_deadlines()
+        elif choice == "3":
+            manager.view_tasks()
+        elif choice == "4":
+            manager.update_task()
+        elif choice == "5":
+            manager.delete_task()
+        elif choice == "6":
+            manager.mark_task_completed()
+        elif choice == "7":
+            manager.view_tasks_by_project()
+        elif choice == "8":
+            print("Exiting Task Manager. Goodbye!")
+            break
+        else:
+            print("Invalid option. Please try again.")
+
+
+# Ensure the script runs only when executed directly
+if __name__ == "__main__":
+    main()
