@@ -333,11 +333,9 @@ class TaskManager:
 
     def create_task_from_input(self):
         """
-        Collect task details interactively from the user with real-time validation.
+        Create a new task by collecting user input, with options for selecting project and category names.
         """
-        print("\n--- Create a New Task ---")
-
-        # Task Name
+        # Prompt for task name
         while True:
             name = input("Enter task name: ").strip()
             error = self.validate_task_name(name)
@@ -346,29 +344,31 @@ class TaskManager:
             else:
                 break
 
-        # Deadline
+        # Prompt for task deadline
         while True:
-            deadline = input("Enter deadline (YYYY-MM-DD): ").strip()
+            deadline = input("Enter task deadline (YYYY-MM-DD): ").strip()
             error = self.validate_deadline(deadline)
             if error:
                 print(f"Error: {error}")
             else:
                 break
 
-        # Priority
+        # Prompt for task priority
         while True:
             priority = input(
-                "Enter priority (High, Medium, Low): ").strip().capitalize()
+                "Enter task priority (High, Medium, Low): ").strip().capitalize()
             error = self.validate_priority(priority)
             if error:
                 print(f"Error: {error}")
             else:
                 break
 
-        # Category
-        category_ids = [row[0] for row in self.categories_sheet.get_all_values()[
-            1:]]  # Skip header row
-        print(f"Available Categories: {', '.join(category_ids)}")
+        # Display category options and prompt for selection
+        print("Available categories:")
+        categories = self.categories_sheet.get_all_values()[
+            1:]  # Skip header row
+        for row in categories:
+            print(f"ID: {row[0]}, Name: {row[1]}")
         while True:
             category_id = input("Enter category ID: ").strip()
             error = self.validate_category_id(category_id)
@@ -377,10 +377,11 @@ class TaskManager:
             else:
                 break
 
-        # Project
-        project_ids = [row[0] for row in self.projects_sheet.get_all_values()[
-            1:]]  # Skip header row
-        print(f"Available Projects: {', '.join(project_ids)}")
+        # Display project options and prompt for selection
+        print("Available projects:")
+        projects = self.projects_sheet.get_all_values()[1:]  # Skip header row
+        for row in projects:
+            print(f"ID: {row[0]}, Name: {row[1]}")
         while True:
             project_id = input("Enter project ID: ").strip()
             error = self.validate_project_id(project_id)
@@ -389,16 +390,16 @@ class TaskManager:
             else:
                 break
 
-        # Notes (Optional)
-        notes = input("Enter notes (optional): ").strip()
-        if len(notes) > 250:
-            print("Warning: Notes exceeded 250 characters. It will be truncated.")
-            notes = notes[:250]
+        # Prompt for notes
+        notes = input("Enter additional notes (optional): ").strip()
 
-        # Add the task after all inputs are validated
-        self.add_task(name, deadline, priority,
-                      category_id, project_id, notes)
-        print(f"Task '{name}' added successfully!")
+        # Automatically add the current date as the create date
+        create_date = datetime.now().strftime("%Y-%m-%d")
+
+        # Add the task
+        self.add_task(name, deadline, priority, category_id,
+                      project_id, notes, create_date)
+
 
     def view_tasks(self):
         """
