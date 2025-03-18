@@ -276,14 +276,14 @@ class TaskManager:
 
     def generate_unique_task_id(self):
         """
-        Generate a unique task ID by checking against existing task IDs.
+        Generate the next sequential task ID based on the highest existing task ID.
         """
-        existing_ids = {
-            task.task_id for task in self.tasks}  # Collect all current task IDs
-        new_id = 1
-        while str(new_id) in existing_ids:
-            new_id += 1  # Increment until an unused ID is found
-        return str(new_id)
+        existing_ids = [int(task.task_id)
+                        for task in self.tasks if task.task_id.isdigit()]
+        # If there are no existing IDs, start with 1
+        next_id = max(existing_ids, default=0) + 1
+        return str(next_id)
+
 
     def add_task(self,
                  name,
@@ -424,17 +424,31 @@ class TaskManager:
         self.add_task(name, deadline, priority, category_id,
                       project_id, notes, create_date)
 
-
     def view_tasks(self):
         """
-        Display all tasks with details.
+        Display all tasks in a table-like format with field names as the header.
         """
         if not self.tasks:
             print("No tasks found.")
-        else:
-            print("\nTasks List:")
-            for task in self.tasks:
-                print(task)
+            return
+
+        # Define the header row for the table
+        headers = [
+            "ID", "Name", "Deadline", "Priority", "Status",
+            "Notes", "Category", "Project"
+        ]
+
+        # Print the header row
+        print(f"{headers[0]:<5} {headers[1]:<20} {headers[2]:<12} {headers[3]:<10} {headers[4]:<12} "
+              f"{headers[5]:<25} {headers[6]:<15} {headers[7]:<15}")
+        print("-" * 120)
+
+        # Print each task as a row in the table
+        for task in self.tasks:
+            print(f"{task.task_id:<5} {task.name:<20} {task.deadline:<12} {task.priority:<10} "
+                  f"{task.status:<12} {task.notes[:25]:<25} {task.category['name']:<15} "
+                  f"{task.project['name']:<15}")
+
 
     def review_deadlines(self):
         """
