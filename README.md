@@ -2,6 +2,14 @@
 
 Welcome to the `Task Manager`, a Python command-line application designed to create, organize, and manage tasks effectively. This project interacts with Google Sheets to store and process data, making it both powerful and dynamic. The last update to this file was: `March 13, 2025.`
 
+## OOP aproach vs procedural approach
+
+The Task Manager application was initially written according to procedural approach but later transitioned to an Object-Oriented Programming (OOP) approach to improve scalability, maintainability, and organization of the code. OOP enables better modularity by encapsulating task management, validation, and data handling into reusable classes and methods. This structure also aligns with modern best practices, making the application easier to expand and debug.
+
+### What About the Procedural Code?
+
+The original procedural version is preserved in the run_old.py module for reference. While no longer maintained, it offers a snapshot of the initial design and serves as a comparison for the benefits of OOP.
+
 ## Features
 
 - Add Tasks: Easily create new tasks with validation for name, deadline, priority, category, and project.
