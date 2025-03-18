@@ -449,10 +449,6 @@ class TaskManager:
             print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
                   f"{project_display:<25} {task.name:<40}")
 
-
-
-
-
     def review_deadlines(self):
         """
         Display tasks sorted by their deadlines in a table-like format.
@@ -491,13 +487,17 @@ class TaskManager:
             print("No tasks available to update.")
             return
 
-        # Display tasks to help the user choose
+        # Display tasks in a table-like format
         print("\n--- Update a Task ---")
-        print("Available Tasks:")
+        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
+        print(
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+        print("-" * 130)
+
         for task in self.tasks:
-            print(
-                f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, \
-                    Priority: {task.priority}, Status: {task.status}")
+            project_display = f"{task.project['name']}: " if task.project["name"] else ""
+            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
+                  f"{project_display:<25} {task.name:<40}")
 
         # Get Task ID from the user
         while True:
@@ -582,8 +582,7 @@ class TaskManager:
                         "Enter the new status (Pending, In Progress, Completed): ").strip()
                     if new_status not in ["Pending", "In Progress", "Completed"]:
                         print(
-                            "Invalid status. Please choose from Pending, \
-                                In Progress, or Completed.")
+                            "Invalid status. Please choose from Pending, In Progress, or Completed.")
                     else:
                         task.status = new_status
                         self.tasks_sheet.update_cell(
@@ -597,6 +596,7 @@ class TaskManager:
 
             # Exit the update loop after successful editing
             break
+
 
     def delete_task(self):
         """
