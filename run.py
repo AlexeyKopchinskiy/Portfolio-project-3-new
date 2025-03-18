@@ -267,41 +267,44 @@ class TaskManager:
 
     def add_task(self, name, deadline, priority, category, project, notes=""):
         """
-        Create a new Task object, add it to the list of tasks,
-        and save it to the Google Sheet.
-        """
-        # Generate a unique task ID (use length of tasks list + 1 for simplicity)
-        task_id = len(self.tasks) + 1
+        Create a new task and add it to the task list, ensuring a unique task ID is assigned.
 
-        # Create a new Task object
+        Args:
+            name (str): Name of the task.
+            deadline (str): Deadline of the task in YYYY-MM-DD format.
+            priority (str): Task priority ('High', 'Medium', 'Low').
+            category (str): Task category ID.
+            project (str): Task project ID.
+            notes (str): Optional notes for the task. Default is an empty string.
+
+        Returns:
+            None
+        """
+        # Generate a unique task ID
+        new_task_id = self.generate_unique_task_id()
+
+        # Create the new task object
         new_task = Task(
-            task_id=task_id,
+            task_id=new_task_id,
             name=name,
             deadline=deadline,
             priority=priority,
+            status="Pending",  # Default status
+            notes=notes,
             category=category,
-            project=project,
-            notes=notes
+            project=project
         )
 
-        # Add the task to the in-memory list
+        # Add the new task to the task list
         self.tasks.append(new_task)
 
-        # Save the task data to the Google Sheet
+        # Optionally sync with Google Sheets or other storage
         self.tasks_sheet.append_row([
-            task_id,                    # Task ID
-            name,                       # Task Name
-            datetime.now().strftime("%Y-%m-%d"),  # Creation Date
-            deadline,                   # Deadline
-            "",                         # Complete Date (default empty)
-            "Pending",                  # Status (default: Pending)
-            priority,                   # Priority
-            category,                   # Category ID
-            project,                    # Project ID
-            notes                       # Notes
+            new_task.task_id, new_task.name, "", new_task.deadline, "", new_task.status,
+            new_task.priority, new_task.category, new_task.project, new_task.notes
         ])
-        print(
-            f"Task '{name}' added successfully with ID {task_id} and saved to the Google Sheet.")
+        print(f"Task '{name}' added successfully with ID {new_task_id}.")
+
 
     def create_task_from_input(self):
         """
