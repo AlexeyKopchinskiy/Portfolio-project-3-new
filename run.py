@@ -60,35 +60,38 @@ data = tasks.get_all_values()
 # Utility function for retrying API calls with exponential backoff
 
 
+class RetryLimitExceededError(Exception):
+    """Custom exception for when retry attempts exceed the maximum limit."""
+    pass
+
 def retry_with_backoff(func, *args, retries=5, delay=1):
     """
     Retry a function with exponential backoff in case of APIError (e.g., 429 quota errors).
-
     Args:
         func (callable): The function to retry.
         *args: Arguments for the function.
         retries (int): Maximum number of retries.
         delay (int): Initial delay in seconds between retries.
-
-    Returns:
-        The result of the function call if successful.
-
-    Raises:
-        Exception: If all retries fail, the original exception is re-raised.
+    Returns: The result of the function call if successful.
+    Raises: RetryLimitExceededError: If all retries fail.
+            APIError: If the error encountered is not related to rate-limiting.
     """
+    if not callable(func):
+        raise TypeError(f"The provided function {func} is not callable.")
 
-    import time
     for attempt in range(retries):
         try:
             return func(*args)
         except APIError as e:
-            if "429" in str(e):
+            if "429" in str(e):  # Rate-limiting error
                 print(
                     f"Quota exceeded. Retrying in {delay * (2 ** attempt)} seconds...")
                 time.sleep(delay * (2 ** attempt))  # Exponential backoff
             else:
-                raise  # Re-raise non-429 errors
-    raise Exception("Exceeded maximum retries.")
+                raise  # Re-raise non-rate-limiting API errors
+    # Raise a custom exception if retries are exhausted
+    raise RetryLimitExceededError(
+        f"Exceeded maximum retries for function {func.__name__}")
 
 
 class Task:
