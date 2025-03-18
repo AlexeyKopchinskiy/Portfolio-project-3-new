@@ -1,6 +1,36 @@
-# Your code goes here.
-# You can delete these comments, but do not change the name of this file
-# Write your code to expect a terminal of 80 characters wide and 24 rows high
+"""
+run.py
+
+This module is the sole component of the Task Manager application, handling all functionality 
+within a single file using Object-Oriented Programming (OOP). It integrates task, category, 
+and project management features while maintaining clear and modular design principles.
+
+Features:
+- Fully self-contained application for managing tasks, categories, and projects.
+- Encapsulates all logic within a single module using classes and methods.
+- Loads, updates, and manages tasks with data persistence through Google Sheets.
+- Provides a user interface for efficient task management operations.
+
+Usage:
+    Run this script to start the Task Manager application:
+    $ python run.py
+
+Modules and Dependencies:
+- Google Sheets API: Used to connect to and interact with task, category, and project data.
+- datetime: Facilitates deadline validation and date-related functionality.
+
+Classes and Functions:
+- TaskManager: Central class that encapsulates all task management logic.
+- Task: Represents individual tasks and their attributes (e.g., name, deadline, priority).
+- load_tasks(), add_task(), update_task(): Key methods for handling task operations.
+
+Author:
+- Alexey Kopchinskiy
+
+Date:
+- 18-03-2025
+"""
+
 
 from datetime import datetime
 
