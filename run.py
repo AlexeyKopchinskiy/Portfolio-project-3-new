@@ -31,13 +31,17 @@ Date:
 - 18-03-2025
 """
 
+from google.oauth2.service_account import Credentials
+from gspread.exceptions import APIError
+import time
+from colorama import just_fix_windows_console
+from colorama import Fore, Back, Style
+just_fix_windows_console()
 
 from datetime import datetime
 
-# import os
-# import json
 import gspread
-from google.oauth2.service_account import Credentials
+
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -57,7 +61,36 @@ categories = SHEET.worksheet('category')
 
 data = tasks.get_all_values()
 
-# Add the new functionality here
+# Utility function for retrying API calls with exponential backoff
+
+
+def retry_with_backoff(func, *args, retries=5, delay=1):
+    """
+    Retry a function with exponential backoff in case of APIError (e.g., 429 quota errors).
+
+    Args:
+        func (callable): The function to retry.
+        *args: Arguments for the function.
+        retries (int): Maximum number of retries.
+        delay (int): Initial delay in seconds between retries.
+
+    Returns:
+        The result of the function call if successful.
+
+    Raises:
+        Exception: If all retries fail, the original exception is re-raised.
+    """
+    for attempt in range(retries):
+        try:
+            return func(*args)
+        except APIError as e:
+            if "429" in str(e):
+                print(
+                    f"Quota exceeded. Retrying in {delay * (2 ** attempt)} seconds...")
+                time.sleep(delay * (2 ** attempt))  # Exponential backoff
+            else:
+                raise  # Re-raise non-429 errors
+    raise Exception("Exceeded maximum retries.")
 
 
 class Task:
@@ -234,11 +267,12 @@ class TaskManager:
         Args: project_id (str): The ID of the project.
         Returns: str: The name of the project, or 'Unknown Project' if the ID is not found.
         """
-        project_data = self.projects_sheet.get_all_values()[1:]  # Skip header
+        project_data = retry_with_backoff(
+            self.projects_sheet.get_all_values)  # Use the retry wrapper
         project_dict = {row[0]: row[1]
-                        # Create a dictionary of ID: Name
-                        for row in project_data}
-        return project_dict.get(project_id, "Single task")
+                        for row in project_data[1:]}  # Skip header row
+        return project_dict.get(project_id, "Unknown Project")
+
 
     def get_category_name(self, category_id):
         """
@@ -446,8 +480,8 @@ class TaskManager:
         # Print each task as a row in the table
         for task in self.tasks:
             project_display = f"{task.project['name']}: " if task.project["name"] else ""
-            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
-                  f"{project_display:<25} {task.name:<40}")
+            print(f"{Fore.RED} {task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
+                  f"{project_display:<25} {task.name:<40} {Style.RESET_ALL}")
 
     def review_deadlines(self):
         """
