@@ -255,10 +255,9 @@ class TaskManager:
     def load_tasks(self):
         """
         Load tasks from the Google Sheets into Task objects.
-        Returns: list: A list of Task objects populated with data from the Google Sheets.
         """
         task_data = self.tasks_sheet.get_all_values()[1:]  # Skip header row
-        loaded_tasks = []  # Renamed the local variable to avoid conflict with outer 'tasks'
+        loaded_tasks = []
 
         for row in task_data:
             loaded_tasks.append(Task(
@@ -268,11 +267,14 @@ class TaskManager:
                 priority=row[6],
                 status=row[5],
                 notes=row[9],
-                category=row[7],
-                project=row[8]
+                category={"id": row[7], "name": self.get_category_name(
+                    row[7])},  # Convert to dictionary
+                project={"id": row[8], "name": self.get_project_name(
+                    row[8])}     # Convert to dictionary
             ))
 
         return loaded_tasks
+
 
     def generate_unique_task_id(self):
         """
