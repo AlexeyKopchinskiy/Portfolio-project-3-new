@@ -285,7 +285,8 @@ class TaskManager:
 
     def add_task(self, name, deadline, priority, category_id, project_id, notes=""):
         """
-        Create a new task and add it to the task list, assuming all inputs have been validated.
+        Create a new task and add it to the task list. Input is validated
+        in the create_task_from_input() method
 
         Args:
             name (str): Name of the task.
