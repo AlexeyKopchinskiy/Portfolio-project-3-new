@@ -31,10 +31,10 @@ Date:
 - 18-03-2025
 """
 
+import time
+from datetime import datetime
 from google.oauth2.service_account import Credentials
 from gspread.exceptions import APIError
-from datetime import datetime
-import time
 import gspread
 
 
@@ -60,8 +60,10 @@ data = tasks.get_all_values()
 
 
 class RetryLimitExceededError(Exception):
-    """Custom exception for when retry attempts exceed the maximum limit."""
-    pass
+    """
+        Custom exception for when retry attempts exceed the maximum limit.
+        Raised when the retry limit for an API call is exceeded.
+    """
 
 def retry_with_backoff(func, *args, retries=5, delay=1):
     """
@@ -474,7 +476,8 @@ class TaskManager:
 
         # Print the header row
         print(
-            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
+                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
         print("-" * 130)
 
         # Print each task as a row in the table
@@ -502,7 +505,8 @@ class TaskManager:
 
         # Print the header row
         print(
-            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
+                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
         print("-" * 130)
 
         # Print each task
@@ -525,7 +529,8 @@ class TaskManager:
         print("\n--- Update a Task ---")
         headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
         print(
-            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
+                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
         print("-" * 130)
 
         for task in self.tasks:
@@ -633,10 +638,12 @@ class TaskManager:
             elif loaded_choice == "5":  # Update Status
                 while True:
                     new_status = input(
-                        "Enter the new status (Pending, In Progress, Completed): ").strip()
+                        "Enter the new status (Pending, In Progress, \
+                            Completed): ").strip()
                     if new_status not in ["Pending", "In Progress", "Completed"]:
                         print(
-                            "Invalid status. Please choose from Pending, In Progress, or Completed.")
+                            "Invalid status. Please choose from Pending, \
+                                In Progress, or Completed.")
                     else:
                         task.status = new_status
                         self.tasks_sheet.update_cell(
@@ -789,7 +796,8 @@ class TaskManager:
 
         # Print the header row
         print(
-            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
+                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
         print("-" * 130)
 
         # Print each task
