@@ -73,7 +73,8 @@ class Task:
                  status="Pending",
                  notes="",
                  category=None,
-                 project=None):
+                 project=None,
+                 create_date=None):
         self.task_id = task_id
         self.name = name
         self.deadline = deadline
@@ -83,6 +84,7 @@ class Task:
         self.category = category
         self.project = project
         self.complete_date = None
+        self.create_date = create_date
 
     def mark_as_completed(self):
         """Marks the task as completed and sets the completion date."""
@@ -283,10 +285,16 @@ class TaskManager:
             new_id += 1  # Increment until an unused ID is found
         return str(new_id)
 
-    def add_task(self, name, deadline, priority, category_id, project_id, notes=""):
+    def add_task(self,
+                 name,
+                 deadline,
+                 priority,
+                 category_id,
+                 project_id,
+                 notes="",
+                 create_date=None):
         """
-        Create a new task and add it to the task list. Input is validated
-        in the create_task_from_input() method
+        Create a new task and add it to the task list.
 
         Args:
             name (str): Name of the task.
@@ -295,10 +303,16 @@ class TaskManager:
             category_id (str): Task category ID.
             project_id (str): Task project ID.
             notes (str): Optional notes for the task. Default is an empty string.
+            create_date (str, optional): The date the task is created in YYYY-MM-DD format. 
+                Defaults to today's date.
 
         Returns:
             None
         """
+        # Use the current date if create_date is not provided
+        if create_date is None:
+            create_date = datetime.now().strftime("%Y-%m-%d")
+
         # Fetch category and project names
         category_name = self.get_category_name(category_id)
         project_name = self.get_project_name(project_id)
@@ -314,6 +328,7 @@ class TaskManager:
             priority=priority,
             status="Pending",  # Default status
             notes=notes,
+            create_date=create_date,
             category={"id": category_id, "name": category_name},
             project={"id": project_id, "name": project_name}
         )
@@ -323,17 +338,25 @@ class TaskManager:
 
         # Sync with Google Sheets or other storage
         self.tasks_sheet.append_row([
-            new_task.task_id, new_task.name, "", new_task.deadline, "", new_task.status,
-            new_task.priority, new_task.category["name"], new_task.project["name"], new_task.notes
+            new_task.task_id,
+            new_task.name,
+            new_task.create_date,
+            new_task.deadline,
+            "",
+            new_task.status,
+            new_task.priority,
+            new_task.category["name"],
+            new_task.project["name"],
+            new_task.notes
         ])
         print(f"Task '{name}' added successfully with ID {new_task_id}, "
-              f"Category '{category_name}', and Project '{project_name}'.")
-
-
+              f"Category '{category_name}', Project '{project_name}', \
+                and Create Date '{create_date}'.")
 
     def create_task_from_input(self):
         """
-        Create a new task by collecting user input, with options for selecting project and category names.
+        Create a new task by collecting user input, with options 
+        for selecting project and category names.
         """
         # Prompt for task name
         while True:
@@ -365,9 +388,9 @@ class TaskManager:
 
         # Display category options and prompt for selection
         print("Available categories:")
-        categories = self.categories_sheet.get_all_values()[
+        category_data = self.categories_sheet.get_all_values()[
             1:]  # Skip header row
-        for row in categories:
+        for row in category_data:
             print(f"ID: {row[0]}, Name: {row[1]}")
         while True:
             category_id = input("Enter category ID: ").strip()
@@ -379,8 +402,9 @@ class TaskManager:
 
         # Display project options and prompt for selection
         print("Available projects:")
-        projects = self.projects_sheet.get_all_values()[1:]  # Skip header row
-        for row in projects:
+        project_date = self.projects_sheet.get_all_values()[
+            1:]  # Skip header row
+        for row in project_date:
             print(f"ID: {row[0]}, Name: {row[1]}")
         while True:
             project_id = input("Enter project ID: ").strip()
