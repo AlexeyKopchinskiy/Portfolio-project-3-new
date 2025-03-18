@@ -455,7 +455,7 @@ class TaskManager:
 
     def review_deadlines(self):
         """
-        Display tasks sorted by their deadlines.
+        Display tasks sorted by their deadlines in a table-like format.
         """
         if not self.tasks:
             print("No tasks found.")
@@ -467,11 +467,20 @@ class TaskManager:
             key=lambda task: datetime.strptime(task.deadline, "%Y-%m-%d")
         )
 
-        # Display the sorted tasks
-        print("\n--- Tasks Sorted by Deadline ---")
+        # Define the header row
+        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
+
+        # Print the header row
+        print(
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+        print("-" * 130)
+
+        # Print each task
         for task in sorted_tasks:
-            print(f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, "
-                  f"Priority: {task.priority}, Status: {task.status}")
+            project_display = f"{task.project['name']}: " if task.project["name"] else ""
+            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
+                  f"{project_display:<25} {task.name:<40}")
+
 
     def update_task(self):
         """
@@ -690,7 +699,7 @@ class TaskManager:
 
     def view_tasks_by_project(self):
         """
-        Display tasks filtered by a specific project ID.
+        Display tasks filtered by a specific project ID in a table-like format.
         """
         if not self.tasks:
             print("No tasks available to view.")
@@ -705,23 +714,34 @@ class TaskManager:
             print(f"ID: {row[0]}, Name: {row[1]}")
 
         # Get the project ID from the user
-        project_id = input(
-            "Enter the Project ID to view tasks for: ").strip()
+        project_id = input("Enter the Project ID to view tasks for: ").strip()
         if project_id not in project_ids:
             print("Invalid Project ID. Please try again.")
             return
 
         # Filter tasks by project ID
         filtered_tasks = [
-            task for task in self.tasks if task.project == project_id]
+            task for task in self.tasks if task.project["id"] == project_id
+        ]
 
         if not filtered_tasks:
             print(f"No tasks found for Project ID {project_id}.")
-        else:
-            print(f"\n--- Tasks for Project ID {project_id} ---")
-            for task in filtered_tasks:
-                print(f"ID: {task.task_id}, Name: {task.name}, Deadline: {task.deadline}, "
-                      f"Status: {task.status}, Priority: {task.priority}, Notes: {task.notes}")
+            return
+
+        # Define the header row
+        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
+
+        # Print the header row
+        print(
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+        print("-" * 130)
+
+        # Print each task
+        for task in filtered_tasks:
+            project_display = f"{task.project['name']}: " if task.project["name"] else ""
+            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
+                  f"{project_display:<25} {task.name:<40}")
+
 
 
 # Initialize the TaskManager
