@@ -254,6 +254,16 @@ class TaskManager:
 
         return loaded_tasks
 
+    def generate_unique_task_id(self):
+        """
+        Generate a unique task ID by checking against existing task IDs.
+        """
+        existing_ids = {
+            task.task_id for task in self.tasks}  # Collect all current task IDs
+        new_id = 1
+        while str(new_id) in existing_ids:
+            new_id += 1  # Increment until an unused ID is found
+        return str(new_id)
 
     def add_task(self, name, deadline, priority, category, project, notes=""):
         """
