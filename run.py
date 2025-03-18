@@ -357,9 +357,9 @@ class TaskManager:
 
         # Main update loop
         while True:
-            choice = input("Enter the number of your choice: ").strip()
+            loaded_choice = input("Enter the number of your choice: ").strip()
 
-            if choice == "1":  # Update Task Name
+            if loaded_choice == "1":  # Update Task Name
                 while True:
                     new_name = input("Enter the new task name: ").strip()
                     error = self.validate_task_name(new_name)
@@ -372,7 +372,7 @@ class TaskManager:
                         print("Task name updated successfully!")
                         break
 
-            elif choice == "2":  # Update Deadline
+            elif loaded_choice == "2":  # Update Deadline
                 while True:
                     new_deadline = input(
                         "Enter the new deadline (YYYY-MM-DD): ").strip()
@@ -386,7 +386,7 @@ class TaskManager:
                         print("Task deadline updated successfully!")
                         break
 
-            elif choice == "3":  # Update Priority
+            elif loaded_choice == "3":  # Update Priority
                 while True:
                     new_priority = input(
                         "Enter the new priority (High, Medium, Low): ").strip().capitalize()
@@ -400,7 +400,7 @@ class TaskManager:
                         print("Task priority updated successfully!")
                         break
 
-            elif choice == "4":  # Update Notes
+            elif loaded_choice == "4":  # Update Notes
                 while True:
                     new_notes = input("Enter the new notes: ").strip()
                     if len(new_notes) > 250:
@@ -413,7 +413,7 @@ class TaskManager:
                     print("Task notes updated successfully!")
                     break
 
-            elif choice == "5":  # Update Status
+            elif loaded_choice == "5":  # Update Status
                 while True:
                     new_status = input(
                         "Enter the new status (Pending, In Progress, Completed): ").strip()
