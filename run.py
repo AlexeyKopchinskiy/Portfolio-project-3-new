@@ -33,10 +33,6 @@ Date:
 
 from google.oauth2.service_account import Credentials
 from gspread.exceptions import APIError
-import time
-from colorama import just_fix_windows_console
-from colorama import Fore, Back, Style
-just_fix_windows_console()
 
 from datetime import datetime
 
@@ -80,6 +76,8 @@ def retry_with_backoff(func, *args, retries=5, delay=1):
     Raises:
         Exception: If all retries fail, the original exception is re-raised.
     """
+
+    import time
     for attempt in range(retries):
         try:
             return func(*args)
@@ -196,7 +194,7 @@ class TaskManager:
         Returns: str: An error message if the category ID is invalid, 
             or None if the validation succeeds.
         """
-        category_ids = [row[0] for row in retry_with_backoff(self.categories_sheet.get_all_values)()[
+        category_ids = [row[0] for row in retry_with_backoff(self.categories_sheet.get_all_values)[
             1:]]  # Skip header row
         if category_id not in category_ids:
             return "Invalid category ID. Please choose from the available categories."
@@ -224,9 +222,9 @@ class TaskManager:
         """
 
         # Fetch valid project IDs and category IDs
-        project_ids = [row[0] for row in retry_with_backoff(self.projects_sheet.get_all_values)()[
+        project_ids = [row[0] for row in retry_with_backoff(self.projects_sheet.get_all_values)[
             1:]]  # Skip header row
-        category_ids = [row[0] for row in retry_with_backoff(self.categories_sheet.get_all_values)()[
+        category_ids = [row[0] for row in retry_with_backoff(self.categories_sheet.get_all_values)[
             1:]]  # Skip header row
 
         # Validate project ID
@@ -267,9 +265,7 @@ class TaskManager:
         Args: project_id (str): The ID of the project.
         Returns: str: The name of the project, or 'Unknown Project' if the ID is not found.
         """
-        project_data = retry_with_backoff(
-            # Use the retry wrapper
-            retry_with_backoff(self.projects_sheet.get_all_values))
+        project_data = retry_with_backoff(self.projects_sheet.get_all_values)
         project_dict = {row[0]: row[1]
                         for row in project_data[1:]}  # Skip header row
         return project_dict.get(project_id, "Unknown Project")
@@ -281,7 +277,7 @@ class TaskManager:
         Args: category_id (str): The ID of the category.
         Returns: str: The name of the category, or 'Unknown Category' if the ID is not found.
         """
-        category_data = retry_with_backoff(self.categories_sheet.get_all_values)()[
+        category_data = retry_with_backoff(self.categories_sheet.get_all_values)[
             1:]  # Skip header
         # Create a dictionary of ID: Name
         category_dict = {row[0]: row[1] for row in category_data}
@@ -291,7 +287,7 @@ class TaskManager:
         """
         Load tasks from the Google Sheets into Task objects.
         """
-        task_data = retry_with_backoff(self.tasks_sheet.get_all_values)()[
+        task_data = retry_with_backoff(self.tasks_sheet.get_all_values)[
             1:]  # Skip header row
         loaded_tasks = []
 
@@ -426,7 +422,7 @@ class TaskManager:
 
         # Display category options and prompt for selection
         print("Available categories:")
-        category_data = retry_with_backoff(self.categories_sheet.get_all_values)()[
+        category_data = retry_with_backoff(self.categories_sheet.get_all_values)[
             1:]  # Skip header row
         for row in category_data:
             print(f"ID: {row[0]}, Name: {row[1]}")
@@ -440,7 +436,7 @@ class TaskManager:
 
         # Display project options and prompt for selection
         print("Available projects:")
-        project_date = retry_with_backoff(self.projects_sheet.get_all_values)()[
+        project_date = retry_with_backoff(self.projects_sheet.get_all_values)[
             1:]  # Skip header row
         for row in project_date:
             print(f"ID: {row[0]}, Name: {row[1]}")
@@ -482,8 +478,8 @@ class TaskManager:
         # Print each task as a row in the table
         for task in self.tasks:
             project_display = f"{task.project['name']}: " if task.project["name"] else ""
-            print(f"{Fore.RED} {task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
-                  f"{project_display:<25} {task.name:<40} {Style.RESET_ALL}")
+            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
+                  f"{project_display:<25} {task.name:<40}")
 
     def review_deadlines(self):
         """
@@ -676,7 +672,7 @@ class TaskManager:
         ])
 
         # Find the row in the "Tasks" tab
-        task_rows = retry_with_backoff(self.tasks_sheet.get_all_values)()
+        task_rows = retry_with_backoff(self.tasks_sheet.get_all_values)
         for i, row in enumerate(task_rows):
             if row[0] == task.task_id:  # Match the Task ID
                 self.tasks_sheet.delete_rows(i + 1)  # Row index is 1-based
@@ -744,10 +740,10 @@ class TaskManager:
         # Display available projects
         print("\n--- View Tasks by Project ---")
         print("Available Projects:")
-        project_ids = [row[0] for row in retry_with_backoff(self.projects_sheet.get_all_values)()[
+        project_ids = [row[0] for row in retry_with_backoff(self.projects_sheet.get_all_values)[
             1:]]  # Skip header
         # Skip header
-        for row in retry_with_backoff(self.projects_sheet.get_all_values)()[1:]:
+        for row in retry_with_backoff(self.projects_sheet.get_all_values)[1:]:
             print(f"ID: {row[0]}, Name: {row[1]}")
 
         # Get the project ID from the user
