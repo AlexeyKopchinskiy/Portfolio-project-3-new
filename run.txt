@@ -147,42 +147,7 @@ class TaskManager:
         self.tasks_sheet = tasks_sheet
         self.projects_sheet = projects_sheet
         self.categories_sheet = categories_sheet
-
-        # Initialize cached data
-        self.cached_tasks = []  # For storing task data
-        self.cached_projects = []  # For storing project data
-        self.cached_categories = []  # For storing category data
-
-        # Load tasks and cache data
-        self.load_and_cache_data()
-        self.tasks = self.load_tasks()  # Load Task objects into memory
-
-    def load_and_cache_data(self):
-        """
-        Fetch and cache task, project, and category data from Google Sheets.
-        """
-        print("Loading and caching data from Google Sheets...")
-
-        try:
-            # Fetch and cache task data
-            self.cached_tasks = retry_with_backoff(
-                self.tasks_sheet.get_all_values)
-
-            # Fetch and cache project data
-            self.cached_projects = retry_with_backoff(
-                self.projects_sheet.get_all_values)
-
-            # Fetch and cache category data
-            self.cached_categories = retry_with_backoff(
-                self.categories_sheet.get_all_values)
-
-            print("Data successfully loaded and cached!")
-        except APIError as e:
-            print(f"Error while loading data: {e}")
-            self.cached_tasks = []
-            self.cached_projects = []
-            self.cached_categories = []
-
+        self.tasks = self.load_tasks()
 
     # Helper methods for data validation
     def validate_task_name(self, name):
