@@ -153,9 +153,10 @@ class TaskManager:
         self.cached_projects = []  # For storing project data
         self.cached_categories = []  # For storing category data
 
-        # Load tasks and cache data
+        # Load and cache data from Google Sheets
         self.load_and_cache_data()
-        self.tasks = self.load_tasks()  # Load Task objects into memory
+        # Load tasks into memory as Task objects
+        self.tasks = self.load_tasks()
 
     def load_and_cache_data(self):
         """
@@ -304,29 +305,33 @@ class TaskManager:
         Args: project_id (str): The ID of the project.
         Returns: str: The name of the project, or 'Unknown Project' if the ID is not found.
         """
-        project_data = retry_with_backoff(self.projects_sheet.get_all_values)
+        # Use cached project data
         project_dict = {row[0]: row[1]
-                        for row in project_data[1:]}  # Skip header row
+                        for row in self.cached_projects[1:]}  # Skip header
         return project_dict.get(project_id, "Unknown Project")
 
     def get_category_name(self, category_id):
         """
-        Fetches the category name corresponding to a given category ID.
+        Fetches the category name corresponding to a given category ID from cached data.
         Args: category_id (str): The ID of the category.
         Returns: str: The name of the category, or 'Unknown Category' if the ID is not found.
         """
-        category_data = retry_with_backoff(self.categories_sheet.get_all_values)[
-            1:]  # Skip header
-        # Create a dictionary of ID: Name
-        category_dict = {row[0]: row[1] for row in category_data}
+        # Use cached category data
+        category_dict = {row[0]: row[1]
+                         for row in self.cached_categories[1:]}  # Skip header
         return category_dict.get(category_id, "Unknown Category")
+
 
     def load_tasks(self):
         """
-        Load tasks from the Google Sheets into Task objects.
+        Load tasks from cached data into Task objects.
         """
-        task_data = retry_with_backoff(self.tasks_sheet.get_all_values)[
-            1:]  # Skip header row
+        task_data = self.cached_tasks[1:]  # Skip header row
+        project_dict = {row[0]: row[1]
+                        for row in self.cached_projects[1:]}  # Skip header
+        category_dict = {row[0]: row[1]
+                         for row in self.cached_categories[1:]}  # Skip header
+
         loaded_tasks = []
 
         for row in task_data:
@@ -337,13 +342,14 @@ class TaskManager:
                 priority=row[6],
                 status=row[5],
                 notes=row[9],
-                category={"id": row[7], "name": self.get_category_name(
-                    row[7])},  # Convert to dictionary
-                project={"id": row[8], "name": self.get_project_name(
-                    row[8])}     # Convert to dictionary
+                category={"id": row[7], "name": category_dict.get(
+                    row[7], "Unknown Category")},
+                project={"id": row[8], "name": project_dict.get(
+                    row[8], "Unknown Project")}
             ))
 
         return loaded_tasks
+
 
     def generate_unique_task_id(self):
         """
