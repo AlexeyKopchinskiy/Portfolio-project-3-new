@@ -58,7 +58,6 @@ data = tasks.get_all_values()
 
 # Utility function for retrying API calls with exponential backoff
 
-
 class RetryLimitExceededError(Exception):
     """
         Custom exception for when retry attempts exceed the maximum limit.
@@ -93,7 +92,6 @@ def retry_with_backoff(func, *args, retries=5, delay=1):
     # Raise a custom exception if retries are exhausted
     raise RetryLimitExceededError(
         f"Exceeded maximum retries for function {func.__name__}")
-
 
 class Task:
     """
@@ -136,7 +134,6 @@ class Task:
         """String representation of a task."""
         return (f"Task(ID: {self.task_id}, Name: {self.name}, Deadline: {self.deadline}, "
                 f"Priority: {self.priority}, Status: {self.status}, Notes: {self.notes})")
-
 
 class TaskManager:
     """
@@ -184,8 +181,8 @@ class TaskManager:
             self.cached_projects = []
             self.cached_categories = []
 
-
     # Helper methods for data validation
+
     def validate_task_name(self, name):
         """
         Validates the task name to ensure it is not empty and does not exceed 50 characters.
@@ -321,7 +318,6 @@ class TaskManager:
                          for row in self.cached_categories[1:]}  # Skip header
         return category_dict.get(category_id, "Unknown Category")
 
-
     def load_tasks(self):
         """
         Load tasks from cached data into Task objects.
@@ -349,7 +345,6 @@ class TaskManager:
             ))
 
         return loaded_tasks
-
 
     def generate_unique_task_id(self):
         """
@@ -587,12 +582,14 @@ class TaskManager:
                 break
 
         # Show update options
-        print("\nWhat would you like to update?")
+        print("\n What would you like to update?")
         print("1 - Task Name")
         print("2 - Deadline")
         print("3 - Priority")
         print("4 - Notes")
         print("5 - Status")
+        print("6 - Category")
+        print("7 - Project")
 
         # Main update loop
         while True:
@@ -671,7 +668,6 @@ class TaskManager:
                     print("Task notes updated successfully!")
                     break
 
-
             elif loaded_choice == "5":  # Update Status
                 while True:
                     new_status = input(
@@ -686,6 +682,58 @@ class TaskManager:
                         self.tasks_sheet.update_cell(
                             int(task.task_id) + 1, 6, new_status)
                         print("Task status updated successfully!")
+                        break
+
+            elif loaded_choice == "6":  # Update Category
+                # Display available categories
+                print("Available categories:")
+                category_data = retry_with_backoff(self.categories_sheet.get_all_values)[
+                    1:]  # Skip header row
+                for row in category_data:
+                    print(f"ID: {row[0]}, Name: {row[1]}")
+
+                # Prompt the user to select a new category
+                while True:
+                    new_category_id = input(
+                        "Enter the new category ID: ").strip()
+                    error = self.validate_category_id(new_category_id)
+                    if error:
+                        print(f"Error: {error}")
+                    else:
+                        new_category_name = self.get_category_name(
+                            new_category_id)
+                        task.category = {"id": new_category_id,
+                                         "name": new_category_name}
+                        # Update category in Google Sheet
+                        self.tasks_sheet.update_cell(
+                            int(task.task_id) + 1, 8, new_category_id)
+                        print("Task category updated successfully!")
+                        break
+
+            elif loaded_choice == "7":  # Update Project
+                # Display available projects
+                print("Available projects:")
+                project_data = retry_with_backoff(self.projects_sheet.get_all_values)[
+                    1:]  # Skip header row
+                for row in project_data:
+                    print(f"ID: {row[0]}, Name: {row[1]}")
+
+                # Prompt the user to select a new project
+                while True:
+                    new_project_id = input(
+                        "Enter the new project ID: ").strip()
+                    error = self.validate_project_id(new_project_id)
+                    if error:
+                        print(f"Error: {error}")
+                    else:
+                        new_project_name = self.get_project_name(
+                            new_project_id)
+                        task.project = {"id": new_project_id,
+                                        "name": new_project_name}
+                        # Update project in Google Sheet
+                        self.tasks_sheet.update_cell(
+                            int(task.task_id) + 1, 9, new_project_id)
+                        print("Task project updated successfully!")
                         break
 
             else:
@@ -938,7 +986,6 @@ class TaskManager:
             project_display = f"{task.project['name']}: " if task.project["name"] else ""
             print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
                   f"{project_display:<25} {task.name:<40}")
-
 
 
 # Initialize the TaskManager
