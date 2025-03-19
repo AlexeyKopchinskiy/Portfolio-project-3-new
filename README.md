@@ -12,12 +12,20 @@ The original procedural version is preserved in the run_old.py module for refere
 
 ## Features
 
-- Add Tasks: Easily create new tasks with validation for name, deadline, priority, category, and project.
-- Review Deadlines: View upcoming tasks sorted by their deadlines.
-- Task Listings: List tasks based on specific projects.
-- Update Tasks: Modify task details like status, deadline, and more.
-- Task Completion: Mark tasks as completed and optionally archive them in a dedicated tab.
-- Delete (Archive) Tasks: Move unnecessary tasks to a "Deleted" tab without permanently erasing them.
+* **Task Management:**
+ * Add, update, delete, view, and archive tasks.
+ * Mark tasks as completed and sort them by deadlines, priority, or category.
+* **Google Sheets Integration:**
+ * Tasks, categories, and projects are synchronized in real-time with a Google Sheets spreadsheet.
+*	**Caching for Improved Performance:**
+ * Google Sheets data is loaded and cached locally in memory to optimize performance and reduce API calls, ensuring smooth operation even under quota restrictions.
+* **Colorized Console Output:**
+ * Visually enhanced task lists with color-coded priorities and headers for better readability:
+  * _High Priority_: Red background
+  * _Medium Priority_: Pink background
+  * _Low Priority_: Green background
+  * _Empty Priority_: Gray background
+  * Underlined headers
 
 ## Reminders
 
