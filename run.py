@@ -307,7 +307,7 @@ class TaskManager:
         # Use cached project data
         project_dict = {row[0]: row[1]
                         for row in self.cached_projects[1:]}  # Skip header
-        return project_dict.get(project_id, "Unknown Project")
+        return project_dict.get(project_id, "none")
 
     def get_category_name(self, category_id):
         """
@@ -343,7 +343,7 @@ class TaskManager:
                 category={"id": row[7], "name": category_dict.get(
                     row[7], "Unknown Category")},
                 project={"id": row[8], "name": project_dict.get(
-                    row[8], "Unknown Project")}
+                    row[8], "none")}
             ))
 
         return loaded_tasks
@@ -512,17 +512,31 @@ class TaskManager:
 
         # Print the header row
         print(Style.BRIGHT + Fore.BLUE +
-              f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}"
-              + Style.RESET_ALL)
+              f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} \
+                {headers[4]:<25} {headers[5]:<40}" +
+              Style.RESET_ALL)
         print("-" * 130)
 
         # Print each task as a row in the table
         for task in self.tasks:
-            color = Fore.RED if task.priority == "High" else Fore.YELLOW if task.priority == "Medium" else Fore.GREEN
+            # Ensure all priorities are 6 characters wide
+            if task.priority == "High":
+                priority_display = Back.RED + Fore.WHITE + " High   " + Style.RESET_ALL
+            elif task.priority == "Medium":
+                priority_display = Back.MAGENTA + Fore.WHITE + " Medium " + Style.RESET_ALL
+            elif task.priority == "Low":
+                priority_display = Back.GREEN + Fore.WHITE + " Low    " + Style.RESET_ALL
+            elif not task.priority:  # Empty priority
+                priority_display = Back.BLACK + Fore.WHITE + "      " + Style.RESET_ALL
+            else:
+                # Handle unexpected priorities gracefully
+                priority_display = task.priority.ljust(6)
+
             project_display = f"{task.project['name']}: " if task.project["name"] else ""
-            print(color +
-                  f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} {project_display:<25} {task.name:<40}"
-                  + Style.RESET_ALL)
+
+            # Print the task row
+            print(f"{task.task_id:<5} {task.deadline:<12} {priority_display:<10} {task.status:<12} "
+                  f"{project_display:<25} {task.name:<40}")
 
     def review_deadlines(self):
         """
@@ -982,7 +996,8 @@ class TaskManager:
 
         # Print the header row
         print(
-            f"\n{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+            f"\n{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} \
+                {headers[4]:<25} {headers[5]:<40}")
         print("-" * 130)
 
         # Print each filtered task
