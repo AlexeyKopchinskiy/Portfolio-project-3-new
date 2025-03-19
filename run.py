@@ -421,8 +421,8 @@ class TaskManager:
             "",
             new_task.status,
             new_task.priority,
-            new_task.category["name"],
-            new_task.project["name"],
+            new_task.category["id"],
+            new_task.project["id"],
             new_task.notes
         ])
         print(f"Task '{name}' added successfully with ID {new_task_id}, "
@@ -850,8 +850,8 @@ class TaskManager:
             return
 
         # Ask the user to specify a priority
-        print("\n--- View Tasks by Priority ---")
-        print("Available priorities: High, Medium, Low")
+        print("\n --- View Tasks by Priority ---")
+        print("\n Available priorities: High, Medium, Low")
         selected_priority = input(
             "Enter the priority to filter by: ").strip().capitalize()
 
@@ -873,7 +873,8 @@ class TaskManager:
 
         # Print the header row
         print(
-            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
+                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
         print("-" * 130)
 
         # Print each filtered task
@@ -928,7 +929,8 @@ class TaskManager:
 
         # Print the header row
         print(
-            f"\n{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+            f"\n{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
+                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
         print("-" * 130)
 
         # Print each filtered task
