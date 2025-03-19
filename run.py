@@ -274,7 +274,6 @@ class TaskManager:
                         for row in project_data[1:]}  # Skip header row
         return project_dict.get(project_id, "Unknown Project")
 
-
     def get_category_name(self, category_id):
         """
         Fetches the category name corresponding to a given category ID.
@@ -311,7 +310,6 @@ class TaskManager:
 
         return loaded_tasks
 
-
     def generate_unique_task_id(self):
         """
         Generate the next sequential task ID based on the highest existing task ID.
@@ -321,7 +319,6 @@ class TaskManager:
         # If there are no existing IDs, start with 1
         next_id = max(existing_ids, default=0) + 1
         return str(next_id)
-
 
     def add_task(self,
                  name,
@@ -515,7 +512,6 @@ class TaskManager:
             print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
                   f"{project_display:<25} {task.name:<40}")
 
-
     def update_task(self):
         """
         Update an existing task by modifying its attributes.
@@ -657,8 +653,6 @@ class TaskManager:
 
             # Exit the update loop after successful editing
             break
-
-
 
     def delete_task(self):
         """
@@ -806,6 +800,103 @@ class TaskManager:
             print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
                   f"{project_display:<25} {task.name:<40}")
 
+    def view_tasks_by_priority(self):
+        """
+        Display tasks filtered by a specific priority in a table-like format.
+        """
+        if not self.tasks:
+            print("No tasks available.")
+            return
+
+        # Ask the user to specify a priority
+        print("\n--- View Tasks by Priority ---")
+        print("Available priorities: High, Medium, Low")
+        selected_priority = input(
+            "Enter the priority to filter by: ").strip().capitalize()
+
+        # Validate the user's input
+        if selected_priority not in ["High", "Medium", "Low"]:
+            print("Invalid priority. Please choose from High, Medium, or Low.")
+            return
+
+        # Filter tasks by the selected priority
+        filtered_tasks = [
+            task for task in self.tasks if task.priority == selected_priority]
+
+        if not filtered_tasks:
+            print(f"No tasks found with priority: {selected_priority}.")
+            return
+
+        # Define headers for the table
+        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
+
+        # Print the header row
+        print(
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+        print("-" * 130)
+
+        # Print each filtered task
+        for task in filtered_tasks:
+            project_display = f"{task.project['name']}: " if task.project["name"] else ""
+            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
+                  f"{project_display:<25} {task.name:<40}")
+
+    def view_tasks_by_category(self):
+        """
+        Display tasks filtered by a specific category in a table-like format.
+        """
+        if not self.tasks:
+            print("No tasks available.")
+            return
+
+        # Retrieve the list of categories dynamically from the Google Sheets
+        print("\n--- View Tasks by Category ---")
+        category_data = retry_with_backoff(self.categories_sheet.get_all_values)[
+            1:]  # Skip the header row
+        # Extract category names
+        available_categories = [row[1] for row in category_data if row[1]]
+
+        if not available_categories:
+            print("No categories found in the Google Sheet.")
+            return
+
+        # Display the available categories
+        print("Available Categories:")
+        for category in available_categories:
+            print(f"- {category}")
+
+        # Ask the user to select a category
+        selected_category = input(
+            "\nEnter the category to filter by: ").strip()
+
+        # Validate the selected category
+        if selected_category not in available_categories:
+            print("Invalid category. Please select a valid category from the list.")
+            return
+
+        # Filter tasks by the selected category
+        filtered_tasks = [
+            task for task in self.tasks if task.category == selected_category]
+
+        if not filtered_tasks:
+            print(f"No tasks found in category: {selected_category}.")
+            return
+
+        # Define headers for the table
+        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
+
+        # Print the header row
+        print(
+            f"\n{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+        print("-" * 130)
+
+        # Print each filtered task
+        for task in filtered_tasks:
+            project_display = f"{task.project['name']}: " if task.project["name"] else ""
+            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
+                  f"{project_display:<25} {task.name:<40}")
+
+
 
 # Initialize the TaskManager
 def main():
@@ -824,7 +915,8 @@ def main():
         print("5 - Delete (archive) a task")
         print("6 - Mark a task as completed")
         print("7 - View tasks by project")
-        print("8 - Exit")
+        print("8 - View tasks by priority")
+        print("9 - Exit")
 
         choice = input("Enter your choice: ").strip()
         if choice == "1":
@@ -842,6 +934,8 @@ def main():
         elif choice == "7":
             manager.view_tasks_by_project()
         elif choice == "8":
+            manager.view_tasks_by_priority()
+        elif choice == "9":
             print("Exiting Task Manager. Goodbye!")
             break
         else:
