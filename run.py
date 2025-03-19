@@ -916,6 +916,7 @@ def main():
         print("6 - Mark a task as completed")
         print("7 - View tasks by project")
         print("8 - View tasks by priority")
+        print("9 - View tasks by category")
         print("9 - Exit")
 
         choice = input("Enter your choice: ").strip()
@@ -935,6 +936,8 @@ def main():
             manager.view_tasks_by_project()
         elif choice == "8":
             manager.view_tasks_by_priority()
+        elif choice == "9":
+            manager.view_tasks_by_category()
         elif choice == "9":
             print("Exiting Task Manager. Goodbye!")
             break
