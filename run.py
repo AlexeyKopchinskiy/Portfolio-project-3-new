@@ -969,9 +969,9 @@ class TaskManager:
             print("Invalid category. Please select a valid category from the list.")
             return
 
-        # Filter tasks by the selected category
+        # Filter tasks by the selected category (compare against task.category["name"])
         filtered_tasks = [
-            task for task in self.tasks if task.category == selected_category]
+            task for task in self.tasks if task.category["name"] == selected_category]
 
         if not filtered_tasks:
             print(f"No tasks found in category: {selected_category}.")
@@ -982,8 +982,7 @@ class TaskManager:
 
         # Print the header row
         print(
-            f"\n{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
-                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+            f"\n{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
         print("-" * 130)
 
         # Print each filtered task
@@ -991,6 +990,8 @@ class TaskManager:
             project_display = f"{task.project['name']}: " if task.project["name"] else ""
             print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
                   f"{project_display:<25} {task.name:<40}")
+
+
 
 
 # Initialize the TaskManager
