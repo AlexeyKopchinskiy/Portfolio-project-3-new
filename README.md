@@ -27,6 +27,24 @@ The original procedural version is preserved in the run_old.py module for refere
     * _Empty Priority_: Gray background
     * Underlined headers
 
+## Caching Google Sheets Data
+
+To improve performance and reduce API quota consumption, the application now caches data from the **tasks**, **categories**, and **projects** worksheets during initialization. Cached data is stored in memory and reused throughout the application, minimizing redundant API calls.
+
+### Implementation
+
+* Data is fetched and cached at the start using the load_and_cache_data() method within the TaskManager class.
+* Cached attributes:
+  * self.cached_tasks
+  * self.cached_projects
+  * self.cached_categories
+* All operations (e.g., adding, updating, or retrieving tasks, projects, and categories) access these cached attributes instead of making direct calls to the Google Sheets API.
+
+### Benefits
+
+* **Performance Boost**: Faster data retrieval and processing.
+* **Quota Preservation**: Avoids exceeding Google Sheets API limits due to redundant calls.
+
 ## Reminders
 
 - Code Placement: Your code should reside in the `run.py` file.
