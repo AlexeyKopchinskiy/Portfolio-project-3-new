@@ -37,6 +37,8 @@ from google.oauth2.service_account import Credentials
 from gspread.exceptions import APIError
 import gspread
 
+# Import colorama for console colorization
+from colorama import Fore, Back, Style
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -499,25 +501,28 @@ class TaskManager:
         """
         Display all tasks in a table-like format with field names as the header.
         Excludes notes and category fields, and adds ': ' after the project name if present.
+        Use lorizes output to highlight high-priority tasks and headers
         """
         if not self.tasks:
-            print("No tasks found.")
+            print(Fore.RED + "No tasks found." + Style.RESET_ALL)
             return
 
         # Define the header row for the table
         headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
 
         # Print the header row
-        print(
-            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
-                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+        print(Style.BRIGHT + Fore.BLUE +
+              f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}"
+              + Style.RESET_ALL)
         print("-" * 130)
 
         # Print each task as a row in the table
         for task in self.tasks:
+            color = Fore.RED if task.priority == "High" else Fore.YELLOW if task.priority == "Medium" else Fore.GREEN
             project_display = f"{task.project['name']}: " if task.project["name"] else ""
-            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
-                  f"{project_display:<25} {task.name:<40}")
+            print(color +
+                  f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} {project_display:<25} {task.name:<40}"
+                  + Style.RESET_ALL)
 
     def review_deadlines(self):
         """
