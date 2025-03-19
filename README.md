@@ -58,15 +58,6 @@ The application uses the colorama library to add color to text and improve reada
   * _Empty Priority_: Gray background
 * **Headers**: Underlined and displayed in blue for clarity.
 
-### Example
-
-ID    Deadline     Priority   Status       Project                 Name
------------------------------------------------------------------------------------
-1     2025-03-25  High        Pending      Client A:               Urgent Meeting
-2     2025-03-30  Medium      In Progress Internal:                Code Review
-3     2025-04-05  Low         Completed    Client B:               Documentation
-4     2025-04-10               Pending      Internal:               Research
-
 ### Technical Details
 
 * Colorized output is achieved using the colorama library:
