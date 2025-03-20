@@ -68,6 +68,7 @@ class RetryLimitExceededError(Exception):
         Raised when the retry limit for an API call is exceeded.
     """
 
+
 def retry_with_backoff(func, *args, retries=5, delay=1):
     """
     Retry a function with exponential backoff in case of APIError (e.g., 429 quota errors).
@@ -500,9 +501,12 @@ class TaskManager:
         self.add_task(name, deadline, priority, category_id,
                       project_id, notes, create_date)
 
-    def view_tasks(self):
+    def view_tasks(self, sort_by="priority"):
         """
-        Display all tasks in a table-like format, respecting a fixed CONSOLE_WIDTH of 80 characters.
+        Display tasks in a table-like format with sorting options.
+        Default sorting is by priority.
+        Args:
+            sort_by (str): The attribute to sort the tasks by. Options: "priority", "deadline", "status", etc.
         """
         if not self.tasks:
             print("No tasks found.")
@@ -515,6 +519,30 @@ class TaskManager:
         if not visible_tasks:
             print("No tasks available to display (all are marked as 'Deleted').")
             return
+
+        # Determine the sorting key
+        if sort_by == "priority":
+            priority_order = {"High": 1, "Medium": 2, "Low": 3, "": 4}
+            sorted_tasks = sorted(
+                visible_tasks, key=lambda task: priority_order.get(
+                    task.priority, 5)
+            )
+        elif sort_by == "deadline":
+            sorted_tasks = sorted(
+                visible_tasks, key=lambda task: task.deadline or "")
+        elif sort_by == "status":
+            sorted_tasks = sorted(
+                visible_tasks, key=lambda task: task.status.lower())
+        elif sort_by == "project":
+            sorted_tasks = sorted(visible_tasks, key=lambda task: task.project["name"].lower(
+            ) if task.project["name"] else "")
+        elif sort_by == "name":
+            sorted_tasks = sorted(
+                visible_tasks, key=lambda task: task.name.lower())
+        else:
+            print(
+                f"Invalid sort option: '{sort_by}'. Displaying tasks without sorting.")
+            sorted_tasks = visible_tasks
 
         # Calculate column widths based on CONSOLE_WIDTH
         column_widths = {
@@ -541,11 +569,6 @@ class TaskManager:
         # Print the header with enforced left alignment and styling
         print(Style.BRIGHT + Fore.BLUE + header_row + Style.RESET_ALL)
         print("-" * CONSOLE_WIDTH)
-
-        # Sort tasks by priority, ensuring 'High' is at the top
-        priority_order = {"High": 1, "Medium": 2, "Low": 3, "": 4}
-        sorted_tasks = sorted(
-            visible_tasks, key=lambda task: priority_order.get(task.priority, 5))
 
         # Print each task as a row in the table
         for task in sorted_tasks:
@@ -574,6 +597,7 @@ class TaskManager:
                 f"{priority_display:<{column_widths['Priority']}} {task.status:<{column_widths['Status']}} "
                 f"{project_display:<{column_widths['Project']}} {name_display:<{column_widths['Name']}}"
             )
+
 
 
     def review_deadlines(self):
@@ -1134,11 +1158,11 @@ def main():
         elif choice == "6":
             manager.mark_task_completed()
         elif choice == "7":
-            manager.view_tasks_by_project()
+            manager.view_tasks(sort_by="project")
         elif choice == "8":
-            manager.view_tasks_by_priority()
+            manager.view_tasks(sort_by="priority")
         elif choice == "9":
-            manager.view_tasks_by_category()
+            manager.view_tasks(sort_by="category")
         elif choice == "10":
             print("Exiting Task Manager. Goodbye!")
             break
