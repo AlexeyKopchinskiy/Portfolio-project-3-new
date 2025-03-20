@@ -185,6 +185,36 @@ class TaskManager:
             self.cached_projects = []
             self.cached_categories = []
 
+    def refresh_cache(self):
+        """
+        Refresh the cached task data from the Google Sheet.
+        This ensures the in-memory task list is in sync with the latest data in the sheet.
+        """
+        try:
+            # Reset the task cache
+            self.tasks = []  # Clear current cache
+
+            # Fetch all rows from the Google Sheets
+            rows = self.tasks_sheet.get_all_values()
+
+            # Skip headers and populate the task cache
+            for row in rows[1:]:
+                task = {
+                    "task_id": row[0],
+                    "deadline": row[1],
+                    "priority": row[2],
+                    "status": row[3],
+                    "project": {"id": row[4], "name": row[5]},
+                    "name": row[6],
+                    "notes": row[7]
+                }
+                self.tasks.append(task)
+
+            print("\nCache successfully refreshed!")
+        except Exception as e:
+            print(f"Error refreshing cache: {e}")
+
+
 
     # Helper methods for data validation
 
