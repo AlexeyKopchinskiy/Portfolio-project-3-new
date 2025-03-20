@@ -74,41 +74,28 @@ The application uses the colorama library to add color to text and improve reada
 
 ## Deployment
 
-To deploy the application to Heroku, follow these steps:
-
-**1. Set Up Your Heroku Environment:**
-
-* Create a new Heroku app.
-* Go to the _Settings_ tab of your Heroku app.
-* Add the following buildpacks in this order:
-  * `heroku/python`
-  * `heroku/nodejs`
-
-**2. Set Config Vars:**
-
-* Add a Config Var called `PORT` and set it to `8000`.
-* If you use Google Sheets credentials, add another _Config Var_ called `CREDS` and paste the `JSON` credentials into the value field.
-
-**3. Prepare Your Repository:**
-
-* Ensure your code is properly committed to a _GitHub_ repository.
-* Your main script file must be named run.py.
-* Include a requirements.txt file listing all your dependencies.
-
-**4. Connect Heroku to GitHub:**
-
-* Under the Deploy tab in Heroku, connect your _GitHub_ repository.
-* Select the branch you want to deploy (usually main).
-
-**5. Deploy the Application:**
-
-* Click on `Deploy Branch` in the _Heroku_ dashboard.
-* Once deployed, your application can be accessed here.
-
-**6. Test Your Application:**
-
-* Make sure all features are functional in the deployed environment.
-* Verify your integration with Google Sheets works as intended.
+* **1. Clone the Repository**
+  * Make sure your main script file must be named run.py.
+* **2. Set Up Google API Credentials**
+  * Create a Google Cloud project and enable the Google Sheets API and Google Drive API.
+  * Create a service account and generate a creds.json file containing the credentials.
+  * Place the creds.json file in the root directory of the project.
+* **3. Set Up Your Heroku Environment:**
+  * Create a new Heroku app.
+  * Go to the _Settings_ tab of your Heroku app.
+  * Add the following buildpacks in this order:
+    * `heroku/python`
+    * `heroku/nodejs`
+  * Add a Config Var called `PORT` and set it to `8000`.
+  * If you use Google Sheets credentials, add another _Config Var_ called `CREDS` and paste the `JSON` credentials into the value field.
+  * Include a requirements.txt file listing all your dependencies.
+  * Under the Deploy tab in Heroku, connect your _GitHub_ repository.
+  * Select the branch you want to deploy (usually main).
+  * Click on `Deploy Branch` in the _Heroku_ dashboard.
+  * Once deployed, your application can be accessed here.
+* **4. Test Your Application:**
+  * Make sure all features are functional in the deployed environment.
+  * Verify your integration with Google Sheets works as intended.
 
 ## Using the Task Manager
 
