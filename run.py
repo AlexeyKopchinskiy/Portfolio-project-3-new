@@ -1146,7 +1146,8 @@ def main():
         print("7 - View tasks by project")
         print("8 - View tasks by priority")
         print("9 - View tasks by category")
-        print("10 - Exit")
+        print("10 - Refresh cache")
+        print("11 - Exit")
 
         choice = input("Enter your choice: ").strip()
         if choice == "1":
@@ -1167,7 +1168,9 @@ def main():
             manager.view_tasks_by_priority()
         elif choice == "9":
             manager.view_tasks_by_category()
-        elif choice == "10":
+        elif choice == "10":  # Handle cache refresh
+            self.refresh_cache()
+        elif choice == "11":
             print("Exiting Task Manager. Goodbye!")
             break
         else:
