@@ -185,6 +185,32 @@ class TaskManager:
             self.cached_projects = []
             self.cached_categories = []
 
+    def sync_cached_data_to_google_sheets(self):
+        """
+        Synchronize cached tasks and deleted tasks back to their respective Google Sheets tabs.
+        """
+        # Sync 'tasks' tab
+        self.tasks_sheet.clear()
+        for row in self.cached_tasks:
+            # Write each row, including headers
+            self.tasks_sheet.append_row(row)
+
+        # Sync 'deleted' tab
+        if not hasattr(self, "cached_deleted"):
+            self.cached_deleted = []  # Initialize if it doesn't exist
+
+        try:
+            deleted_sheet = self.sheet.worksheet("deleted")
+        except gspread.exceptions.WorksheetNotFound:
+            print("'Deleted' tab not found. Creating it now...")
+            deleted_sheet = self.sheet.add_worksheet(
+                title="deleted", rows="100", cols="20")
+
+        deleted_sheet.clear()
+        for row in self.cached_deleted:
+            deleted_sheet.append_row(row)  # Write each row, including headers
+
+
     # Helper methods for data validation
 
     def validate_task_name(self, name):
@@ -627,7 +653,6 @@ class TaskManager:
                 f"{task.status:<{column_widths['Status']}}"
             )
 
-
     def update_task(self):
         """
         Update an existing task by modifying its attributes.
@@ -828,7 +853,7 @@ class TaskManager:
         Archive a task by moving it to the 'Deleted' tab in Google Sheets
         and removing it from the 'Tasks' tab and in-memory list.
         """
-        if not self.tasks:
+        if not self.cached_tasks:
             print("No tasks available to delete.")
             return
 
@@ -1066,6 +1091,7 @@ class TaskManager:
             project_display = f"{task.project['name']}: " if task.project["name"] else ""
             print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
                   f"{project_display:<25} {task.name:<40}")
+
 
 # Initialize the TaskManager
 def main():
