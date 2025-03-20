@@ -579,10 +579,18 @@ class TaskManager:
     def review_deadlines(self):
         """
         Display all tasks with their deadlines in a table-like format,
-        respecting a fixed CONSOLE_WIDTH of 80 characters.
+        respecting a fixed CONSOLE_WIDTH of 80 characters, excluding tasks marked as 'Deleted'.
         """
         if not self.tasks:
             print("No tasks available.")
+            return
+
+        # Filter out tasks with the status 'Deleted'
+        visible_tasks = [
+            task for task in self.tasks if task.status.lower() != "deleted"]
+
+        if not visible_tasks:
+            print("No tasks available to display (all are marked as 'Deleted').")
             return
 
         # Calculate column widths based on CONSOLE_WIDTH
@@ -610,7 +618,8 @@ class TaskManager:
         print("-" * CONSOLE_WIDTH)
 
         # Sort tasks by deadlines (earliest first)
-        sorted_tasks = sorted(self.tasks, key=lambda task: task.deadline or "")
+        sorted_tasks = sorted(
+            visible_tasks, key=lambda task: task.deadline or "")
 
         # Print each task as a row in the table
         for task in sorted_tasks:
@@ -636,6 +645,7 @@ class TaskManager:
                 f"{task.deadline:<{column_widths['Deadline']}} {priority_display:<{column_widths['Priority']}} "
                 f"{task.status:<{column_widths['Status']}}"
             )
+
 
     def update_task(self):
         """
