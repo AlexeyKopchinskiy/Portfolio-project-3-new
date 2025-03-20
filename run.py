@@ -503,6 +503,8 @@ class TaskManager:
         Excludes notes and category fields, and adds ': ' after the project name if present.
         Use lorizes output to highlight high-priority tasks and headers
         """
+        console_width = 80  # Force fixed width for Heroku console
+
         if not self.tasks:
             print(Fore.RED + "No tasks found." + Style.RESET_ALL)
             return
@@ -515,7 +517,7 @@ class TaskManager:
               f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} \
                 {headers[4]:<25} {headers[5]:<40}" +
               Style.RESET_ALL)
-        print("-" * 130)
+        print("-" * console_width)
 
         # Print each task as a row in the table
         for task in self.tasks:
@@ -1005,9 +1007,6 @@ class TaskManager:
             project_display = f"{task.project['name']}: " if task.project["name"] else ""
             print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
                   f"{project_display:<25} {task.name:<40}")
-
-
-
 
 # Initialize the TaskManager
 def main():
