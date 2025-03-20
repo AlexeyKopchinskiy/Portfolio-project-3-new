@@ -1169,7 +1169,7 @@ def main():
         elif choice == "9":
             manager.view_tasks_by_category()
         elif choice == "10":  # Handle cache refresh
-            self.refresh_cache()
+            manager.refresh_cache()
         elif choice == "11":
             print("Exiting Task Manager. Goodbye!")
             break
