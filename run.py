@@ -627,135 +627,200 @@ class TaskManager:
                 f"{task.status:<{column_widths['Status']}}"
             )
 
-
     def update_task(self):
         """
-        Update a task's name or other fields in both the cached data and Google Sheets.
+        Update an existing task by modifying its attributes.
+        Changes are saved to both the in-memory list and Google Sheets.
         """
-        if not self.cached_tasks or len(self.cached_tasks) <= 1:  # Ensure there are tasks beyond headers
+        if not self.tasks:
             print("No tasks available to update.")
             return
 
-        # Extract headers and task data
-        headers = self.cached_tasks[0]  # Header row
-        tasks_data = self.cached_tasks[1:]  # Task rows
-
-        # Display tasks to help the user choose
+        # Display tasks in a formatted table-like format (like Option 3)
         print("\n--- Update a Task ---")
-        print("Available Tasks:")
-        for task in tasks_data:
-            try:
-                print(f"ID: {task[0]}, Name: {task[1]}, Deadline: {task[2]}, "
-                      f"Priority: {task[3]}, Status: {task[4]}, "
-                      f"Category: {task[5]}, Project: {task[6]}, Notes: {task[7]}")
-            except IndexError:
-                print("Error: Task structure is incorrect.")
-                return
+        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
+        print(
+            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
+                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
+        print("-" * 130)
+
+        for task in self.tasks:
+            project_display = f"{task.project['name']}: " if task.project["name"] else ""
+            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
+                  f"{project_display:<25} {task.name:<40}")
 
         # Get Task ID from the user
-        task_id = input(
-            "Enter the ID of the task you want to update: ").strip()
+        while True:
+            task_id = input(
+                "Enter the ID of the task you want to update: ").strip()
+            task = next((t for t in self.tasks if str(
+                t.task_id) == task_id), None)
+            if not task:
+                print("Task ID not found. Please try again.")
+            else:
+                break
 
-        # Find the task in cached data
-        task_to_update = next(
-            (task for task in tasks_data if str(task[0]) == task_id), None)
+        # Show update options
+        print("\n What would you like to update?")
+        print("1 - Task Name")
+        print("2 - Deadline")
+        print("3 - Priority")
+        print("4 - Notes")
+        print("5 - Status")
+        print("6 - Category")
+        print("7 - Project")
 
-        if not task_to_update:
-            print("Task ID not found. Please try again.")
-            return
+        # Main update loop
+        while True:
+            loaded_choice = input("Enter the number of your choice: ").strip()
 
-        # Display the fields as a numbered list
-        print("\nFields available to update:")
-        field_map = {  # Create a mapping of numbers to field names
-            1: "task_name",
-            2: "deadline",
-            3: "priority",
-            4: "notes",
-            5: "status",
-            6: "category",
-            7: "project"
-        }
-        for num, field in field_map.items():
-            print(f"{num}. {field}")
+            if loaded_choice == "1":  # Update Task Name
+                while True:
+                    print(
+                        "Enter the new task name or type 'cancel' to go back to the task list.")
+                    new_name = input("New task name: ").strip()
 
-        # Get the field number to update
-        try:
-            field_num = int(input(
-                "Enter the number corresponding to the field you want to update: ").strip())
-            # Map the number to the field name
-            field_to_update = field_map.get(field_num)
-            if not field_to_update:
-                print("Invalid field number. Please try again.")
-                return
-        except ValueError:
-            print("Invalid input. Please enter a number.")
-            return
+                    if new_name.lower() == "cancel":  # Check for cancellation
+                        print(
+                            "Task name update canceled. Returning to the task list...")
+                        return  # Exit this operation and go back to the main task list
 
-        # Get the new value for the selected field
-        new_value = input(
-            f"Enter the new value for {field_to_update}: ").strip()
-        if not new_value:
-            print(f"{field_to_update} cannot be empty.")
-            return
+                    error = self.validate_task_name(
+                        new_name)  # Validate task name
+                    if error:
+                        print(f"Error: {error}")
+                    else:
+                        task.name = new_name
+                        self.tasks_sheet.update_cell(
+                            int(task.task_id) + 1, 2, new_name)
+                        print("Task name updated successfully!")
+                        break
 
-        # Perform validation based on the field being updated
-        if field_to_update == "task_name":
-            validation_result = self.validate_task_name(new_value)
-            if validation_result:
-                print(validation_result)
-                return
+            elif loaded_choice == "2":  # Update Deadline
+                while True:
+                    new_deadline = input(
+                        "Enter the new deadline (YYYY-MM-DD): ").strip()
+                    error = self.validate_deadline(new_deadline)
+                    if error:
+                        print(f"Error: {error}")
+                    else:
+                        task.deadline = new_deadline
+                        self.tasks_sheet.update_cell(
+                            int(task.task_id) + 1, 4, new_deadline)
+                        print("Task deadline updated successfully!")
+                        break
 
-        if field_to_update == "deadline":
-            validation_result = self.validate_deadline(new_value)
-            if validation_result:
-                print(validation_result)
-                return
+            elif loaded_choice == "3":  # Update Priority
+                while True:
+                    new_priority = input(
+                        "Enter the new priority (High, Medium, Low): ").strip().capitalize()
+                    error = self.validate_priority(new_priority)
+                    if error:
+                        print(f"Error: {error}")
+                    else:
+                        task.priority = new_priority
+                        self.tasks_sheet.update_cell(
+                            int(task.task_id) + 1, 7, new_priority)
+                        print("Task priority updated successfully!")
+                        break
 
-        if field_to_update == "priority":
-            validation_result = self.validate_priority(new_value)
-            if validation_result:
-                print(validation_result)
-                return
+            elif loaded_choice == "4":  # Update Notes
+                while True:
+                    print(
+                        "Enter the new notes or type 'cancel' to go back to the task list.")
+                    new_notes = input("New notes: ").strip()
 
-        if field_to_update == "category":
-            validation_result = self.validate_category_id(new_value)
-            if validation_result:
-                print(validation_result)
-                return
+                    if new_notes.lower() == "cancel":  # Check for cancellation
+                        print("Notes update canceled. Returning to the task list...")
+                        return  # Exit the notes update operation and return to the main task list
 
-        if field_to_update == "project":
-            validation_result = self.validate_project_id(new_value)
-            if validation_result:
-                print(validation_result)
-                return
+                    # Check for maximum length
+                    if len(new_notes) > 250:
+                        print(
+                            "Warning: Notes exceeded 250 characters and will be truncated.")
+                        new_notes = new_notes[:250]
 
-        # Update the selected field in the cached data
-        try:
-            # Get the column index dynamically
-            col_index = headers.index(field_to_update)
-            task_to_update[col_index] = new_value  # Update the cached task
-        except ValueError:
-            print(
-                f"Error: Could not find '{field_to_update}' column in headers.")
-            return
+                    # Update the task and the sheet
+                    task.notes = new_notes
+                    self.tasks_sheet.update_cell(
+                        int(task.task_id) + 1, 10, new_notes)
+                    print("Task notes updated successfully!")
+                    break
 
-        # Update the relevant cell in Google Sheets
-        try:
-            row_index = self.cached_tasks.index(
-                task_to_update)  # Find the row in the cache
-            tasks.update_cell(row_index + 1, col_index + 1,
-                              new_value)  # Update the correct cell
-            print(f"{field_to_update} updated successfully in Google Sheets.")
-        except APIError as e:
-            print(f"Error while updating Google Sheets: {e}")
-            return
+            elif loaded_choice == "5":  # Update Status
+                while True:
+                    new_status = input(
+                        "Enter the new status (Pending, In Progress, \
+                            Completed): ").strip()
+                    if new_status not in ["Pending", "In Progress", "Completed"]:
+                        print(
+                            "Invalid status. Please choose from Pending, \
+                                In Progress, or Completed.")
+                    else:
+                        task.status = new_status
+                        self.tasks_sheet.update_cell(
+                            int(task.task_id) + 1, 6, new_status)
+                        print("Task status updated successfully!")
+                        break
 
-        # Synchronize the cached data to match the updated Google Sheet
-        self.cached_tasks = [headers] + \
-            tasks.get_all_values()[1:]  # Reload cached data
+            elif loaded_choice == "6":  # Update Category
+                # Display available categories
+                print("Available categories:")
+                category_data = retry_with_backoff(self.categories_sheet.get_all_values)[
+                    1:]  # Skip header row
+                for row in category_data:
+                    print(f"ID: {row[0]}, Name: {row[1]}")
 
-        print(
-            f"Task '{task_to_update[0]}' {field_to_update} has been updated to '{new_value}'.")
+                # Prompt the user to select a new category
+                while True:
+                    new_category_id = input(
+                        "Enter the new category ID: ").strip()
+                    error = self.validate_category_id(new_category_id)
+                    if error:
+                        print(f"Error: {error}")
+                    else:
+                        new_category_name = self.get_category_name(
+                            new_category_id)
+                        task.category = {"id": new_category_id,
+                                         "name": new_category_name}
+                        # Update category in Google Sheet
+                        self.tasks_sheet.update_cell(
+                            int(task.task_id) + 1, 8, new_category_id)
+                        print("Task category updated successfully!")
+                        break
+
+            elif loaded_choice == "7":  # Update Project
+                # Display available projects
+                print("Available projects:")
+                project_data = retry_with_backoff(self.projects_sheet.get_all_values)[
+                    1:]  # Skip header row
+                for row in project_data:
+                    print(f"ID: {row[0]}, Name: {row[1]}")
+
+                # Prompt the user to select a new project
+                while True:
+                    new_project_id = input(
+                        "Enter the new project ID: ").strip()
+                    error = self.validate_project_id(new_project_id)
+                    if error:
+                        print(f"Error: {error}")
+                    else:
+                        new_project_name = self.get_project_name(
+                            new_project_id)
+                        task.project = {"id": new_project_id,
+                                        "name": new_project_name}
+                        # Update project in Google Sheet
+                        self.tasks_sheet.update_cell(
+                            int(task.task_id) + 1, 9, new_project_id)
+                        print("Task project updated successfully!")
+                        break
+
+            else:
+                print("Invalid choice. Please choose a valid option.")
+                continue  # Prompt user again for a valid choice
+
+            # Exit the update loop after successful editing
+            break
 
 
 
