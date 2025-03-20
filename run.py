@@ -58,6 +58,8 @@ categories = SHEET.worksheet('category')
 
 data = tasks.get_all_values()
 
+CONSOLE_WIDTH = 100  # Force fixed width for Heroku console
+
 # Utility function for retrying API calls with exponential backoff
 
 class RetryLimitExceededError(Exception):
@@ -499,65 +501,71 @@ class TaskManager:
 
     def view_tasks(self):
         """
-        Display all tasks in a table-like format with field names as the header.
-        Excludes notes and category fields, and adds ': ' after the project name if present.
-        Use lorizes output to highlight high-priority tasks and headers
+        Display all tasks in a table-like format, respecting a fixed CONSOLE_WIDTH of 80 characters.
         """
-        console_width = 80  # Force fixed width for Heroku console
-
         if not self.tasks:
-            print(Fore.RED + "No tasks found." + Style.RESET_ALL)
+            print("No tasks found.")
             return
 
-        # Sort tasks by priority, ensuring 'High' comes first,
-        # followed by 'Medium', 'Low', and others
-        priority_order = {"High": 1, "Medium": 2,
-                          "Low": 3, "": 4}  # Empty priorities go last
-        sorted_tasks = sorted(
-            self.tasks, key=lambda task: priority_order.get(task.priority, 5))
+        # Calculate column widths based on CONSOLE_WIDTH
+        column_widths = {
+            "ID": 4,
+            "Deadline": 10,
+            "Priority": 8,
+            "Status": 12,
+            "Project": 20,
+            # Remaining space for the 'Name' column
+            "Name": CONSOLE_WIDTH - (4 + 10 + 8 + 12 + 20 + 5)
+        }
+
+        # Ensure all column widths fit within CONSOLE_WIDTH
+        assert sum(column_widths.values()) + len(column_widths) - \
+            1 <= CONSOLE_WIDTH, "Column widths exceed console width!"
 
         # Define the header row for the table
         headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
-
-        # Print the header row
-        # print(Style.BRIGHT + Fore.BLUE +
-        #       f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} \
-        #         {headers[4]:<25} {headers[5]:<40}" +
-        #       Style.RESET_ALL)
-        # print("-" * console_width)
-
-        # Print the header row with enforced left alignment
         header_row = (
-            f"{headers[0]:<4} {headers[1]:<10} {headers[2]:<8} {headers[3]:<12} \
-                {headers[4]:<25} {headers[5]:<40}"
+            f"{headers[0]:<{column_widths['ID']}} {headers[1]:<{column_widths['Deadline']}} "
+            f"{headers[2]:<{column_widths['Priority']}} {headers[3]:<{column_widths['Status']}} "
+            f"{headers[4]:<{column_widths['Project']}} {headers[5]:<{column_widths['Name']}}"
         )
+        # Print the header with enforced left alignment and styling
+        print(Style.BRIGHT + Fore.BLUE + header_row + Style.RESET_ALL)
+        print("-" * CONSOLE_WIDTH)
 
-        # Use bright style for headers
-        print(Style.BRIGHT + Fore.BLUE + header_row +
-              Style.RESET_ALL)
-        # Divider line for clarity
-        print("-" * console_width)
+        # Sort tasks by priority, ensuring 'High' is at the top
+        priority_order = {"High": 1, "Medium": 2, "Low": 3, "": 4}
+        sorted_tasks = sorted(
+            self.tasks, key=lambda task: priority_order.get(task.priority, 5))
 
         # Print each task as a row in the table
         for task in sorted_tasks:
-            # Ensure all priorities are 8 characters wide
+            # Truncate long text for display
+            project_display = f"{task.project['name']}: " if task.project["name"] else ""
+            project_display = project_display[:column_widths["Project"] - 3] + "..." if len(
+                project_display) > column_widths["Project"] else project_display
+            name_display = task.name[:column_widths["Name"] - 3] + \
+                "..." if len(task.name) > column_widths["Name"] else task.name
+
+            # Colorize priorities
             if task.priority == "High":
-                priority_display = Back.RED + Fore.WHITE + " High   " + Style.RESET_ALL
+                priority_display = Back.RED + Fore.WHITE + "High  " + Style.RESET_ALL
             elif task.priority == "Medium":
-                priority_display = Back.MAGENTA + Fore.WHITE + " Medium " + Style.RESET_ALL
+                priority_display = Back.MAGENTA + Fore.WHITE + "Medium" + Style.RESET_ALL
             elif task.priority == "Low":
-                priority_display = Back.GREEN + Fore.WHITE + " Low    " + Style.RESET_ALL
-            elif not task.priority:  # Empty priority
-                priority_display = Back.WHITE + Fore.WHITE + " None   " + Style.RESET_ALL
+                priority_display = Back.GREEN + Fore.WHITE + "Low   " + Style.RESET_ALL
+            elif not task.priority:
+                priority_display = Back.BLACK + Fore.WHITE + "      " + Style.RESET_ALL
             else:
-                # Handle unexpected priorities gracefully
                 priority_display = task.priority.ljust(6)
 
-            project_display = f"{task.project['name']}: " if task.project["name"] else ""
-
             # Print the task row
-            print(f"{task.task_id:<4} {task.deadline:<10} {priority_display:<8} {task.status:<12} "
-                  f"{project_display:<25} {task.name:<40}")
+            print(
+                f"{task.task_id:<{column_widths['ID']}} {task.deadline:<{column_widths['Deadline']}} "
+                f"{priority_display:<{column_widths['Priority']}} {task.status:<{column_widths['Status']}} "
+                f"{project_display:<{column_widths['Project']}} {name_display:<{column_widths['Name']}}"
+            )
+
 
     def review_deadlines(self):
         """
