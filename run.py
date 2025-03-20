@@ -508,6 +508,14 @@ class TaskManager:
             print("No tasks found.")
             return
 
+        # Filter out tasks with the status 'Deleted'
+        visible_tasks = [
+            task for task in self.tasks if task.status.lower() != "deleted"]
+
+        if not visible_tasks:
+            print("No tasks available to display (all are marked as 'Deleted').")
+            return
+
         # Calculate column widths based on CONSOLE_WIDTH
         column_widths = {
             "ID": 4,
@@ -537,7 +545,7 @@ class TaskManager:
         # Sort tasks by priority, ensuring 'High' is at the top
         priority_order = {"High": 1, "Medium": 2, "Low": 3, "": 4}
         sorted_tasks = sorted(
-            self.tasks, key=lambda task: priority_order.get(task.priority, 5))
+            visible_tasks, key=lambda task: priority_order.get(task.priority, 5))
 
         # Print each task as a row in the table
         for task in sorted_tasks:
@@ -566,6 +574,7 @@ class TaskManager:
                 f"{priority_display:<{column_widths['Priority']}} {task.status:<{column_widths['Status']}} "
                 f"{project_display:<{column_widths['Project']}} {name_display:<{column_widths['Name']}}"
             )
+
 
     def review_deadlines(self):
         """
@@ -850,7 +859,8 @@ class TaskManager:
         # Get Task ID or cancel option from the user
         while True:
             task_id = input(
-                "Enter the ID of the task you want to mark as 'Deleted', or type 'cancel' to return to the main menu: ").strip()
+                "Enter the ID of the task you want to mark as 'Deleted', \
+                    or type 'cancel' to return to the main menu: ").strip()
 
             if task_id.lower() == "cancel":  # Check for cancel input
                 print("Task deletion canceled. Returning to the main menu...")
@@ -883,7 +893,7 @@ class TaskManager:
                               "Deleted")  # Update the "Status" cell
             print(
                 f"Task '{task_to_update[1]}' status updated to 'Deleted' in Google Sheets.")
-        except Exception as e:
+        except ImportError as e:
             print(f"Error while updating Google Sheets: {e}")
             return
 
