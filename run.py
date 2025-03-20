@@ -877,17 +877,23 @@ class TaskManager:
                 print("Error: Task structure is incorrect.")
                 return
 
-        # Get Task ID from the user
-        task_id = input(
-            "Enter the ID of the task you want to delete: ").strip()
+        # Get Task ID or cancel option from the user
+        while True:
+            task_id = input(
+                "Enter the ID of the task you want to delete, or type 'cancel' to return to the main menu: ").strip()
 
-        # Find the task in cached data
-        task_to_delete = next(
-            (task for task in tasks_data if str(task[0]) == task_id), None)
+            if task_id.lower() == "cancel":  # Check for cancel input
+                print("Task deletion canceled. Returning to the main menu...")
+                return  # Exit the delete task method
 
-        if not task_to_delete:
-            print("Task ID not found. Please try again.")
-            return
+            # Find the task in cached data
+            task_to_delete = next(
+                (task for task in tasks_data if str(task[0]) == task_id), None)
+
+            if not task_to_delete:
+                print("Task ID not found. Please try again.")
+            else:
+                break  # Exit the input loop if the task is found
 
         # Ensure the "Deleted" tab exists in Google Sheets
         try:
@@ -938,6 +944,7 @@ class TaskManager:
 
         print(
             f"Task '{task_to_delete[1]}' has been archived and moved to the 'Deleted' tab.")
+
 
     def mark_task_completed(self):
         """
