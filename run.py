@@ -185,6 +185,7 @@ class TaskManager:
             self.cached_projects = []
             self.cached_categories = []
 
+
     def refresh_cache(self):
         """
         Refresh the cached data from Google Sheets.
