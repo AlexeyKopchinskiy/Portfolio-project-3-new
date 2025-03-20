@@ -826,58 +826,89 @@ class TaskManager:
     def delete_task(self):
         """
         Archive a task by moving it to the 'Deleted' tab in Google Sheets
-        and removing it from the 'Tasks' tab and in-memory list.
+        and removing it from the 'Tasks' tab and in-memory cache.
         """
-        if not self.tasks:
+        if not self.cached_tasks or len(self.cached_tasks) <= 1:  # Ensure there are tasks beyond headers
             print("No tasks available to delete.")
             return
+
+        # Extract headers and task data
+        headers = self.cached_tasks[0]  # Header row
+        tasks_data = self.cached_tasks[1:]  # Task rows
 
         # Display tasks to help the user choose
         print("\n--- Delete (Archive) a Task ---")
         print("Available Tasks:")
-        for task in self.tasks:
-            print(
-                f"ID: {task.task_id}, Name: {task.name}, Status: {task.status}")
+        for task in tasks_data:
+            try:
+                print(f"ID: {task[0]}, Name: {task[1]}, Status: {task[4]}")
+            except IndexError:
+                print("Error: Task structure is incorrect.")
+                return
 
         # Get Task ID from the user
         task_id = input(
             "Enter the ID of the task you want to delete: ").strip()
-        task = next((t for t in self.tasks if str(
-            t.task_id) == task_id), None)
 
-        if not task:
+        # Find the task in cached data
+        task_to_delete = next(
+            (task for task in tasks_data if str(task[0]) == task_id), None)
+
+        if not task_to_delete:
             print("Task ID not found. Please try again.")
             return
 
-        # Move the task to the "Deleted" tab
-        deleted_tab = SHEET.worksheet("deleted")
-        deleted_tab.append_row([
-            task.task_id,  # Task ID
-            task.name,     # Task Name
-            datetime.now().strftime("%Y-%m-%d"),  # Deletion Date
-            task.deadline,  # Deadline
-            task.complete_date if task.complete_date else "",  # Complete Date
-            task.status,   # Status
-            task.priority,  # Priority
-            task.category,  # Category ID
-            task.project,  # Project ID
-            task.notes     # Notes
-        ])
+        # Ensure the "Deleted" tab exists in Google Sheets
+        try:
+            deleted_sheet = SHEET.worksheet("deleted")
+        except gspread.exceptions.WorksheetNotFound:
+            print("'Deleted' tab not found. Creating it now...")
+            deleted_sheet = SHEET.add_worksheet(
+                title="deleted", rows="100", cols="20")
+            # Add headers to the "Deleted" tab
+            deleted_sheet.append_row(["ID", "Name", "Deletion Date", "Deadline", "Complete Date", "Status",
+                                      "Priority", "Category", "Project", "Notes"])
 
-        # Find the row in the "Tasks" tab
-        task_rows = retry_with_backoff(self.tasks_sheet.get_all_values)
+        # Flatten the task data
+        flattened_task = [
+            str(task_to_delete[0]),  # Task ID
+            str(task_to_delete[1]),  # Task Name
+            datetime.now().strftime("%Y-%m-%d"),  # Deletion Date
+            str(task_to_delete[2] if len(task_to_delete)
+                > 2 else ""),  # Deadline
+            str(task_to_delete[3] if len(task_to_delete)
+                > 3 else ""),  # Complete Date
+            str(task_to_delete[4] if len(
+                task_to_delete) > 4 else ""),  # Status
+            str(task_to_delete[5] if len(task_to_delete)
+                > 5 else ""),  # Priority
+            str(task_to_delete[6] if len(task_to_delete)
+                > 6 else ""),  # Category
+            str(task_to_delete[7] if len(
+                task_to_delete) > 7 else ""),  # Project
+            str(task_to_delete[8] if len(task_to_delete) > 8 else ""),  # Notes
+        ]
+
+        # Add the task to the "Deleted" tab
+        deleted_sheet.append_row(flattened_task)
+
+        # Find the task row in the "Tasks" tab and delete it
+        task_rows = tasks.get_all_values()  # Fetch all rows from the "Tasks" tab
         for i, row in enumerate(task_rows):
-            if row[0] == task.task_id:  # Match the Task ID
-                self.tasks_sheet.delete_rows(i + 1)  # Row index is 1-based
+            if row[0] == str(task_to_delete[0]):  # Match the Task ID
+                tasks.delete_rows(i + 1)  # Row index is 1-based
                 print(
-                    f"Task '{task.name}' has been removed from the 'Tasks' tab.")
+                    f"Task '{task_to_delete[1]}' has been removed from the 'Tasks' tab.")
                 break
 
-        # Remove the task from the in-memory list
-        self.tasks.remove(task)
+        # Remove the task from the cached tasks
+        self.cached_tasks = [
+            headers] + [task for task in tasks_data if str(task[0]) != task_id]
 
         print(
-            f"Task '{task.name}' has been archived and moved to the 'Deleted' tab.")
+            f"Task '{task_to_delete[1]}' has been archived and moved to the 'Deleted' tab.")
+
+
 
     def mark_task_completed(self):
         """
