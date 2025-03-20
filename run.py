@@ -856,11 +856,11 @@ class TaskManager:
 
     def delete_task(self):
         """
-        Archive a task by moving it to the 'Deleted' tab in Google Sheets
-        and removing it from the 'Tasks' tab and in-memory cache.
+        Update the status of a task to 'Deleted' in both the cached data
+        and Google Sheets without removing it or moving it to another tab.
         """
         if not self.cached_tasks or len(self.cached_tasks) <= 1:  # Ensure there are tasks beyond headers
-            print("No tasks available to delete.")
+            print("No tasks available to update to 'Deleted' status.")
             return
 
         # Extract headers and task data
@@ -868,7 +868,7 @@ class TaskManager:
         tasks_data = self.cached_tasks[1:]  # Task rows
 
         # Display tasks to help the user choose
-        print("\n--- Delete (Archive) a Task ---")
+        print("\n--- Mark a Task as Deleted ---")
         print("Available Tasks:")
         for task in tasks_data:
             try:
@@ -880,70 +880,45 @@ class TaskManager:
         # Get Task ID or cancel option from the user
         while True:
             task_id = input(
-                "Enter the ID of the task you want to delete, or type 'cancel' to return to the main menu: ").strip()
+                "Enter the ID of the task you want to mark as 'Deleted', or type 'cancel' to return to the main menu: ").strip()
 
             if task_id.lower() == "cancel":  # Check for cancel input
                 print("Task deletion canceled. Returning to the main menu...")
                 return  # Exit the delete task method
 
             # Find the task in cached data
-            task_to_delete = next(
+            task_to_update = next(
                 (task for task in tasks_data if str(task[0]) == task_id), None)
 
-            if not task_to_delete:
+            if not task_to_update:
                 print("Task ID not found. Please try again.")
             else:
                 break  # Exit the input loop if the task is found
 
-        # Ensure the "Deleted" tab exists in Google Sheets
+        # Update the status of the task in the cached data
         try:
-            deleted_sheet = SHEET.worksheet("deleted")
-        except gspread.exceptions.WorksheetNotFound:
-            print("'Deleted' tab not found. Creating it now...")
-            deleted_sheet = SHEET.add_worksheet(
-                title="deleted", rows="100", cols="20")
-            # Add headers to the "Deleted" tab
-            deleted_sheet.append_row(["ID", "Name", "Deletion Date", "Deadline", "Complete Date", "Status",
-                                      "Priority", "Category", "Project", "Notes"])
+            # Find the column index for the "Status" field
+            col_index = headers.index("Status")
+            # Update the cached task's status
+            task_to_update[col_index] = "Deleted"
+        except ValueError:
+            print("Error: 'Status' column not found in headers.")
+            return
 
-        # Flatten the task data
-        flattened_task = [
-            str(task_to_delete[0]),  # Task ID
-            str(task_to_delete[1]),  # Task Name
-            datetime.now().strftime("%Y-%m-%d"),  # Deletion Date
-            str(task_to_delete[2] if len(task_to_delete)
-                > 2 else ""),  # Deadline
-            str(task_to_delete[3] if len(task_to_delete)
-                > 3 else ""),  # Complete Date
-            str(task_to_delete[4] if len(
-                task_to_delete) > 4 else ""),  # Status
-            str(task_to_delete[5] if len(task_to_delete)
-                > 5 else ""),  # Priority
-            str(task_to_delete[6] if len(task_to_delete)
-                > 6 else ""),  # Category
-            str(task_to_delete[7] if len(
-                task_to_delete) > 7 else ""),  # Project
-            str(task_to_delete[8] if len(task_to_delete) > 8 else ""),  # Notes
-        ]
+        # Update the relevant cell in Google Sheets
+        try:
+            # Find the row index in the cached data
+            row_index = self.cached_tasks.index(task_to_update)
+            tasks.update_cell(row_index + 1, col_index + 1,
+                              "Deleted")  # Update the "Status" cell
+            print(
+                f"Task '{task_to_update[1]}' status updated to 'Deleted' in Google Sheets.")
+        except Exception as e:
+            print(f"Error while updating Google Sheets: {e}")
+            return
 
-        # Add the task to the "Deleted" tab
-        deleted_sheet.append_row(flattened_task)
+        print(f"Task '{task_to_update[1]}' has been marked as 'Deleted'.")
 
-        # Find the task row in the "Tasks" tab and delete it
-        task_rows = tasks.get_all_values()  # Fetch all rows from the "Tasks" tab
-        for i, row in enumerate(task_rows):
-            if row[0] == str(task_to_delete[0]):  # Match the Task ID
-                tasks.delete_rows(i + 1)  # Row index is 1-based
-                print(
-                    f"Task '{task_to_delete[1]}' has been removed from the 'Tasks' tab.")
-                break
-
-        # Remove the task from the cached tasks
-        self.cached_tasks = [
-            headers] + [task for task in tasks_data if str(task[0]) != task_id]
-
-        print(
-            f"Task '{task_to_delete[1]}' has been archived and moved to the 'Deleted' tab.")
 
 
     def mark_task_completed(self):
