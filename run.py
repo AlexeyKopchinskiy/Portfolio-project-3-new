@@ -186,37 +186,6 @@ class TaskManager:
             self.cached_categories = []
 
 
-    def refresh_cache(self):
-        """
-        Refresh the cached data from Google Sheets.
-        """
-        try:
-            # Fetch updated task data from the 'Tasks' sheet
-            self.tasks = []  # Reset the cache
-            task_rows = self.tasks_sheet.get_all_values()  # Fetch all rows
-            task_data = task_rows[1:]  # Skip the header row
-
-            for row in task_data:
-                self.tasks.append({
-                    "task_id": row[0],
-                    "deadline": row[1],
-                    "priority": row[2],
-                    "status": row[3],
-                    "project": {"id": row[4], "name": row[5]},
-                    "name": row[6],
-                    "notes": row[7]
-                })
-            print("Cache successfully refreshed.")
-        except gspread.exceptions.APIError as e:
-            print(f"Google Sheets API error while refreshing cache: {e}")
-        except ConnectionError as e:
-            print(f"Network connection error while refreshing cache: {e}")
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-
-
-
-
     # Helper methods for data validation
 
     def validate_task_name(self, name):
@@ -459,8 +428,6 @@ class TaskManager:
         print(f"Task '{name}' added successfully with ID {new_task_id}, "
               f"Category '{category_name}', Project '{project_name}', \
                 and Create Date '{create_date}'.")
-        # refresh cache
-        self.refresh_cache()
 
     def create_task_from_input(self):
         """
@@ -856,8 +823,6 @@ class TaskManager:
             # Exit the update loop after successful editing
             break
 
-        # After updating the task, refresh the cache
-        self.refresh_cache()
 
     def delete_task(self):
         """
@@ -943,9 +908,6 @@ class TaskManager:
 
         print(
             f"Task '{task_to_delete[1]}' has been archived and moved to the 'Deleted' tab.")
-
-        # refresh the cache
-        self.refresh_cache()
 
     def mark_task_completed(self):
         """
