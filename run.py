@@ -97,6 +97,34 @@ def retry_with_backoff(func, *args, retries=5, delay=1):
     raise RetryLimitExceededError(
         f"Exceeded maximum retries for function {func.__name__}")
 
+
+def refresh_cache(self):
+    """
+    Refresh the cached data from Google Sheets.
+    """
+    try:
+        # Fetch updated task data from the 'Tasks' sheet
+        self.tasks = []  # Reset the cache
+        task_rows = retry_with_backoff(
+            self.tasks_sheet.get_all_values())  # Fetch all rows
+        headers = task_rows[0]  # Extract headers
+        task_data = task_rows[1:]  # Extract task rows (excluding headers)
+
+        for row in task_data:
+            # Assuming your task rows follow the correct structure
+            self.tasks.append({
+                "task_id": row[0],
+                "deadline": row[1],
+                "priority": row[2],
+                "status": row[3],
+                "project": {"id": row[4], "name": row[5]},
+                "name": row[6],
+                "notes": row[7]
+            })
+        print("Cache successfully refreshed.")
+    except Exception as e:
+        print(f"Error refreshing cache: {e}")
+
 class Task:
     """
     Represents an individual task with related attributes and methods.
@@ -821,6 +849,8 @@ class TaskManager:
 
             # Exit the update loop after successful editing
             break
+
+
 
 
 
