@@ -978,150 +978,6 @@ class TaskManager:
         print(
             f"Task '{task.name}' has been marked as completed successfully!")
 
-    def view_tasks_by_project(self):
-        """
-        Display tasks filtered by a specific project ID in a table-like format.
-        """
-        if not self.tasks:
-            print("No tasks available to view.")
-            return
-
-        # Display available projects
-        print("\n--- View Tasks by Project ---")
-        print("Available Projects:")
-        project_ids = [row[0] for row in retry_with_backoff(self.projects_sheet.get_all_values)[
-            1:]]  # Skip header
-        # Skip header
-        for row in retry_with_backoff(self.projects_sheet.get_all_values)[1:]:
-            print(f"ID: {row[0]}, Name: {row[1]}")
-
-        # Get the project ID from the user
-        project_id = input("Enter the Project ID to view tasks for: ").strip()
-        if project_id not in project_ids:
-            print("Invalid Project ID. Please try again.")
-            return
-
-        # Filter tasks by project ID
-        filtered_tasks = [
-            task for task in self.tasks if task.project["id"] == project_id
-        ]
-
-        if not filtered_tasks:
-            print(f"No tasks found for Project ID {project_id}.")
-            return
-
-        # Define the header row
-        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
-
-        # Print the header row
-        print(
-            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
-                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
-        print("-" * 130)
-
-        # Print each task
-        for task in filtered_tasks:
-            project_display = f"{task.project['name']}: " if task.project["name"] else ""
-            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
-                  f"{project_display:<25} {task.name:<40}")
-
-    def view_tasks_by_priority(self):
-        """
-        Display tasks filtered by a specific priority in a table-like format.
-        """
-        if not self.tasks:
-            print("No tasks available.")
-            return
-
-        # Ask the user to specify a priority
-        print("\n --- View Tasks by Priority ---")
-        print("\n Available priorities: High, Medium, Low")
-        selected_priority = input(
-            "Enter the priority to filter by: ").strip().capitalize()
-
-        # Validate the user's input
-        if selected_priority not in ["High", "Medium", "Low"]:
-            print("Invalid priority. Please choose from High, Medium, or Low.")
-            return
-
-        # Filter tasks by the selected priority
-        filtered_tasks = [
-            task for task in self.tasks if task.priority == selected_priority]
-
-        if not filtered_tasks:
-            print(f"No tasks found with priority: {selected_priority}.")
-            return
-
-        # Define headers for the table
-        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
-
-        # Print the header row
-        print(
-            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
-                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
-        print("-" * 130)
-
-        # Print each filtered task
-        for task in filtered_tasks:
-            project_display = f"{task.project['name']}: " if task.project["name"] else ""
-            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
-                  f"{project_display:<25} {task.name:<40}")
-
-    def view_tasks_by_category(self):
-        """
-        Display tasks filtered by a specific category in a table-like format.
-        """
-        if not self.tasks:
-            print("No tasks available.")
-            return
-
-        # Retrieve the list of categories dynamically from the Google Sheets
-        print("\n--- View Tasks by Category ---")
-        category_data = retry_with_backoff(self.categories_sheet.get_all_values)[
-            1:]  # Skip the header row
-        # Extract category names
-        available_categories = [row[1] for row in category_data if row[1]]
-
-        if not available_categories:
-            print("No categories found in the Google Sheet.")
-            return
-
-        # Display the available categories
-        print("Available Categories:")
-        for category in available_categories:
-            print(f"- {category}")
-
-        # Ask the user to select a category
-        selected_category = input(
-            "\nEnter the category to filter by: ").strip()
-
-        # Validate the selected category
-        if selected_category not in available_categories:
-            print("Invalid category. Please select a valid category from the list.")
-            return
-
-        # Filter tasks by the selected category (compare against task.category["name"])
-        filtered_tasks = [
-            task for task in self.tasks if task.category["name"] == selected_category]
-
-        if not filtered_tasks:
-            print(f"No tasks found in category: {selected_category}.")
-            return
-
-        # Define headers for the table
-        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
-
-        # Print the header row
-        print(
-            f"\n{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} {headers[3]:<12} \
-                {headers[4]:<25} {headers[5]:<40}")
-        print("-" * 130)
-
-        # Print each filtered task
-        for task in filtered_tasks:
-            project_display = f"{task.project['name']}: " if task.project["name"] else ""
-            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
-                  f"{project_display:<25} {task.name:<40}")
 
 # Initialize the TaskManager
 def main():
@@ -1141,8 +997,7 @@ def main():
         print("6 - Mark a task as completed")
         print("7 - View tasks by project")
         print("8 - View tasks by priority")
-        print("9 - View tasks by category")
-        print("10 - Exit")
+        print("9 - Exit")
 
         choice = input("Enter your choice: ").strip()
         if choice == "1":
@@ -1162,8 +1017,6 @@ def main():
         elif choice == "8":
             manager.view_tasks(sort_by="priority")
         elif choice == "9":
-            manager.view_tasks(sort_by="category")
-        elif choice == "10":
             print("Exiting Task Manager. Goodbye!")
             break
         else:
