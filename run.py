@@ -566,35 +566,67 @@ class TaskManager:
                 f"{project_display:<{column_widths['Project']}} {name_display:<{column_widths['Name']}}"
             )
 
-
     def review_deadlines(self):
         """
-        Display tasks sorted by their deadlines in a table-like format.
+        Display all tasks with their deadlines in a table-like format,
+        respecting a fixed CONSOLE_WIDTH of 80 characters.
         """
         if not self.tasks:
-            print("No tasks found.")
+            print("No tasks available.")
             return
 
-        # Sort tasks by deadline (convert to datetime for proper sorting)
-        sorted_tasks = sorted(
-            self.tasks,
-            key=lambda task: datetime.strptime(task.deadline, "%Y-%m-%d")
+        # Calculate column widths based on CONSOLE_WIDTH
+        column_widths = {
+            "ID": 5,
+            "Name": 40,
+            "Deadline": 12,
+            "Priority": 10,
+            "Status": 10
+        }
+
+        # Ensure all column widths fit within CONSOLE_WIDTH
+        assert sum(column_widths.values()) + len(column_widths) - \
+            1 <= CONSOLE_WIDTH, "Column widths exceed console width!"
+
+        # Define the header row for the table
+        headers = ["ID", "Name", "Deadline", "Priority", "Status"]
+        header_row = (
+            f"{headers[0]:<{column_widths['ID']}} {headers[1]:<{column_widths['Name']}} "
+            f"{headers[2]:<{column_widths['Deadline']}} {headers[3]:<{column_widths['Priority']}} "
+            f"{headers[4]:<{column_widths['Status']}}"
         )
+        # Print the header with enforced left alignment and styling
+        print(Style.BRIGHT + Fore.BLUE + header_row + Style.RESET_ALL)
+        print("-" * CONSOLE_WIDTH)
 
-        # Define the header row
-        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
+        # Sort tasks by deadlines (earliest first)
+        sorted_tasks = sorted(self.tasks, key=lambda task: task.deadline or "")
 
-        # Print the header row
-        print(
-            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
-                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
-        print("-" * 130)
-
-        # Print each task
+        # Print each task as a row in the table
         for task in sorted_tasks:
-            project_display = f"{task.project['name']}: " if task.project["name"] else ""
-            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
-                  f"{project_display:<25} {task.name:<40}")
+            # Truncate long text for display
+            name_display = task.name[:column_widths["Name"] - 3] + \
+                "..." if len(task.name) > column_widths["Name"] else task.name
+
+            # Colorize priorities
+            if task.priority == "High":
+                priority_display = Back.RED + Fore.WHITE + "High  " + Style.RESET_ALL
+            elif task.priority == "Medium":
+                priority_display = Back.MAGENTA + Fore.WHITE + "Medium" + Style.RESET_ALL
+            elif task.priority == "Low":
+                priority_display = Back.GREEN + Fore.WHITE + "Low   " + Style.RESET_ALL
+            elif not task.priority:
+                priority_display = Back.BLACK + Fore.WHITE + "      " + Style.RESET_ALL
+            else:
+                priority_display = task.priority.ljust(6)
+
+            # Print the task row
+            print(
+                f"{task.task_id:<{column_widths['ID']}} {name_display:<{column_widths['Name']}} "
+                f"{task.deadline:<{column_widths['Deadline']}} {priority_display:<{column_widths['Priority']}} "
+                f"{task.status:<{column_widths['Status']}}"
+            )
+
 
     def update_task(self):
         """
