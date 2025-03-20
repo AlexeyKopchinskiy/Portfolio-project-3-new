@@ -898,7 +898,7 @@ class TaskManager:
         # Update the status of the task in the cached data
         try:
             # Find the column index for the "Status" field
-            col_index = headers.index("Status")
+            col_index = headers.index("status")
             # Update the cached task's status
             task_to_update[col_index] = "Deleted"
         except ValueError:
