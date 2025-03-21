@@ -914,7 +914,7 @@ def main():
         if choice == "1":
             manager.create_task_from_input()
         elif choice == "2":
-            manager.review_deadlines()
+            manager.view_tasks(sort_by="deadline")
         elif choice == "3":
             manager.view_tasks()
         elif choice == "4":
