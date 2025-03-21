@@ -1,6 +1,4 @@
 """
-run.py
-
 This module is the sole component of the Task Manager application, handling all functionality 
 within a single file using Object-Oriented Programming (OOP). It integrates task, category, 
 and project management features while maintaining clear and modular design principles.
@@ -11,10 +9,6 @@ Features:
 - Loads, updates, and manages tasks with data persistence through Google Sheets.
 - Provides a user interface for efficient task management operations.
 
-Usage:
-    Run this script to start the Task Manager application:
-    $ python run.py
-
 Modules and Dependencies:
 - Google Sheets API: Used to connect to and interact with task, category, and project data.
 - datetime: Facilitates deadline validation and date-related functionality.
@@ -23,12 +17,6 @@ Classes and Functions:
 - TaskManager: Central class that encapsulates all task management logic.
 - Task: Represents individual tasks and their attributes (e.g., name, deadline, priority).
 - load_tasks(), add_task(), update_task(): Key methods for handling task operations.
-
-Author:
-- Alexey Kopchinskiy
-
-Date:
-- 18-03-2025
 """
 
 import time
@@ -46,7 +34,6 @@ SCOPE = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-
 CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
@@ -59,9 +46,6 @@ categories = SHEET.worksheet('category')
 data = tasks.get_all_values()
 
 CONSOLE_WIDTH = 100  # Force fixed width for Heroku console
-
-# Utility function for retrying API calls with exponential backoff
-
 class RetryLimitExceededError(Exception):
     """
         Custom exception for when retry attempts exceed the maximum limit.
@@ -72,14 +56,6 @@ class RetryLimitExceededError(Exception):
 def retry_with_backoff(func, *args, retries=5, delay=1):
     """
     Retry a function with exponential backoff in case of APIError (e.g., 429 quota errors).
-    Args:
-        func (callable): The function to retry.
-        *args: Arguments for the function.
-        retries (int): Maximum number of retries.
-        delay (int): Initial delay in seconds between retries.
-    Returns: The result of the function call if successful.
-    Raises: RetryLimitExceededError: If all retries fail.
-            APIError: If the error encountered is not related to rate-limiting.
     """
     if not callable(func):
         raise TypeError(f"The provided function {func} is not callable.")
@@ -192,9 +168,6 @@ class TaskManager:
     def validate_task_name(self, name):
         """
         Validates the task name to ensure it is not empty and does not exceed 50 characters.
-        Args: name (str): The name of the task to validate.
-        Returns: str: An error message if the task name is invalid, 
-            or None if the validation succeeds.
         """
         if not name or len(name) > 50:
             return "Task name must be non-empty and 50 characters or less."
@@ -204,9 +177,6 @@ class TaskManager:
         """
         Validates the task deadline to ensure it is in the correct date format (YYYY-MM-DD)
         and not set in the past.
-        Args: deadline (str): The deadline date as a string in the format YYYY-MM-DD.
-        Returns: str: An error message if the deadline is invalid, 
-            or None if the validation succeeds.
         """
         try:
             deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
@@ -220,9 +190,6 @@ class TaskManager:
         """
         Validates the task priority to ensure it is one of the allowed values:
         'High', 'Medium', or 'Low'.
-        Args: priority (str): The priority level of the task.
-        Returns: str: An error message if the priority is invalid, 
-            or None if the validation succeeds.
         """
         valid_priorities = ["High", "Medium", "Low"]
         if priority not in valid_priorities:
@@ -233,9 +200,6 @@ class TaskManager:
         """
         Validates the category ID to ensure it exists within the valid categories
         retrieved from the categories sheet.
-        Args: category_id (str): The ID of the category to validate.
-        Returns: str: An error message if the category ID is invalid, 
-            or None if the validation succeeds.
         """
         category_ids = [row[0] for row in retry_with_backoff(self.categories_sheet.get_all_values)[
             1:]]  # Skip header row
@@ -252,16 +216,6 @@ class TaskManager:
         """
         Validates various aspects of a task, including project ID, task name, deadline, priority, 
         and category ID.
-        Args:
-            project_id (str): The project ID to validate.
-            name (str, optional): The name of the task to validate. Defaults to None.
-            deadline (str, optional): The deadline for the task in the format YYYY-MM-DD. 
-                Defaults to None.
-            priority (str, optional): The priority level of the task ('High', 'Medium', 'Low'). 
-                Defaults to None.
-            category_id (str, optional): The category ID to validate. Defaults to None.
-        Returns:
-            str: An error message if any validation fails, or None if all validations succeed.
         """
 
         # Fetch valid project IDs and category IDs
@@ -305,8 +259,6 @@ class TaskManager:
     def get_project_name(self, project_id):
         """
         Fetches the project name corresponding to a given project ID.
-        Args: project_id (str): The ID of the project.
-        Returns: str: The name of the project, or 'Unknown Project' if the ID is not found.
         """
         # Use cached project data
         project_dict = {row[0]: row[1]
@@ -316,8 +268,6 @@ class TaskManager:
     def get_category_name(self, category_id):
         """
         Fetches the category name corresponding to a given category ID from cached data.
-        Args: category_id (str): The ID of the category.
-        Returns: str: The name of the category, or 'Unknown Category' if the ID is not found.
         """
         # Use cached category data
         category_dict = {row[0]: row[1]
@@ -372,19 +322,6 @@ class TaskManager:
                  create_date=None):
         """
         Create a new task and add it to the task list.
-
-        Args:
-            name (str): Name of the task.
-            deadline (str): Deadline of the task in YYYY-MM-DD format.
-            priority (str): Task priority ('High', 'Medium', 'Low').
-            category_id (str): Task category ID.
-            project_id (str): Task project ID.
-            notes (str): Optional notes for the task. Default is an empty string.
-            create_date (str, optional): The date the task is created in YYYY-MM-DD format. 
-                Defaults to today's date.
-
-        Returns:
-            None
         """
         # Use the current date if create_date is not provided
         if create_date is None:
@@ -506,7 +443,8 @@ class TaskManager:
         Display tasks in a table-like format with sorting options.
         Default sorting is by priority.
         Args:
-            sort_by (str): The attribute to sort the tasks by. Options: "priority", "deadline", "status", etc.
+            sort_by (str): The attribute to sort the tasks by. Options: \
+                "priority", "deadline", "status", etc.
         """
         if not self.tasks:
             print("No tasks found.")
@@ -593,12 +531,13 @@ class TaskManager:
 
             # Print the task row
             print(
-                f"{task.task_id:<{column_widths['ID']}} {task.deadline:<{column_widths['Deadline']}} "
-                f"{priority_display:<{column_widths['Priority']}} {task.status:<{column_widths['Status']}} "
-                f"{project_display:<{column_widths['Project']}} {name_display:<{column_widths['Name']}}"
+                f"{task.task_id:<{column_widths['ID']}} \
+                    {task.deadline:<{column_widths['Deadline']}} "
+                f"{priority_display:<{column_widths['Priority']}} \
+                    {task.status:<{column_widths['Status']}} "
+                f"{project_display:<{column_widths['Project']}} \
+                    {name_display:<{column_widths['Name']}}"
             )
-
-
 
     def review_deadlines(self):
         """
@@ -665,8 +604,10 @@ class TaskManager:
 
             # Print the task row
             print(
-                f"{task.task_id:<{column_widths['ID']}} {name_display:<{column_widths['Name']}} "
-                f"{task.deadline:<{column_widths['Deadline']}} {priority_display:<{column_widths['Priority']}} "
+                f"{task.task_id:<{column_widths['ID']}} \
+                    {name_display:<{column_widths['Name']}} "
+                f"{task.deadline:<{column_widths['Deadline']}} \
+                    {priority_display:<{column_widths['Priority']}} "
                 f"{task.status:<{column_widths['Status']}}"
             )
 
@@ -866,13 +807,13 @@ class TaskManager:
             # Exit the update loop after successful editing
             break
 
-
     def delete_task(self):
         """
         Update the status of a task to 'Deleted' in both the cached data
         and Google Sheets without removing it or moving it to another tab.
         """
-        if not self.cached_tasks or len(self.cached_tasks) <= 1:  # Ensure there are tasks beyond headers
+        # Ensure there are tasks beyond headers
+        if not self.cached_tasks or len(self.cached_tasks) <= 1:
             print("No tasks available to update to 'Deleted' status.")
             return
 
@@ -932,8 +873,6 @@ class TaskManager:
             return
 
         print(f"Task '{task_to_update[1]}' has been marked as 'Deleted'.")
-
-
 
     def mark_task_completed(self):
         """
