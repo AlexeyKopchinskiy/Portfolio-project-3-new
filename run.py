@@ -44,7 +44,7 @@ categories = SHEET.worksheet('category')
 
 data = tasks.get_all_values()
 
-CONSOLE_WIDTH = 80  # Force fixed width for Heroku console
+CONSOLE_WIDTH = 100  # Force fixed width for Heroku console
 class Task:
     """
     Represents an individual task with related attributes and methods.
@@ -458,13 +458,12 @@ class TaskManager:
             "Status": 12,
             "Project": 20,
             # Remaining space for the 'Name' column
-            # "Name": CONSOLE_WIDTH - (4 + 10 + 8 + 12 + 20 + 5)
-            "Name": 25
+            "Name": CONSOLE_WIDTH - (4 + 10 + 8 + 12 + 20 + 5)
         }
 
         # Ensure all column widths fit within CONSOLE_WIDTH
-        # assert sum(column_widths.values()) + len(column_widths) - \
-        # 1 <= CONSOLE_WIDTH, "Column widths exceed console width!"
+        assert sum(column_widths.values()) + len(column_widths) - \
+            1 <= CONSOLE_WIDTH, "Column widths exceed console width!"
 
         # Define the header row for the table
         headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
