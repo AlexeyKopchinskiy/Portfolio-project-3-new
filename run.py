@@ -144,16 +144,13 @@ class TaskManager:
 
         try:
             # Fetch and cache task data
-            self.cached_tasks = retry_with_backoff(
-                self.tasks_sheet.get_all_values)
+            self.cached_tasks = self.tasks_sheet.get_all_values()
 
             # Fetch and cache project data
-            self.cached_projects = retry_with_backoff(
-                self.projects_sheet.get_all_values)
+            self.cached_projects = self.projects_sheet.get_all_values()
 
             # Fetch and cache category data
-            self.cached_categories = retry_with_backoff(
-                self.categories_sheet.get_all_values)
+            self.cached_categories = self.categories_sheet.get_all_values()
 
             print("Data successfully loaded and cached!")
         except APIError as e:
@@ -201,7 +198,7 @@ class TaskManager:
         Validates the category ID to ensure it exists within the valid categories
         retrieved from the categories sheet.
         """
-        category_ids = [row[0] for row in retry_with_backoff(self.categories_sheet.get_all_values)[
+        category_ids = [row[0] for row in self.categories_sheet.get_all_values()[
             1:]]  # Skip header row
         if category_id not in category_ids:
             return "Invalid category ID. Please choose from the available categories."
@@ -219,9 +216,9 @@ class TaskManager:
         """
 
         # Fetch valid project IDs and category IDs
-        project_ids = [row[0] for row in retry_with_backoff(self.projects_sheet.get_all_values)[
+        project_ids = [row[0] for row in self.projects_sheet.get_all_values()[
             1:]]  # Skip header row
-        category_ids = [row[0] for row in retry_with_backoff(self.categories_sheet.get_all_values)[
+        category_ids = [row[0] for row in self.categories_sheet.get_all_values()[
             1:]]  # Skip header row
 
         # Validate project ID
@@ -402,7 +399,7 @@ class TaskManager:
 
         # Display category options and prompt for selection
         print("Available categories:")
-        category_data = retry_with_backoff(self.categories_sheet.get_all_values)[
+        category_data = self.categories_sheet.get_all_values()[
             1:]  # Skip header row
         for row in category_data:
             print(f"ID: {row[0]}, Name: {row[1]}")
@@ -416,7 +413,7 @@ class TaskManager:
 
         # Display project options and prompt for selection
         print("Available projects:")
-        project_date = retry_with_backoff(self.projects_sheet.get_all_values)[
+        project_date = self.projects_sheet.get_all_values()[
             1:]  # Skip header row
         for row in project_date:
             print(f"ID: {row[0]}, Name: {row[1]}")
@@ -751,7 +748,7 @@ class TaskManager:
             elif loaded_choice == "6":  # Update Category
                 # Display available categories
                 print("Available categories:")
-                category_data = retry_with_backoff(self.categories_sheet.get_all_values)[
+                category_data = self.categories_sheet.get_all_values()[
                     1:]  # Skip header row
                 for row in category_data:
                     print(f"ID: {row[0]}, Name: {row[1]}")
@@ -777,7 +774,7 @@ class TaskManager:
             elif loaded_choice == "7":  # Update Project
                 # Display available projects
                 print("Available projects:")
-                project_data = retry_with_backoff(self.projects_sheet.get_all_values)[
+                project_data = self.projects_sheet.get_all_values()[
                     1:]  # Skip header row
                 for row in project_data:
                     print(f"ID: {row[0]}, Name: {row[1]}")
