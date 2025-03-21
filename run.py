@@ -458,7 +458,8 @@ class TaskManager:
             "Status": 12,
             "Project": 20,
             # Remaining space for the 'Name' column
-            "Name": CONSOLE_WIDTH - (4 + 10 + 8 + 12 + 20 + 5)
+            # "Name": CONSOLE_WIDTH - (4 + 10 + 8 + 12 + 20 + 5)
+            "Name": 25
         }
 
         # Ensure all column widths fit within CONSOLE_WIDTH
