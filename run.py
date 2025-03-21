@@ -478,12 +478,21 @@ class TaskManager:
 
         # Print each task as a row in the table
         for task in sorted_tasks:
-            # Truncate long text for display
-            project_display = f"{task.project['name']}: " if task.project["name"] else ""
-            project_display = project_display[:column_widths["Project"] - 3] + "..." if len(
-                project_display) > column_widths["Project"] else project_display
-            name_display = task.name[:column_widths["Name"] - 3] + \
-                "..." if len(task.name) > column_widths["Name"] else task.name
+            # Ensure each value fits within the column widths
+            task_id_display = f"{task.task_id:<{column_widths['ID']}}"
+            deadline_display = f"{task.deadline:<{column_widths['Deadline']}}"
+            status_display = f"{task.status:<{column_widths['Status']}}"
+            project_display = (
+                f"{task.project['name']}"[
+                    :column_widths["Project"] - 3] + "..."
+                if len(task.project["name"]) > column_widths["Project"] else task.project["name"]
+            )
+            project_display = f"{project_display:<{column_widths['Project']}}"
+            name_display = (
+                f"{task.name}"[:column_widths["Name"] - 3] + "..."
+                if len(task.name) > column_widths["Name"] else task.name
+            )
+            name_display = f"{name_display:<{column_widths['Name']}}"
 
             # Colorize priorities
             if task.priority == "High":
@@ -495,16 +504,11 @@ class TaskManager:
             elif not task.priority:
                 priority_display = Back.BLACK + Fore.WHITE + "      " + Style.RESET_ALL
             else:
-                priority_display = task.priority.ljust(6)
+                priority_display = f"{task.priority:<{column_widths['Priority']}}"
 
-            # Print the task row
+            # Print the formatted row
             print(
-                f"{task.task_id:<{column_widths['ID']}} \
-                    {task.deadline:<{column_widths['Deadline']}} "
-                f"{priority_display:<{column_widths['Priority']}} \
-                    {task.status:<{column_widths['Status']}} "
-                f"{project_display:<{column_widths['Project']}} \
-                    {name_display:<{column_widths['Name']}}"
+                f"{task_id_display} {deadline_display} {priority_display} {status_display} {project_display} {name_display}"
             )
 
     def review_deadlines(self):
