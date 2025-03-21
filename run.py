@@ -19,7 +19,6 @@ Classes and Functions:
 - load_tasks(), add_task(), update_task(): Key methods for handling task operations.
 """
 
-import time
 from datetime import datetime
 from google.oauth2.service_account import Credentials
 from gspread.exceptions import APIError
