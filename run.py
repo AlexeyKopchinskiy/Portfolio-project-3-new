@@ -44,7 +44,7 @@ categories = SHEET.worksheet('category')
 
 data = tasks.get_all_values()
 
-CONSOLE_WIDTH = 100  # Force fixed width for Heroku console
+CONSOLE_WIDTH = 80  # Force fixed width for Heroku console
 class Task:
     """
     Represents an individual task with related attributes and methods.
