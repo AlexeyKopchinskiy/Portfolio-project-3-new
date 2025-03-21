@@ -46,34 +46,6 @@ categories = SHEET.worksheet('category')
 data = tasks.get_all_values()
 
 CONSOLE_WIDTH = 100  # Force fixed width for Heroku console
-class RetryLimitExceededError(Exception):
-    """
-        Custom exception for when retry attempts exceed the maximum limit.
-        Raised when the retry limit for an API call is exceeded.
-    """
-
-
-def retry_with_backoff(func, *args, retries=5, delay=1):
-    """
-    Retry a function with exponential backoff in case of APIError (e.g., 429 quota errors).
-    """
-    if not callable(func):
-        raise TypeError(f"The provided function {func} is not callable.")
-
-    for attempt in range(retries):
-        try:
-            return func(*args)
-        except APIError as e:
-            if "429" in str(e):  # Rate-limiting error
-                print(
-                    f"Quota exceeded. Retrying in {delay * (2 ** attempt)} seconds...")
-                time.sleep(delay * (2 ** attempt))  # Exponential backoff
-            else:
-                raise  # Re-raise non-rate-limiting API errors
-    # Raise a custom exception if retries are exhausted
-    raise RetryLimitExceededError(
-        f"Exceeded maximum retries for function {func.__name__}")
-
 class Task:
     """
     Represents an individual task with related attributes and methods.
