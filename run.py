@@ -508,7 +508,8 @@ class TaskManager:
 
             # Print the formatted row
             print(
-                f"{task_id_display} {deadline_display} {priority_display} {status_display} {project_display} {name_display}"
+                f"{task_id_display} {deadline_display} {priority_display} \
+                    {status_display} {project_display} {name_display}"
             )
 
     def review_deadlines(self):
