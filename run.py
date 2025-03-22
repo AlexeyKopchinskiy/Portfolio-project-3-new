@@ -41,8 +41,8 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Python Task Manager')
 
 TASKS = SHEET.worksheet('tasks')
-projects = SHEET.worksheet('project')
-categories = SHEET.worksheet('category')
+PROJECTS = SHEET.worksheet('project')
+CATEGORIES = SHEET.worksheet('category')
 
 data = TASKS.get_all_values()
 
@@ -906,7 +906,7 @@ def main():
     Entry point for the Task Manager application.
     """
     # Initialize the TaskManager
-    manager = TaskManager(TASKS, projects, categories)
+    manager = TaskManager(TASKS, PROJECTS, CATEGORIES)
 
     while True:
         print("\nPlease select an option:")
