@@ -25,7 +25,9 @@ from gspread.exceptions import APIError
 import gspread
 
 # Import colorama for console colorization
-from colorama import Fore, Back, Style
+import colorama
+from colorama import Fore, Back, Style, init
+init(convert=True)
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -508,8 +510,7 @@ class TaskManager:
 
             # Print the formatted row
             print(
-                f"{task_id_display} {deadline_display} {priority_display} \
-                    {status_display} {project_display} {name_display}"
+                f"{task_id_display} {deadline_display} {priority_display} {status_display} {project_display} {name_display}"
             )
 
     def review_deadlines(self):
@@ -794,12 +795,15 @@ class TaskManager:
         headers = self.cached_tasks[0]  # Header row
         tasks_data = self.cached_tasks[1:]  # Task rows
 
+        # Filter out 'Completed' tasks
+        visible_tasks = [task for task in tasks_data if task[5].lower() != "deleted"]
+
         # Display tasks to help the user choose
         print("\n--- Mark a Task as Deleted ---")
         print("Available Tasks:")
-        for task in tasks_data:
+        for task in visible_tasks:
             try:
-                print(f"ID: {task[0]}, Name: {task[1]}, Status: {task[4]}")
+                print(f"ID: {task[0]}, Name: {task[1]}, Status: {task[5]}")
             except IndexError:
                 print("Error: Task structure is incorrect.")
                 return
@@ -808,11 +812,13 @@ class TaskManager:
         while True:
             task_id = input(
                 "Enter the ID of the task you want to mark as 'Deleted', \
-                    or type 'cancel' to return to the main menu: ").strip()
+                    or type 'cancel' or 'x' to return to the main menu: ").strip()
 
-            if task_id.lower() == "cancel":  # Check for cancel input
+            if task_id.lower() == "cancel" or task_id.lower() == "x":  # Check for cancel input
                 print("Task deletion canceled. Returning to the main menu...")
                 return  # Exit the delete task method
+            # elif task_id.lower() == "x":
+
 
             # Find the task in cached data
             task_to_update = next(
@@ -833,19 +839,22 @@ class TaskManager:
             print("Error: 'Status' column not found in headers.")
             return
 
-        # Update the relevant cell in Google Sheets
         try:
-            # Find the row index in the cached data
-            row_index = self.cached_tasks.index(task_to_update)
-            tasks.update_cell(row_index + 1, col_index + 1,
-                              "Deleted")  # Update the "Status" cell
-            print(
-                f"Task '{task_to_update[1]}' status updated to 'Deleted' in Google Sheets.")
-        except ImportError as e:
-            print(f"Error while updating Google Sheets: {e}")
-            return
+            # Update the status in cached data
+            status_col_index = self.cached_tasks[0].index("status")  # Find "status" column
+            task_to_update[status_col_index] = "Deleted"
 
-        print(f"Task '{task_to_update[1]}' has been marked as 'Deleted'.")
+            # Update Google Sheets
+            row_index = self.cached_tasks.index(task_to_update)
+            self.tasks_sheet.update_cell(row_index + 1, status_col_index + 1, "Deleted")
+
+            # Refresh cached data and in-memory tasks
+            self.load_and_cache_data()  # Refresh cached data
+            self.tasks = self.load_tasks()  # Refresh in-memory tasks
+
+            print(f"Task '{task_to_update[1]}' has been marked as 'Deleted'.")
+        except Exception as e:
+            print(f"Error while updating Google Sheets: {e}")
 
     def mark_task_completed(self):
         """
