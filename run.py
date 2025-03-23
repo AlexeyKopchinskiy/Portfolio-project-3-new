@@ -26,9 +26,7 @@ import gspread
 
 # Import colorama for console colorization
 import colorama
-# from colorama import Fore, Back, Style, init
 from colorama import Fore, Back, Style
-# init(convert=True)
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -47,7 +45,7 @@ CATEGORIES = SHEET.worksheet('category')
 
 data = TASKS.get_all_values()
 
-CONSOLE_WIDTH = 100  # Force fixed width for Heroku console
+CONSOLE_WIDTH = 79  # Force fixed width for Heroku console
 class Task:
     """
     Represents an individual task with related attributes and methods.
