@@ -55,6 +55,8 @@ The application uses the colorama library to add color to text and improve reada
 
 ### Color Coding
 
+![Colred code](assets/4_colorised_code.png)
+
 * **Priority**:
   * _High_: Red background
   * _Medium_: Pink background
