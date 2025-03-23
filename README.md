@@ -14,6 +14,8 @@ The original procedural version is preserved in the run_old.py module for refere
 
 ## Features
 
+![Task list](assets/2_view_tasks_output.png)
+
 * **Task Management:**
   * Add, update, delete, view, and archive tasks.
   * Mark tasks as completed and sort them by deadlines, priority, or category.
