@@ -914,39 +914,19 @@ def main():
         Programming (OOP). It integrates task, category, and project management  
         features while maintaining clear and modular design principles.
 
-        Features:
-        - Fully self-contained application for managing tasks, categories, 
-            and projects.
-        - Encapsulates all logic within a single module using classes 
-            and methods.
-        - Loads, updates, and manages tasks with data persistence through 
-            Google Sheets.
-        - Provides a user interface for efficient task management operations.
-
-        Modules and Dependencies:
-        - Google Sheets API: Used to connect to and interact with task, 
-            category, and project data.
-        - datetime: Facilitates deadline validation and date-related 
-            functionality.
-
-        Classes and Functions:
-        - TaskManager: Central class that encapsulates 
-            all task management logic.
-        - Task: Represents individual tasks and their attributes 
-            (e.g., name, deadline, priority).
-        - load_tasks(), add_task(), update_task(): Key methods for 
-            handling task operations.
+        For more details please refer to
+        https://github.com/AlexeyKopchinskiy/Portfolio-project-3-new/blob/main/README.md
         '''
         print(welcome_message)
         print("\nPlease select an option:")
         print(Fore.BLUE + "1 - Add a new task" + Style.RESET_ALL)
         print(Fore.GREEN + "2 - Review deadlines" + Style.RESET_ALL)
         print(Fore.GREEN + "3 - View tasks list" + Style.RESET_ALL)
-        print(Fore.BLUE + "4 - Update a task" + Style.RESET_ALL)
-        print(Fore.RED + "5 - Delete (archive) a task" + Style.RESET_ALL)
-        print(Fore.BLUE + "6 - Mark a task as completed" + Style.RESET_ALL)
-        print(Fore.GREEN + "7 - View tasks by project" + Style.RESET_ALL)
-        print(Fore.GREEN + "8 - View tasks by priority" + Style.RESET_ALL)
+        print(Fore.GREEN + "4 - View tasks by project" + Style.RESET_ALL)
+        print(Fore.GREEN + "5 - View tasks by priority" + Style.RESET_ALL)
+        print(Fore.BLUE + "6 - Update a task" + Style.RESET_ALL)
+        print(Fore.BLUE + "7 - Mark a task as completed" + Style.RESET_ALL)
+        print(Fore.RED + "8 - Delete (archive) a task" + Style.RESET_ALL)
         print(Fore.BLUE + "9 - Exit" + Style.RESET_ALL)
 
         choice = input("Enter your choice: ").strip()
@@ -957,15 +937,15 @@ def main():
         elif choice == "3":
             manager.view_tasks()
         elif choice == "4":
-            manager.update_task()
-        elif choice == "5":
-            manager.delete_task()
-        elif choice == "6":
-            manager.mark_task_completed()
-        elif choice == "7":
             manager.view_tasks(sort_by="project")
-        elif choice == "8":
+        elif choice == "5":
             manager.view_tasks(sort_by="priority")
+        elif choice == "6":
+            manager.update_task()
+        elif choice == "7":
+            manager.mark_task_completed()
+        elif choice == "8":
+            manager.delete_task()
         elif choice == "9":
             print("Exiting Task Manager. Goodbye!")
             break
