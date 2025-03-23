@@ -101,6 +101,8 @@ The application uses the colorama library to add color to text and improve reada
 
 ## Testing
 
+![Testimg](assets/3_data_input_validation.png)
+
 To ensure the Task Manager application works seamlessly, it's essential to validate its functionality through rigorous testing. Below is an outline of testing practices for various features and a note on input validation:
 
 ### 1. Testing Core Features
