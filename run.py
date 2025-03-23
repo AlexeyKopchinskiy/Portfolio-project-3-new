@@ -181,8 +181,8 @@ class TaskManager:
                             priority=None,
                             category_id=None):
         """
-        Validates various aspects of a task, including project ID, task name, deadline, priority, 
-        and category ID.
+        Validates various aspects of a task, including project ID, 
+        task name, deadline, priority, and category ID.
         """
 
         # Fetch valid project IDs and category IDs
@@ -507,7 +507,8 @@ class TaskManager:
 
             # Print the formatted row
             print(
-                f"{task_id_display} {deadline_display} {priority_display} {status_display} {project_display} {name_display}"
+                f"{task_id_display} {deadline_display} {priority_display}"
+                f"{status_display} {project_display} {name_display}"
             )
 
     def review_deadlines(self):
@@ -537,8 +538,7 @@ class TaskManager:
         }
 
         # Ensure all column widths fit within CONSOLE_WIDTH
-        assert sum(column_widths.values()) + len(column_widths) - \
-            1 <= CONSOLE_WIDTH, "Column widths exceed console width!"
+        assert sum(column_widths.values()) + len(column_widths) - 1 <= CONSOLE_WIDTH, "Column widths exceed console width!" 
 
         # Define the header row for the table
         headers = ["ID", "Name", "Deadline", "Priority", "Status"]
