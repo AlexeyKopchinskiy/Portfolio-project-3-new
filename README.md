@@ -99,6 +99,42 @@ The application uses the colorama library to add color to text and improve reada
   * Make sure all features are functional in the deployed environment.
   * Verify your integration with Google Sheets works as intended.
 
+## Testing
+
+To ensure the Task Manager application works seamlessly, it's essential to validate its functionality through rigorous testing. Below is an outline of testing practices for various features and a note on input validation:
+
+### 1. Testing Core Features
+
+* **Task Creation**: Test adding new tasks with valid and invalid data (e.g., empty task names, deadlines in the past).
+* **Task Updates**: Check all updatable fields (e.g., name, deadline, priority, notes) for correct behavior.
+* **Task Deletion**: Verify that deleting tasks updates the status and reflects in cached data and Google Sheets.
+* **View Tasks**: Confirm that the displayed tasks match the sorted and filtered criteria.
+
+### 2. Google Sheets Integration
+
+* Validate the synchronization of task data between the application and Google Sheets.
+* Test for API error handling, such as retry logic when network issues occur.
+
+### 3. Input Validation
+
+The application has built-in input validation methods to ensure data integrity:
+
+* **Task Names**: Must be non-empty and under 50 characters.
+* **Deadlines**: Enforced to follow the format YYYY-MM-DD and must not be in the past.
+* **Priority Levels**: Restrict inputs to "High," "Medium," or "Low."
+* **Project and Category IDs**: Ensure the selected IDs exist in the respective Google Sheets.
+
+When testing, check these validation methods by deliberately entering invalid inputs to ensure the system provides appropriate error messages and does not proceed with invalid data.
+
+### 4. Console-Based User Interface
+
+* Test for usability in various console environments (e.g., local terminal, Heroku shell).
+* Verify that table-based outputs adapt properly to the predefined CONSOLE_WIDTH.
+
+### 5. Error Handling
+
+* Simulate errors like invalid task IDs or failed Google Sheets updates to test how the application handles exceptions gracefully.
+
 ## Using the Task Manager
 
 The Task Manager application allows users to manage tasks, projects, and categories seamlessly while interacting with data stored in Google Sheets. Here's how to navigate and use the system effectively:
