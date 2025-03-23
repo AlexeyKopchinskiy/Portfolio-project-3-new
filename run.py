@@ -909,9 +909,10 @@ def main():
 
     while True:
         welcome_message = '''\n
+        Welcome to Python Project Manager!
         This module is the sole component of the Task Manager application,
         handling all functionality within a single file using Object-Oriented
-        Programming (OOP). It integrates task, category, and project management  
+        Programming (OOP). It integrates task, category, and project management
         features while maintaining clear and modular design principles.
 
         For more details please refer to
