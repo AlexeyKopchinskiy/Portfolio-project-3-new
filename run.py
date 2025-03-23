@@ -43,8 +43,6 @@ TASKS = SHEET.worksheet('tasks')
 PROJECTS = SHEET.worksheet('project')
 CATEGORIES = SHEET.worksheet('category')
 
-data = TASKS.get_all_values()
-
 CONSOLE_WIDTH = 79  # Force fixed width for Heroku console
 class Task:
     """
