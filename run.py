@@ -26,8 +26,9 @@ import gspread
 
 # Import colorama for console colorization
 import colorama
-from colorama import Fore, Back, Style, init
-init(convert=True)
+# from colorama import Fore, Back, Style, init
+from colorama import Fore, Back, Style
+# init(convert=True)
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
