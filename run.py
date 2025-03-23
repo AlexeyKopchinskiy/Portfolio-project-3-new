@@ -915,19 +915,27 @@ def main():
         features while maintaining clear and modular design principles.
 
         Features:
-        - Fully self-contained application for managing tasks, categories, and projects.
-        - Encapsulates all logic within a single module using classes and methods.
-        - Loads, updates, and manages tasks with data persistence through Google Sheets.
+        - Fully self-contained application for managing tasks, categories, 
+            and projects.
+        - Encapsulates all logic within a single module using classes 
+            and methods.
+        - Loads, updates, and manages tasks with data persistence through 
+            Google Sheets.
         - Provides a user interface for efficient task management operations.
 
         Modules and Dependencies:
-        - Google Sheets API: Used to connect to and interact with task, category, and project data.
-        - datetime: Facilitates deadline validation and date-related functionality.
+        - Google Sheets API: Used to connect to and interact with task, 
+            category, and project data.
+        - datetime: Facilitates deadline validation and date-related 
+            functionality.
 
         Classes and Functions:
-        - TaskManager: Central class that encapsulates all task management logic.
-        - Task: Represents individual tasks and their attributes (e.g., name, deadline, priority).
-        - load_tasks(), add_task(), update_task(): Key methods for handling task operations.
+        - TaskManager: Central class that encapsulates 
+            all task management logic.
+        - Task: Represents individual tasks and their attributes 
+            (e.g., name, deadline, priority).
+        - load_tasks(), add_task(), update_task(): Key methods for 
+            handling task operations.
         '''
         print(welcome_message)
         print("\nPlease select an option:")
