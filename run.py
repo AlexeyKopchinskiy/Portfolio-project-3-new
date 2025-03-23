@@ -916,7 +916,8 @@ def main():
         features while maintaining clear and modular design principles.
 
         For more details please refer to
-        https://github.com/AlexeyKopchinskiy/Portfolio-project-3-new/blob/main/README.md
+        https://github.com/AlexeyKopchinskiy/Portfolio-project-3-new/
+        /blob/main/README.md
         '''
         print(welcome_message)
         print("\nPlease select an option:")
