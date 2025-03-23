@@ -1,5 +1,7 @@
 # Task Manager Project
 
+![CI logo](assets/1_initial_screen.png)
+
 Welcome to the `Task Manager`, a Python command-line application designed to create, organize, and manage tasks effectively. This project interacts with Google Sheets to store and process data, making it both powerful and dynamic. The last update to this file was: `March 13, 2025.`
 
 ## OOP aproach vs procedural approach
