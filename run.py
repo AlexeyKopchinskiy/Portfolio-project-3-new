@@ -1,22 +1,28 @@
 """
-This module is the sole component of the Task Manager application, handling all functionality 
-within a single file using Object-Oriented Programming (OOP). It integrates task, category, 
-and project management features while maintaining clear and modular design principles.
+This module is the sole component of the Task Manager application, handling 
+all functionality within a single file using Object-Oriented Programming 
+(OOP). It integrates task, category, and project management features while
+maintaining clear and modular design principles.
 
 Features:
-- Fully self-contained application for managing tasks, categories, and projects.
+- Fully self-contained application for managing tasks, categories, and
+    projects. 
 - Encapsulates all logic within a single module using classes and methods.
-- Loads, updates, and manages tasks with data persistence through Google Sheets.
+- Loads, updates, and manages tasks with data persistence through 
+    Google Sheets.
 - Provides a user interface for efficient task management operations.
 
 Modules and Dependencies:
-- Google Sheets API: Used to connect to and interact with task, category, and project data.
+- Google Sheets API: Used to connect to and interact with task, category, 
+    and project data.
 - datetime: Facilitates deadline validation and date-related functionality.
 
 Classes and Functions:
 - TaskManager: Central class that encapsulates all task management logic.
-- Task: Represents individual tasks and their attributes (e.g., name, deadline, priority).
-- load_tasks(), add_task(), update_task(): Key methods for handling task operations.
+- Task: Represents individual tasks and their attributes (e.g., name, 
+    deadline, priority).
+- load_tasks(), add_task(), update_task(): Key methods for handling task 
+    operations.
 """
 
 from datetime import datetime
@@ -25,7 +31,7 @@ from gspread.exceptions import APIError
 import gspread
 
 # Import colorama for console colorization
-import colorama
+# import colorama
 from colorama import Fore, Back, Style
 
 SCOPE = [
@@ -83,8 +89,14 @@ class Task:
 
     def __str__(self):
         """String representation of a task."""
-        return (f"Task(ID: {self.task_id}, Name: {self.name}, Deadline: {self.deadline}, "
-                f"Priority: {self.priority}, Status: {self.status}, Notes: {self.notes})")
+        return (
+            f"Task(ID: {self.task_id}, "
+            f"Name: {self.name}, "
+            f"Deadline: {self.deadline}, "
+            f"Priority: {self.priority}, "
+            f"Status: {self.status}, "
+            f"Notes: {self.notes})"
+        )
 
 class TaskManager:
     """
@@ -134,7 +146,8 @@ class TaskManager:
 
     def validate_task_name(self, name):
         """
-        Validates the task name to ensure it is not empty and does not exceed 50 characters.
+        Validates the task name to ensure it is not empty and does not exceed
+        50 characters.
         """
         if not name or len(name) > 50:
             return "Task name must be non-empty and 50 characters or less."
@@ -142,8 +155,8 @@ class TaskManager:
 
     def validate_deadline(self, deadline):
         """
-        Validates the task deadline to ensure it is in the correct date format (YYYY-MM-DD)
-        and not set in the past.
+        Validates the task deadline to ensure it is in the correct date format 
+        (YYYY-MM-DD) and not set in the past.
         """
         try:
             deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
@@ -165,13 +178,16 @@ class TaskManager:
 
     def validate_category_id(self, category_id):
         """
-        Validates the category ID to ensure it exists within the valid categories
+        Validates the category ID to ensure it exists within the valid 
+        categories
         retrieved from the categories sheet.
         """
-        category_ids = [row[0] for row in self.categories_sheet.get_all_values()[
-            1:]]  # Skip header row
+        # Skip header row
+        category_ids = [
+            row[0] for row in self.categories_sheet.get_all_values()[1:]]
         if category_id not in category_ids:
-            return "Invalid category ID. Please choose from the available categories."
+            return "Invalid category ID. Please choose from " \
+                "the available categories."
         return None
 
     def validate_project_id(self,
@@ -188,12 +204,14 @@ class TaskManager:
         # Fetch valid project IDs and category IDs
         project_ids = [row[0] for row in self.projects_sheet.get_all_values()[
             1:]]  # Skip header row
-        category_ids = [row[0] for row in self.categories_sheet.get_all_values()[
+        category_ids = [row[0] for row in
+                        self.categories_sheet.get_all_values()[
             1:]]  # Skip header row
 
         # Validate project ID
         if project_id not in project_ids:
-            return "Invalid project ID. Please choose from the available projects."
+            return "Invalid project ID. Please choose " \
+            "from the available projects."
 
         # Validate name if provided
         if name is not None:
@@ -213,7 +231,8 @@ class TaskManager:
         if priority is not None:
             valid_priorities = ["High", "Medium", "Low"]
             if priority not in valid_priorities:
-                return "Invalid priority. Please choose from High, Medium, or Low."
+                return "Invalid priority. Please choose " \
+                "from High, Medium, or Low."
 
         # Validate category ID if provided
         if category_id is not None:
@@ -234,7 +253,8 @@ class TaskManager:
 
     def get_category_name(self, category_id):
         """
-        Fetches the category name corresponding to a given category ID from cached data.
+        Fetches the category name corresponding to a given category ID 
+        from cached data.
         """
         # Use cached category data
         category_dict = {row[0]: row[1]
@@ -271,7 +291,8 @@ class TaskManager:
 
     def generate_unique_task_id(self):
         """
-        Generate the next sequential task ID based on the highest existing task ID.
+        Generate the next sequential task ID based on the highest 
+        existing task ID.
         """
         existing_ids = [int(task.task_id)
                         for task in self.TASKS if task.task_id.isdigit()]
@@ -360,7 +381,8 @@ class TaskManager:
         # Prompt for task priority
         while True:
             priority = input(
-                "Enter task priority (High, Medium, Low): ").strip().capitalize()
+                "Enter task priority "
+                "(High, Medium, Low): ").strip().capitalize()
             error = self.validate_priority(priority)
             if error:
                 print(f"Error: {error}")
@@ -422,7 +444,8 @@ class TaskManager:
             task for task in self.TASKS if task.status.lower() != "deleted"]
 
         if not visible_tasks:
-            print("No tasks available to display (all are marked as 'Deleted').")
+            print("No tasks available to display "
+            "(all are marked as 'Deleted').")
             return
 
         # Determine the sorting key
@@ -439,14 +462,16 @@ class TaskManager:
             sorted_tasks = sorted(
                 visible_tasks, key=lambda task: task.status.lower())
         elif sort_by == "project":
-            sorted_tasks = sorted(visible_tasks, key=lambda task: task.project["name"].lower(
+            sorted_tasks = sorted(visible_tasks,
+                                  key=lambda task: task.project["name"].lower(
             ) if task.project["name"] else "")
         elif sort_by == "name":
             sorted_tasks = sorted(
                 visible_tasks, key=lambda task: task.name.lower())
         else:
             print(
-                f"Invalid sort option: '{sort_by}'. Displaying tasks without sorting.")
+                f"Invalid sort option: '{sort_by}'. "
+                f"Displaying tasks without sorting.")
             sorted_tasks = visible_tasks
 
         # Calculate column widths based on CONSOLE_WIDTH
@@ -467,9 +492,12 @@ class TaskManager:
         # Define the header row for the table
         headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
         header_row = (
-            f"{headers[0]:<{column_widths['ID']}} {headers[1]:<{column_widths['Deadline']}} "
-            f"{headers[2]:<{column_widths['Priority']}} {headers[3]:<{column_widths['Status']}} "
-            f"{headers[4]:<{column_widths['Project']}} {headers[5]:<{column_widths['Name']}}"
+            f"{headers[0]:<{column_widths['ID']}}"
+            f"{headers[1]:<{column_widths['Deadline']}} "
+            f"{headers[2]:<{column_widths['Priority']}} "
+            f"{headers[3]:<{column_widths['Status']}} "
+            f"{headers[4]:<{column_widths['Project']}}"
+            f"{headers[5]:<{column_widths['Name']}}"
         )
         # Print the header with enforced left alignment and styling
         print(Style.BRIGHT + Fore.BLUE + header_row + Style.RESET_ALL)
@@ -484,7 +512,8 @@ class TaskManager:
             project_display = (
                 f"{task.project['name']}"[
                     :column_widths["Project"] - 3] + "..."
-                if len(task.project["name"]) > column_widths["Project"] else task.project["name"]
+                if len(task.project["name"]) > column_widths["Project"]
+                else task.project["name"]
             )
             project_display = f"{project_display:<{column_widths['Project']}}"
             name_display = (
@@ -495,15 +524,20 @@ class TaskManager:
 
             # Colorize priorities
             if task.priority == "High":
-                priority_display = Back.RED + Fore.WHITE + "High  " + Style.RESET_ALL
+                priority_display = Back.RED + Fore.WHITE + "High  " + \
+                    Style.RESET_ALL
             elif task.priority == "Medium":
-                priority_display = Back.MAGENTA + Fore.WHITE + "Medium" + Style.RESET_ALL
+                priority_display = Back.MAGENTA + Fore.WHITE + "Medium" + \
+                    Style.RESET_ALL
             elif task.priority == "Low":
-                priority_display = Back.GREEN + Fore.WHITE + "Low   " + Style.RESET_ALL
+                priority_display = Back.GREEN + Fore.WHITE + "Low   " + \
+                    Style.RESET_ALL
             elif not task.priority:
-                priority_display = Back.BLACK + Fore.WHITE + "      " + Style.RESET_ALL
+                priority_display = Back.BLACK + Fore.WHITE + "      " + \
+                    Style.RESET_ALL
             else:
-                priority_display = f"{task.priority:<{column_widths['Priority']}}"
+                priority_display = f"{
+                    task.priority:<{column_widths['Priority']}}"
 
             # Print the formatted row
             print(
@@ -514,7 +548,8 @@ class TaskManager:
     def review_deadlines(self):
         """
         Display all tasks with their deadlines in a table-like format,
-        respecting a fixed CONSOLE_WIDTH of 80 characters, excluding tasks marked as 'Deleted'.
+        respecting a fixed CONSOLE_WIDTH of 80 characters, excluding tasks 
+        marked as 'Deleted'.
         """
         if not self.TASKS:
             print("No tasks available.")
@@ -525,7 +560,8 @@ class TaskManager:
             task for task in self.TASKS if task.status.lower() != "deleted"]
 
         if not visible_tasks:
-            print("No tasks available to display (all are marked as 'Deleted').")
+            print("No tasks available to display "
+            "(all are marked as 'Deleted').")
             return
 
         # Calculate column widths based on CONSOLE_WIDTH
@@ -538,13 +574,19 @@ class TaskManager:
         }
 
         # Ensure all column widths fit within CONSOLE_WIDTH
-        assert sum(column_widths.values()) + len(column_widths) - 1 <= CONSOLE_WIDTH, "Column widths exceed console width!" 
+        assert (
+            sum(column_widths.values())
+            + len(column_widths) - 1
+            <= CONSOLE_WIDTH
+        ), "Column widths exceed console width!"
 
         # Define the header row for the table
         headers = ["ID", "Name", "Deadline", "Priority", "Status"]
         header_row = (
-            f"{headers[0]:<{column_widths['ID']}} {headers[1]:<{column_widths['Name']}} "
-            f"{headers[2]:<{column_widths['Deadline']}} {headers[3]:<{column_widths['Priority']}} "
+            f"{headers[0]:<{column_widths['ID']}}"
+            f"{headers[1]:<{column_widths['Name']}} "
+            f"{headers[2]:<{column_widths['Deadline']}}"
+            f"{headers[3]:<{column_widths['Priority']}} "
             f"{headers[4]:<{column_widths['Status']}}"
         )
         # Print the header with enforced left alignment and styling
@@ -563,13 +605,21 @@ class TaskManager:
 
             # Colorize priorities
             if task.priority == "High":
-                priority_display = Back.RED + Fore.WHITE + "High  " + Style.RESET_ALL
+                priority_display = (
+                    Back.RED + Fore.WHITE + "High  " + Style.RESET_ALL
+                )
             elif task.priority == "Medium":
-                priority_display = Back.MAGENTA + Fore.WHITE + "Medium" + Style.RESET_ALL
+                priority_display = (
+                    Back.MAGENTA + Fore.WHITE + "Medium" + Style.RESET_ALL
+                )
             elif task.priority == "Low":
-                priority_display = Back.GREEN + Fore.WHITE + "Low   " + Style.RESET_ALL
+                priority_display = (
+                    Back.GREEN + Fore.WHITE + "Low   " + Style.RESET_ALL
+                )
             elif not task.priority:
-                priority_display = Back.BLACK + Fore.WHITE + "      " + Style.RESET_ALL
+                priority_display = (
+                    Back.BLACK + Fore.WHITE + "      " + Style.RESET_ALL
+                )
             else:
                 priority_display = task.priority.ljust(6)
 
@@ -601,9 +651,18 @@ class TaskManager:
         print("-" * 130)
 
         for task in self.TASKS:
-            project_display = f"{task.project['name']}: " if task.project["name"] else ""
-            print(f"{task.task_id:<5} {task.deadline:<12} {task.priority:<10} {task.status:<12} "
-                  f"{project_display:<25} {task.name:<40}")
+            project_display = (
+                f"{task.project['name']}: "
+                if task.project["name"]
+                else ""
+            )
+            print(
+                f"{task.task_id:<5}"
+                f"{task.deadline:<12}"
+                f"{task.priority:<10}"
+                f"{task.status:<12}"
+                f"{project_display:<25}"
+                f"{task.name:<40}")
 
         # Get Task ID from the user
         while True:
@@ -633,13 +692,15 @@ class TaskManager:
             if loaded_choice == "1":  # Update Task Name
                 while True:
                     print(
-                        "Enter the new task name or type 'cancel' to go back to the task list.")
+                        "Enter the new task name or type 'cancel' " \
+                        "to go back to the task list.")
                     new_name = input("New task name: ").strip()
 
                     if new_name.lower() == "cancel":  # Check for cancellation
                         print(
-                            "Task name update canceled. Returning to the task list...")
-                        return  # Exit this operation and go back to the main task list
+                            "Task name update canceled. " \
+                            "Returning to the task list...")
+                        return
 
                     error = self.validate_task_name(
                         new_name)  # Validate task name
@@ -669,7 +730,8 @@ class TaskManager:
             elif loaded_choice == "3":  # Update Priority
                 while True:
                     new_priority = input(
-                        "Enter the new priority (High, Medium, Low): ").strip().capitalize()
+                        "Enter the new priority (High, Medium, Low): "
+                        ).strip().capitalize()
                     error = self.validate_priority(new_priority)
                     if error:
                         print(f"Error: {error}")
@@ -683,17 +745,20 @@ class TaskManager:
             elif loaded_choice == "4":  # Update Notes
                 while True:
                     print(
-                        "Enter the new notes or type 'cancel' to go back to the task list.")
+                        "Enter the new notes or type 'cancel' " \
+                        "to go back to the task list.")
                     new_notes = input("New notes: ").strip()
 
                     if new_notes.lower() == "cancel":  # Check for cancellation
-                        print("Notes update canceled. Returning to the task list...")
-                        return  # Exit the notes update operation and return to the main task list
+                        print("Notes update canceled. " \
+                        "Returning to the task list...")
+                        return
 
                     # Check for maximum length
                     if len(new_notes) > 250:
                         print(
-                            "Warning: Notes exceeded 250 characters and will be truncated.")
+                            "Warning: Notes exceeded 250 characters and " \
+                            "will be truncated.")
                         new_notes = new_notes[:250]
 
                     # Update the task and the sheet
@@ -708,7 +773,9 @@ class TaskManager:
                     new_status = input(
                         "Enter the new status (Pending, In Progress, \
                             Completed): ").strip()
-                    if new_status not in ["Pending", "In Progress", "Completed"]:
+                    if new_status not in [
+                            "Pending", "In Progress", "Completed"
+                        ]:
                         print(
                             "Invalid status. Please choose from Pending, \
                                 In Progress, or Completed.")
@@ -793,7 +860,9 @@ class TaskManager:
         tasks_data = self.cached_tasks[1:]  # Task rows
 
         # Filter out 'Completed' tasks
-        visible_tasks = [task for task in tasks_data if task[5].lower() != "deleted"]
+        visible_tasks = [
+            task for task in tasks_data if task[5].lower() != "deleted"
+            ]
 
         # Display tasks to help the user choose
         print("\n--- Mark a Task as Deleted ---")
@@ -809,9 +878,10 @@ class TaskManager:
         while True:
             task_id = input(
                 "Enter the ID of the task you want to mark as 'Deleted', \
-                    or type 'cancel' or 'x' to return to the main menu: ").strip()
-
-            if task_id.lower() == "cancel" or task_id.lower() == "x":  # Check for cancel input
+                    or type 'cancel' or 'x' " \
+                    "to return to the main menu: ").strip()
+            # Check for cancel input
+            if task_id.lower() == "cancel" or task_id.lower() == "x":
                 print("Task deletion canceled. Returning to the main menu...")
                 return  # Exit the delete task method
             # elif task_id.lower() == "x":
@@ -838,12 +908,14 @@ class TaskManager:
 
         try:
             # Update the status in cached data
-            status_col_index = self.cached_tasks[0].index("status")  # Find "status" column
+            status_col_index = self.cached_tasks[0].index("status")
             task_to_update[status_col_index] = "Deleted"
 
             # Update Google Sheets
             row_index = self.cached_tasks.index(task_to_update)
-            self.tasks_sheet.update_cell(row_index + 1, status_col_index + 1, "Deleted")
+            self.tasks_sheet.update_cell(
+                row_index + 1, status_col_index + 1, "Deleted"
+                )
 
             # Refresh cached data and in-memory tasks
             self.load_and_cache_data()  # Refresh cached data
@@ -867,7 +939,10 @@ class TaskManager:
         for task in self.TASKS:
             if task.status != "Completed":  # Only show incomplete tasks
                 print(
-                    f"ID: {task.task_id}, Name: {task.name}, Status: {task.status}")
+                    f"ID: {task.task_id},"
+                    f"Name: {task.name},"
+                    f"Status: {task.status}"
+                    )
 
         # Get Task ID from the user
         task_id = input(
