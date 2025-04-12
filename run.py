@@ -1,27 +1,27 @@
 """
-This module is the sole component of the Task Manager application, handling 
-all functionality within a single file using Object-Oriented Programming 
+This module is the sole component of the Task Manager application, handling
+all functionality within a single file using Object-Oriented Programming
 (OOP). It integrates task, category, and project management features while
 maintaining clear and modular design principles.
 
 Features:
 - Fully self-contained application for managing tasks, categories, and
-    projects. 
+    projects.
 - Encapsulates all logic within a single module using classes and methods.
-- Loads, updates, and manages tasks with data persistence through 
+- Loads, updates, and manages tasks with data persistence through
     Google Sheets.
 - Provides a user interface for efficient task management operations.
 
 Modules and Dependencies:
-- Google Sheets API: Used to connect to and interact with task, category, 
+- Google Sheets API: Used to connect to and interact with task, category,
     and project data.
 - datetime: Facilitates deadline validation and date-related functionality.
 
 Classes and Functions:
 - TaskManager: Central class that encapsulates all task management logic.
-- Task: Represents individual tasks and their attributes (e.g., name, 
+- Task: Represents individual tasks and their attributes (e.g., name,
     deadline, priority).
-- load_tasks(), add_task(), update_task(): Key methods for handling task 
+- load_tasks(), add_task(), update_task(): Key methods for handling task
     operations.
 """
 
@@ -50,6 +50,8 @@ PROJECTS = SHEET.worksheet('project')
 CATEGORIES = SHEET.worksheet('category')
 
 CONSOLE_WIDTH = 79  # Force fixed width for Heroku console
+
+
 class Task:
     """
     Represents an individual task with related attributes and methods.
@@ -98,6 +100,7 @@ class Task:
             f"Notes: {self.notes})"
         )
 
+
 class TaskManager:
     """
     Manages tasks and their interactions with the Task class and Google Sheets.
@@ -141,9 +144,7 @@ class TaskManager:
             self.cached_projects = []
             self.cached_categories = []
 
-
     # Helper methods for data validation
-
     def validate_task_name(self, name):
         """
         Validates the task name to ensure it is not empty and does not exceed
@@ -155,7 +156,7 @@ class TaskManager:
 
     def validate_deadline(self, deadline):
         """
-        Validates the task deadline to ensure it is in the correct date format 
+        Validates the task deadline to ensure it is in the correct date format
         (YYYY-MM-DD) and not set in the past.
         """
         try:
@@ -178,7 +179,7 @@ class TaskManager:
 
     def validate_category_id(self, category_id):
         """
-        Validates the category ID to ensure it exists within the valid 
+        Validates the category ID to ensure it exists within the valid
         categories
         retrieved from the categories sheet.
         """
@@ -197,7 +198,7 @@ class TaskManager:
                             priority=None,
                             category_id=None):
         """
-        Validates various aspects of a task, including project ID, 
+        Validates various aspects of a task, including project ID,
         task name, deadline, priority, and category ID.
         """
 
@@ -211,7 +212,7 @@ class TaskManager:
         # Validate project ID
         if project_id not in project_ids:
             return "Invalid project ID. Please choose " \
-            "from the available projects."
+                "from the available projects."
 
         # Validate name if provided
         if name is not None:
@@ -232,7 +233,7 @@ class TaskManager:
             valid_priorities = ["High", "Medium", "Low"]
             if priority not in valid_priorities:
                 return "Invalid priority. Please choose " \
-                "from High, Medium, or Low."
+                    "from High, Medium, or Low."
 
         # Validate category ID if provided
         if category_id is not None:
@@ -253,7 +254,7 @@ class TaskManager:
 
     def get_category_name(self, category_id):
         """
-        Fetches the category name corresponding to a given category ID 
+        Fetches the category name corresponding to a given category ID
         from cached data.
         """
         # Use cached category data
@@ -291,7 +292,7 @@ class TaskManager:
 
     def generate_unique_task_id(self):
         """
-        Generate the next sequential task ID based on the highest 
+        Generate the next sequential task ID based on the highest
         existing task ID.
         """
         existing_ids = [int(task.task_id)
@@ -357,7 +358,7 @@ class TaskManager:
 
     def create_task_from_input(self):
         """
-        Create a new task by collecting user input, with options 
+        Create a new task by collecting user input, with options
         for selecting project and category names.
         """
         # Prompt for task name
@@ -444,8 +445,7 @@ class TaskManager:
             task for task in self.TASKS if task.status.lower() != "deleted"]
 
         if not visible_tasks:
-            print("No tasks available to display "
-            "(all are marked as 'Deleted').")
+            print("No tasks available to display. all are marked as 'Deleted'")
             return
 
         # Determine the sorting key
@@ -462,9 +462,9 @@ class TaskManager:
             sorted_tasks = sorted(
                 visible_tasks, key=lambda task: task.status.lower())
         elif sort_by == "project":
-            sorted_tasks = sorted(visible_tasks,
-                                  key=lambda task: task.project["name"].lower(
-            ) if task.project["name"] else "")
+            sorted_tasks = sorted(
+                visible_tasks, key=lambda task: task.project["name"].lower(
+                ) if task.project["name"] else "")
         elif sort_by == "name":
             sorted_tasks = sorted(
                 visible_tasks, key=lambda task: task.name.lower())
@@ -537,7 +537,8 @@ class TaskManager:
                     Style.RESET_ALL
             else:
                 priority_display = f"{
-                    task.priority:<{column_widths['Priority']}}"
+                        task.priority: < {column_widths['Priority']}
+                    }"
 
             # Print the formatted row
             print(
@@ -548,7 +549,7 @@ class TaskManager:
     def review_deadlines(self):
         """
         Display all tasks with their deadlines in a table-like format,
-        respecting a fixed CONSOLE_WIDTH of 80 characters, excluding tasks 
+        respecting a fixed CONSOLE_WIDTH of 80 characters, excluding tasks
         marked as 'Deleted'.
         """
         if not self.TASKS:
@@ -560,8 +561,9 @@ class TaskManager:
             task for task in self.TASKS if task.status.lower() != "deleted"]
 
         if not visible_tasks:
-            print("No tasks available to display "
-            "(all are marked as 'Deleted').")
+            print(
+                "No tasks available to display (all are marked as 'Deleted')."
+                )
             return
 
         # Calculate column widths based on CONSOLE_WIDTH
@@ -632,7 +634,6 @@ class TaskManager:
                 f"{task.status:<{column_widths['Status']}}"
             )
 
-
     def update_task(self):
         """
         Update an existing task by modifying its attributes.
@@ -692,13 +693,13 @@ class TaskManager:
             if loaded_choice == "1":  # Update Task Name
                 while True:
                     print(
-                        "Enter the new task name or type 'cancel' " \
+                        "Enter the new task name or type 'cancel' "
                         "to go back to the task list.")
                     new_name = input("New task name: ").strip()
 
                     if new_name.lower() == "cancel":  # Check for cancellation
                         print(
-                            "Task name update canceled. " \
+                            "Task name update canceled. "
                             "Returning to the task list...")
                         return
 
@@ -745,19 +746,21 @@ class TaskManager:
             elif loaded_choice == "4":  # Update Notes
                 while True:
                     print(
-                        "Enter the new notes or type 'cancel' " \
+                        "Enter the new notes or type 'cancel' "
                         "to go back to the task list.")
                     new_notes = input("New notes: ").strip()
 
                     if new_notes.lower() == "cancel":  # Check for cancellation
-                        print("Notes update canceled. " \
-                        "Returning to the task list...")
+                        print(
+                            "Notes update canceled. "
+                            "Returning to the task list..."
+                            )
                         return
 
                     # Check for maximum length
                     if len(new_notes) > 250:
                         print(
-                            "Warning: Notes exceeded 250 characters and " \
+                            "Warning: Notes exceeded 250 characters and "
                             "will be truncated.")
                         new_notes = new_notes[:250]
 
@@ -775,7 +778,7 @@ class TaskManager:
                             Completed): ").strip()
                     if new_status not in [
                             "Pending", "In Progress", "Completed"
-                        ]:
+                            ]:
                         print(
                             "Invalid status. Please choose from Pending, \
                                 In Progress, or Completed.")
@@ -877,15 +880,14 @@ class TaskManager:
         # Get Task ID or cancel option from the user
         while True:
             task_id = input(
-                "Enter the ID of the task you want to mark as 'Deleted', \
-                    or type 'cancel' or 'x' " \
-                    "to return to the main menu: ").strip()
+                "Enter the ID of the task you want to mark as 'Deleted',"
+                "or type 'cancel' or 'x' "
+                "to return to the main menu: ").strip()
             # Check for cancel input
             if task_id.lower() == "cancel" or task_id.lower() == "x":
                 print("Task deletion canceled. Returning to the main menu...")
                 return  # Exit the delete task method
             # elif task_id.lower() == "x":
-
 
             # Find the task in cached data
             task_to_update = next(
