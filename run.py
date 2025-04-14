@@ -542,94 +542,6 @@ class TaskManager:
                 f"{status_display} {project_display} {name_display}"
             )
 
-    def review_deadlines(self):
-        """
-        Display all tasks with their deadlines in a table-like format,
-        respecting a fixed CONSOLE_WIDTH of 80 characters, excluding tasks
-        marked as 'Deleted'.
-        """
-        if not self.TASKS:
-            print("No tasks available.")
-            return
-
-        # Filter out tasks with the status 'Deleted'
-        visible_tasks = [
-            task for task in self.TASKS if task.status.lower() != "deleted"]
-
-        if not visible_tasks:
-            print(
-                "No tasks available to display (all are marked as 'Deleted')."
-                )
-            return
-
-        # Calculate column widths based on CONSOLE_WIDTH
-        column_widths = {
-            "ID": 5,
-            "Name": 40,
-            "Deadline": 12,
-            "Priority": 10,
-            "Status": 10
-        }
-
-        # Ensure all column widths fit within CONSOLE_WIDTH
-        assert (
-            sum(column_widths.values())
-            + len(column_widths) - 1
-            <= CONSOLE_WIDTH
-        ), "Column widths exceed console width!"
-
-        # Define the header row for the table
-        headers = ["ID", "Name", "Deadline", "Priority", "Status"]
-        header_row = (
-            f"{headers[0]:<{column_widths['ID']}}"
-            f"{headers[1]:<{column_widths['Name']}} "
-            f"{headers[2]:<{column_widths['Deadline']}}"
-            f"{headers[3]:<{column_widths['Priority']}} "
-            f"{headers[4]:<{column_widths['Status']}}"
-        )
-        # Print the header with enforced left alignment and styling
-        print(Style.BRIGHT + Fore.BLUE + header_row + Style.RESET_ALL)
-        print("-" * CONSOLE_WIDTH)
-
-        # Sort tasks by deadlines (earliest first)
-        sorted_tasks = sorted(
-            visible_tasks, key=lambda task: task.deadline or "")
-
-        # Print each task as a row in the table
-        for task in sorted_tasks:
-            # Truncate long text for display
-            name_display = task.name[:column_widths["Name"] - 3] + \
-                "..." if len(task.name) > column_widths["Name"] else task.name
-
-            # Colorize priorities
-            if task.priority == "High":
-                priority_display = (
-                    Back.RED + Fore.WHITE + "High  " + Style.RESET_ALL
-                )
-            elif task.priority == "Medium":
-                priority_display = (
-                    Back.MAGENTA + Fore.WHITE + "Medium" + Style.RESET_ALL
-                )
-            elif task.priority == "Low":
-                priority_display = (
-                    Back.GREEN + Fore.WHITE + "Low   " + Style.RESET_ALL
-                )
-            elif not task.priority:
-                priority_display = (
-                    Back.BLACK + Fore.WHITE + "      " + Style.RESET_ALL
-                )
-            else:
-                priority_display = task.priority.ljust(6)
-
-            # Print the task row
-            print(
-                f"{task.task_id:<{column_widths['ID']}} \
-                    {name_display:<{column_widths['Name']}} "
-                f"{task.deadline:<{column_widths['Deadline']}} \
-                    {priority_display:<{column_widths['Priority']}} "
-                f"{task.status:<{column_widths['Status']}}"
-            )
-
     def update_task(self):
         """
         Update an existing task by modifying its attributes.
@@ -983,7 +895,7 @@ def main():
     print(welcome_message)
     print("\nPlease select an option:")
     print(mainMenu)
-    
+
     while True:
         choice = input("Enter your choice (scroll up for options): ").strip()
         if choice == "1":
@@ -1007,6 +919,7 @@ def main():
             break
         else:
             print("Invalid option. Please try again.")
+
 
 # Ensure the script runs only when executed directly
 if __name__ == "__main__":
