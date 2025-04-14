@@ -432,9 +432,6 @@ class TaskManager:
         """
         Display tasks in a table-like format with sorting options.
         Default sorting is by priority.
-        Args:
-            sort_by (str): The attribute to sort the tasks by. Options: \
-                "priority", "deadline", "status", etc.
         """
         if not self.TASKS:
             print("No tasks found.")
@@ -644,25 +641,8 @@ class TaskManager:
 
         # Display tasks in a formatted table-like format (like Option 3)
         print("\n--- Update a Task ---")
-        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
-        print(
-            f"{headers[0]:<5} {headers[1]:<12} {headers[2]:<10} \
-                {headers[3]:<12} {headers[4]:<25} {headers[5]:<40}")
-        print("-" * 130)
 
-        for task in self.TASKS:
-            project_display = (
-                f"{task.project['name']}: "
-                if task.project["name"]
-                else ""
-            )
-            print(
-                f"{task.task_id:<5}"
-                f"{task.deadline:<12}"
-                f"{task.priority:<10}"
-                f"{task.status:<12}"
-                f"{project_display:<25}"
-                f"{task.name:<40}")
+        self.view_tasks()  # Call view_tasks to display the task list
 
         # Get Task ID from the user
         while True:
