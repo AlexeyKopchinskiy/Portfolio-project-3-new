@@ -536,9 +536,8 @@ class TaskManager:
                 priority_display = Back.BLACK + Fore.WHITE + "      " + \
                     Style.RESET_ALL
             else:
-                priority_display = f"{
-                        task.priority: < {column_widths['Priority']}
-                    }"
+                priority_width = column_widths["Priority"]
+                priority_display = f"{task.priority:<{priority_width}}"
 
             # Print the formatted row
             print(
@@ -982,31 +981,31 @@ def main():
     # Initialize the TaskManager
     manager = TaskManager(TASKS, PROJECTS, CATEGORIES)
 
-    while True:
-        welcome_message = '''\n
+    welcome_message = '''\n
         Welcome to Python Project Manager!
         This module is the sole component of the Task Manager application,
         handling all functionality within a single file using Object-Oriented
         Programming (OOP). It integrates task, category, and project management
         features while maintaining clear and modular design principles.
-
-        For more details please refer to
-        https://github.com/AlexeyKopchinskiy/Portfolio-project-3-new/
-        /blob/main/README.md
         '''
-        print(welcome_message)
-        print("\nPlease select an option:")
-        print(Fore.BLUE + "1 - Add a new task" + Style.RESET_ALL)
-        print(Fore.GREEN + "2 - Review deadlines" + Style.RESET_ALL)
-        print(Fore.GREEN + "3 - View tasks list" + Style.RESET_ALL)
-        print(Fore.GREEN + "4 - View tasks by project" + Style.RESET_ALL)
-        print(Fore.GREEN + "5 - View tasks by priority" + Style.RESET_ALL)
-        print(Fore.BLUE + "6 - Update a task" + Style.RESET_ALL)
-        print(Fore.BLUE + "7 - Mark a task as completed" + Style.RESET_ALL)
-        print(Fore.RED + "8 - Delete (archive) a task" + Style.RESET_ALL)
-        print(Fore.BLUE + "9 - Exit" + Style.RESET_ALL)
+    option1 = Fore.BLUE + "1 - Add a new task" + Style.RESET_ALL + "\n"
+    option2 = Fore.GREEN + "2 - Review deadlines" + Style.RESET_ALL + "\n"
+    option3 = Fore.GREEN + "3 - View task list" + Style.RESET_ALL + "\n"
+    option4 = Fore.GREEN + "4 - Project view" + Style.RESET_ALL + "\n"
+    option5 = Fore.GREEN + "5 - Priority view" + Style.RESET_ALL + "\n"
+    option6 = Fore.BLUE + "6 - Update a task" + Style.RESET_ALL + "\n"
+    option7 = Fore.BLUE + "7 - Mark task as completed" + Style.RESET_ALL + "\n"
+    option8 = Fore.RED + "8 - Delete (archive) a task" + Style.RESET_ALL + "\n"
+    option9 = Fore.BLUE + "9 - Exit" + Style.RESET_ALL + "\n"
+    mainMenu = option1 + option2 + option3 + option4 + option5 + \
+        option6 + option7 + option8 + option9
 
-        choice = input("Enter your choice: ").strip()
+    print(welcome_message)
+    print("\nPlease select an option:")
+    print(mainMenu)
+    
+    while True:
+        choice = input("Enter your choice (scroll up for options): ").strip()
         if choice == "1":
             manager.create_task_from_input()
         elif choice == "2":
@@ -1028,7 +1027,6 @@ def main():
             break
         else:
             print("Invalid option. Please try again.")
-
 
 # Ensure the script runs only when executed directly
 if __name__ == "__main__":
