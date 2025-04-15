@@ -31,7 +31,6 @@ from gspread.exceptions import APIError
 import gspread
 
 # Import colorama for console colorization
-# import colorama
 from colorama import Fore, Back, Style
 
 SCOPE = [

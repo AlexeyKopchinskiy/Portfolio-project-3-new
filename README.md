@@ -1,28 +1,36 @@
-# Task Manager Project
+# Task Management Console
 
 ![CI logo](assets/1_initial_screen.png)
 
-Welcome to the `Task Manager`, a Python command-line application designed to create, organize, and manage tasks effectively. This project interacts with Google Sheets to store and process data, making it both powerful and dynamic. The last update to this file was: `March 13, 2025.`
+Welcome to the `Task Manager`, a Python command-line application designed to create, organize, and manage tasks effectively. This project interacts with Google Sheets to store and process data, making it both powerful and dynamic. The last update to this file was: `April 15, 2025.`
 
-## OOP aproach vs procedural approach
+## Table of Contents
 
-The Task Manager application was initially written according to procedural approach but later transitioned to an Object-Oriented Programming (OOP) approach to improve scalability, maintainability, and organization of the code. OOP enables better modularity by encapsulating task management, validation, and data handling into reusable classes and methods. This structure also aligns with modern best practices, making the application easier to expand and debug.
+* Project Description 
+* Key Features & Benefits
+* Technologies Used
+  * (Built with…)
+* Project Requirements and Dependencies
+* Installation Instructions
+* Usage Instructions
+* Testing
+* Common problems and bugs
+* Acknowledgments
+* License
 
-### What About the Procedural Code?
+## Project Description
 
-The original procedural version is preserved in the run_old.py module for reference. While no longer maintained, it offers a snapshot of the initial design and serves as a comparison for the benefits of OOP.
+This repository contains Python code of a console-based project, focusing on task management facilitating data storage in Google Sheets in real time. Whyle interacting with a Python backend, the application allows users to manage tasks by adding, updating, deleting as well as marking tasks as done/pending and changing deadlines, priority and corresponding projects.
 
-## Features
+## Key Features
 
 ![Task list](assets/2_view_tasks_output.png)
 
-* **Task Management:**
-  * Add, update, delete, view, and archive tasks.
-  * Mark tasks as completed and sort them by deadlines, priority, or category.
-* **Google Sheets Integration:**
-  * Tasks, categories, and projects are synchronized in real-time with a Google Sheets spreadsheet.
-* **Caching for Improved Performance:**
-  * Google Sheets data is loaded and cached locally in memory to optimize performance and reduce API calls, ensuring smooth operation even under quota restrictions.
+* **Task Creation and Management:** Users can create, organize, and manage tasks.
+* **Data Persistence:** Google Sheets integration provides a dynamic and accessible data storage solution. Tasks, categories, and projects are synchronized with a Google Sheets spreadsheet.
+* **Web Interface:** JavaScript-based frontend for user interaction.
+* **Backend Processing:** Python backend handles data manipulation and interaction with external services.
+* **Real-time updates:** The use of Google Sheets API provides real-time updates of the application.
 * **Colorized Console Output:**
   * Visually enhanced task lists with color-coded priorities and headers for better readability:
     * _High Priority_: Red background
@@ -30,6 +38,62 @@ The original procedural version is preserved in the run_old.py module for refere
     * _Low Priority_: Green background
     * _Empty Priority_: Gray background
     * Underlined headers
+* **Caching for Improved Performance:**
+  * Google Sheets data is loaded and cached locally in memory to optimize performance and reduce API calls, ensuring smooth operation even under quota restrictions.
+
+## Technologies Used
+
+* **Node.js:** JavaScript runtime environment. (https://nodejs.org/).
+* **Python 3.x:** Python runtime environment. (https://www.python.org/downloads/).
+* **pip:** Python package installer (usually included with Python).
+* **Git:** Version control system (https://git-scm.com/downloads).
+* **google-auth library:** the Google authentication library for Python. (https://google-auth.readthedocs.io/en/latest/).
+* **gspread** a Python API for Google Sheets. (https://docs.gspread.org/en/v6.1.3/).
+
+You'll also need to install the necessary Python packages listed in requirements.txt.
+
+## Project Requirements and Dependencies
+
+* **GitHub repository:** a pubic repository that hosts the program code
+* **Heroku account:** the program requires active Hroku account connected to the program's GitHub repository as well as heroku/python and heroku/nodejs Buildpacks activated in the Heroku settings.
+* **Google Sheets:** the project relies on a user's Google account with an existing Google Sheet formated in specific way (see below). The Google Sheet used by the program has to be shared in a way that allows to connect it with Heroku app via Heroku Config vars.
+* **Colorama:** Colorama ANSI escape character sequences needed for adding colors to the console
+
+## Deployment
+
+* **1. Clone the Repository**
+  * Use CodeInstiute repository (https://github.com/Code-Institute-Org/ci-full-template)
+  * Make sure your main script file is named run.py.
+* **2. Set Up Google API Credentials**
+  * Create a Google Cloud project and enable the Google Sheets API and Google Drive API.
+  * Create a service account and generate a creds.json file containing the credentials.
+  * Place the creds.json file in the root directory of the project.
+* **3. Set Up Your Heroku Environment:**
+  * Create a new Heroku app.
+  * Go to the _Settings_ tab of your Heroku app.
+  * Add the following buildpacks in this order:
+    * `heroku/python`
+    * `heroku/nodejs`
+  * Add a Config Var called `PORT` and set it to `8000`.
+  * If you use Google Sheets credentials, add another _Config Var_ called `CREDS` and paste the `JSON` credentials into the value field.
+  * Include a requirements.txt file listing all your dependencies.
+  * Under the Deploy tab in Heroku, connect your _GitHub_ repository.
+  * Select the branch you want to deploy (usually main).
+  * Click on `Deploy Branch` in the _Heroku_ dashboard.
+  * Once deployed, your application can be accessed here.
+* **4. Test Your Application:**
+  * Make sure all features are functional in the deployed environment.
+  * Verify your integration with Google Sheets works as intended.
+
+## Scope of classes & functions 
+
+- **"Task" Class:** Represents an individual task, including attributes like **deadline, priority, status, and notes**.
+- **"TaskManager" Class:** Handles task operations such as **loading, caching, validation, and synchronization** with Google Sheets.
+- **Google Sheets API:** Enables the program to **fetch, store, and update** task-related data seamlessly.
+- **Task Operations:** `add_task()`, `update_task()`, `delete_task()`, `mark_task_completed()`
+- **Data Management:** `load_tasks()`, `load_and_cache_data()`, `generate_unique_task_id()`
+- **Validation Methods:** Ensure proper **task name, deadline, priority, and category/project selection**.
+- **Console Display:** Tasks can be viewed in an **organized table format**, sorted by **priority, deadline, or status**.
 
 ## Caching Google Sheets Data
 
@@ -78,30 +142,7 @@ The application uses the colorama library to add color to text and improve reada
 * Google Sheets API Setup: Configure the connection to Google Sheets by adding the necessary credentials in your environment variables.
 * Data Validation: Built-in validation ensures accurate and clean data input.
 
-## Deployment
 
-* **1. Clone the Repository**
-  * Make sure your main script file must be named run.py.
-* **2. Set Up Google API Credentials**
-  * Create a Google Cloud project and enable the Google Sheets API and Google Drive API.
-  * Create a service account and generate a creds.json file containing the credentials.
-  * Place the creds.json file in the root directory of the project.
-* **3. Set Up Your Heroku Environment:**
-  * Create a new Heroku app.
-  * Go to the _Settings_ tab of your Heroku app.
-  * Add the following buildpacks in this order:
-    * `heroku/python`
-    * `heroku/nodejs`
-  * Add a Config Var called `PORT` and set it to `8000`.
-  * If you use Google Sheets credentials, add another _Config Var_ called `CREDS` and paste the `JSON` credentials into the value field.
-  * Include a requirements.txt file listing all your dependencies.
-  * Under the Deploy tab in Heroku, connect your _GitHub_ repository.
-  * Select the branch you want to deploy (usually main).
-  * Click on `Deploy Branch` in the _Heroku_ dashboard.
-  * Once deployed, your application can be accessed here.
-* **4. Test Your Application:**
-  * Make sure all features are functional in the deployed environment.
-  * Verify your integration with Google Sheets works as intended.
 
 ## Testing
 
@@ -222,6 +263,17 @@ This application uses the Google Sheets API to store and organize task data:
 * Completed Tab: Stores completed tasks.
 * Deleted Tab: Archives deleted tasks for future reference.
 * Projects & Categories Tabs: Used for validation when assigning projects and categories to tasks.
+
+## Credits
+
+This application relies on following web services and external libraries:
+
+* **Heroku** is used as a testing environment
+* **Google Sheets** is used as a ervice for storing the application data
+* **google.oauth2.service_account** used for Google Sheets authentication
+* **gspread.exceptions** used for handling Google Sheets API errors
+* **Datetime** library is used for handling date and time-related data
+* **Colorama** used for better styling of the terminal UI
 
 **Happy Coding!**
 
