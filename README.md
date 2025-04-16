@@ -1,8 +1,8 @@
 # Task Management Console
 
-![CI logo](assets/1_initial_screen.png)
-
 Welcome to the `Task Manager`, a Python command-line application designed to create, organize, and manage tasks effectively. This project interacts with Google Sheets to store and process data, making it both powerful and dynamic. The last update to this file was: `April 15, 2025.`
+
+![CI logo](assets/task_list_output.gif)
 
 ## Table of Contents
 
@@ -24,7 +24,7 @@ This repository contains Python code of a console-based project, focusing on tas
 
 ## Key Features
 
-![Task list](assets/2_view_tasks_output.png)
+![Task list](assets/task-manager-options.gif)
 
 ### Features
 
@@ -141,11 +141,13 @@ The application uses the colorama library to add color to text and improve reada
 
 ## Testing
 
-![Testimg](assets/3_data_input_validation.png)
-
 To ensure the Task Manager application works seamlessly, it's essential to validate its functionality through rigorous testing. Below is an outline of testing practices for various features and a note on input validation:
 
+![Testing-main-menu](assets/3_data_input_validation_1.png)
+
 ### 1. Testing Core Features
+
+![Testing-main-menu](assets/3_data_input_validation_2.png)
 
 * **Task Creation**: Test adding new tasks with valid and invalid data (e.g., empty task names, deadlines in the past).
 * **Task Updates**: Check all updatable fields (e.g., name, deadline, priority, notes) for correct behavior.
@@ -176,6 +178,13 @@ When testing, check these validation methods by deliberately entering invalid in
 ### 5. Error Handling
 
 * Simulate errors like invalid task IDs or failed Google Sheets updates to test how the application handles exceptions gracefully.
+
+### 6. PEP8 validation
+
+![PEP8_test_results](assets/ci-python-linter-test.png)
+
+* **PEP8 Python Linter test** check the code with Code Institute's Python Linter to make sure that there are no errors or warings
+* **Line limit** was kept to 79 characters in order to comply with The Python standard library.
 
 ## Using the Task Manager
 
@@ -250,19 +259,11 @@ To run this project, you’ll need:
   * bash:
   * `pip install colorama`
 
-## How It Works
-
-This application uses the Google Sheets API to store and organize task data:
-
-* Tasks Tab: Contains all active tasks.
-* Completed Tab: Stores completed tasks.
-* Deleted Tab: Archives deleted tasks for future reference.
-* Projects & Categories Tabs: Used for validation when assigning projects and categories to tasks.
-
-## Credits
+## Credits & Acknowledgments
 
 This application relies on following web services and external libraries:
 
+* **ci-full-template** was used for this application (https://github.com/Code-Institute-Org/ci-full-template). Thank you Code Institute!
 * **Heroku** is used as a testing environment
 * **Google Sheets** is used as a ervice for storing the application data
 * **google.oauth2.service_account** used for Google Sheets authentication
@@ -270,6 +271,8 @@ This application relies on following web services and external libraries:
 * **Datetime** library is used for handling date and time-related data
 * **Colorama** used for better styling of the terminal UI
 
-**Happy Coding!**
+Many thanks to Rory Patrick Sheridan (https://github.com/Ri-Dearg) for his help with project developemen and validation!
+
+**Happy Task managing!**
 
 We hope this task manager helps simplify your workflow and improves productivity.
