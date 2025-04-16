@@ -472,13 +472,13 @@ class TaskManager:
 
         # Calculate column widths based on CONSOLE_WIDTH
         column_widths = {
-            "ID": 4,
+            "ID": 3,
             "Deadline": 10,
-            "Priority": 8,
-            "Status": 12,
-            "Project": 20,
+            "Priority": 9,
+            "Status": 7,
+            "Project": 10,
             # Remaining space for the 'Name' column
-            "Name": CONSOLE_WIDTH - (4 + 10 + 8 + 12 + 20 + 5)
+            "Name": CONSOLE_WIDTH - (3 + 10 + 9 + 7 + 10 + 5)
         }
 
         # Ensure all column widths fit within CONSOLE_WIDTH
@@ -486,13 +486,13 @@ class TaskManager:
             1 <= CONSOLE_WIDTH, "Column widths exceed console width!"
 
         # Define the header row for the table
-        headers = ["ID", "Deadline", "Priority", "Status", "Project", "Name"]
+        headers = ["ID", "Deadline", "Prior.", "Status", "Project", "Name"]
         header_row = (
-            f"{headers[0]:<{column_widths['ID']}}"
+            f"{headers[0]:<{column_widths['ID'] + 3}}"
             f"{headers[1]:<{column_widths['Deadline']}} "
-            f"{headers[2]:<{column_widths['Priority']}} "
-            f"{headers[3]:<{column_widths['Status']}} "
-            f"{headers[4]:<{column_widths['Project']}}"
+            f"{headers[2]:<{column_widths['Priority'] - 2}} "
+            f"{headers[3]:<{column_widths['Status'] + 2}} "
+            f"{headers[4]:<{column_widths['Project'] + 2}}"
             f"{headers[5]:<{column_widths['Name']}}"
         )
         # Print the header with enforced left alignment and styling
@@ -503,20 +503,20 @@ class TaskManager:
         for task in sorted_tasks:
             # Ensure each value fits within the column widths
             task_id_display = f"{task.task_id:<{column_widths['ID']}}"
-            deadline_display = f"{task.deadline:<{column_widths['Deadline']}}"
-            status_display = f"{task.status:<{column_widths['Status']}}"
+            deadline_display = f"| {task.deadline:<{column_widths['Deadline']}}"
+            status_display = f"| {task.status:<{column_widths['Status']}}"
             project_display = (
-                f"{task.project['name']}"[
+                f"| {task.project['name']}"[
                     :column_widths["Project"] - 3] + "..."
                 if len(task.project["name"]) > column_widths["Project"]
                 else task.project["name"]
             )
-            project_display = f"{project_display:<{column_widths['Project']}}"
+            project_display = f"| {project_display:<{column_widths['Project']}}"
             name_display = (
-                f"{task.name}"[:column_widths["Name"] - 3] + "..."
+                f"| {task.name}"[:column_widths["Name"] - 3] + "..."
                 if len(task.name) > column_widths["Name"] else task.name
             )
-            name_display = f"{name_display:<{column_widths['Name']}}"
+            name_display = f"| {name_display:<{column_widths['Name']}}"
 
             # Colorize priorities
             if task.priority == "High":

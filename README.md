@@ -26,6 +26,8 @@ This repository contains Python code of a console-based project, focusing on tas
 
 ![Task list](assets/2_view_tasks_output.png)
 
+### Features
+
 * **Task Creation and Management:** Users can create, organize, and manage tasks.
 * **Data Persistence:** Google Sheets integration provides a dynamic and accessible data storage solution. Tasks, categories, and projects are synchronized with a Google Sheets spreadsheet.
 * **Web Interface:** JavaScript-based frontend for user interaction.
@@ -95,11 +97,11 @@ You'll also need to install the necessary Python packages listed in requirements
 - **Validation Methods:** Ensure proper **task name, deadline, priority, and category/project selection**.
 - **Console Display:** Tasks can be viewed in an **organized table format**, sorted by **priority, deadline, or status**.
 
-## Caching Google Sheets Data
+### Caching Google Sheets Data
 
 To improve performance and reduce API quota consumption, the application now caches data from the **tasks**, **categories**, and **projects** worksheets during initialization. Cached data is stored in memory and reused throughout the application, minimizing redundant API calls.
 
-### Implementation
+**Implementation**
 
 * Data is fetched and cached at the start using the load_and_cache_data() method within the TaskManager class.
 * Cached attributes:
@@ -108,16 +110,11 @@ To improve performance and reduce API quota consumption, the application now cac
   * self.cached_categories
 * All operations (e.g., adding, updating, or retrieving tasks, projects, and categories) access these cached attributes instead of making direct calls to the Google Sheets API.
 
-### Benefits
-
-* **Performance Boost**: Faster data retrieval and processing.
-* **Quota Preservation**: Avoids exceeding Google Sheets API limits due to redundant calls.
-
-## Colorized Console Output
+### Colorized Console Output
 
 The application uses the colorama library to add color to text and improve readability in the terminal. Priority levels and headers are visually distinguished by colors.
 
-### Color Coding
+**Color Coding**
 
 ![Colred code](assets/4_colorised_code.png)
 
@@ -128,7 +125,7 @@ The application uses the colorama library to add color to text and improve reada
   * _Empty Priority_: Gray background
 * **Headers**: Underlined and displayed in blue for clarity.
 
-### Technical Details
+**Technical Details**
 
 * Colorized output is achieved using the colorama library:
   * _Fore_: Sets text colors (e.g., white for task names).
@@ -141,8 +138,6 @@ The application uses the colorama library to add color to text and improve reada
 * Dependencies: Include all required dependencies in the `requirements.txt` file.
 * Google Sheets API Setup: Configure the connection to Google Sheets by adding the necessary credentials in your environment variables.
 * Data Validation: Built-in validation ensures accurate and clean data input.
-
-
 
 ## Testing
 
