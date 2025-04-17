@@ -71,9 +71,7 @@ You'll also need to install the necessary Python packages listed in requirements
 * **gspread.exceptions** import APIError to handle application errors.
 * **import gspread** a Python API for Google Sheets.
 * **os** and **sys** for System-specific parameters and functions (clearing of the console)
-
-# Import colorama for console colorization
-from colorama import Fore, Back, Style
+* **colorama** use colorama for console colorization
 
 ## Deployment
 
