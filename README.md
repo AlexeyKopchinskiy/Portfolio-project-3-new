@@ -22,7 +22,7 @@ Welcome to the `Task Manager`, a Python command-line application designed to cre
 
 ## Project Description
 
-This repository contains Python code of a console-based project, focusing on task management facilitating data storage in Google Sheets in real time. Whyle interacting with a Python backend, the application allows users to manage tasks by adding, updating, deleting as well as marking tasks as done/pending and changing deadlines, priority and corresponding projects.
+This repository contains Python code of a console-based project, focusing on task management facilitating data storage in Google Sheets in real time. While interacting with a Python backend, the application allows users to manage tasks by adding, updating, deleting as well as marking tasks as done/pending and changing deadlines, priority and corresponding projects.
 
 ## Key Features
 
@@ -60,7 +60,7 @@ You'll also need to install the necessary Python packages listed in requirements
 
 * **GitHub repository:** a pubic repository that hosts the program code
 * **Heroku account:** the program requires active Hroku account connected to the program's GitHub repository as well as heroku/python and heroku/nodejs Buildpacks activated in the Heroku settings.
-* **Google Sheets:** the project relies on a user's Google account with an existing Google Sheet formated in specific way (see below). The Google Sheet used by the program has to be shared in a way that allows to connect it with Heroku app via Heroku Config vars.
+* **Google Sheets:** the project relies on a user's Google account with an existing Google Sheet formatted in specific way (see below). The Google Sheet used by the program has to be shared in a way that allows to connect it with Heroku app via Heroku Config vars.
 * **Google API Console** the API key is needed for connection to the Google Sheets
 * **Colorama:** Colorama ANSI escape character sequences needed for adding colors to the console
 
@@ -196,7 +196,7 @@ When testing, check these validation methods by deliberately entering invalid in
 
 ![PEP8_test_results](assets/ci-python-linter-test.png)
 
-* **PEP8 Python Linter test** check the code with Code Institute's Python Linter to make sure that there are no errors or warings
+* **PEP8 Python Linter test** check the code with Code Institute's Python Linter to make sure that there are no errors or warnigs
 * **Line limit** was kept to 79 characters in order to comply with The Python standard library.
 
 ## Using the Task Manager
@@ -296,7 +296,7 @@ This application relies on following web services and external libraries:
 * **Datetime** library is used for handling date and time-related data
 * **Colorama** used for better styling of the terminal UI
 
-Many thanks to Rory Patrick Sheridan (https://github.com/Ri-Dearg) for his help with project developemen and validation!
+Many thanks to Rory Patrick Sheridan (https://github.com/Ri-Dearg) for his help with project development and validation!
 
 ## License
 
