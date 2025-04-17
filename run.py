@@ -25,8 +25,11 @@ Classes and Functions:
     operations.
 """
 
+# Daytime library for manipulating dates and time
 from datetime import datetime
+# Google Auth service for importing Credentials
 from google.oauth2.service_account import Credentials
+# Google gspread service for handling APIErrors
 from gspread.exceptions import APIError
 import gspread
 
