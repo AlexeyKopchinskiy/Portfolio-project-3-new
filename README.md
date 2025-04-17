@@ -259,14 +259,11 @@ Upon launching the application, you will see a main menu with several options. E
 
 ## Common problems and bugs
 
-
-
-
-
+As this software relies on `free Google Sheets service` there is a limit of amount of caching that Google will handle in the given amount of time. If the limit is exceeded the program will stop working with error `Too many requests, Google cache exceeded`. In order not to exceed this limit the program should rely on local caching of data. Currently this is done by the `load_and_cache_data` method in the TaskManager class.
 
 ## Project Constraints
 
-The command-line interface is set to 80 columns by 24 rows. Ensure all outputs stay within these constraints for better readability.
+To meet the target destination of the program, namely the Heroku Console (https://python-todo-a7ffb742335d.herokuapp.com/) the output should fit within the limited number of symbols in order to avoid horizontal scrolling. The command-line interface is set in constant `CONSOLE_WIDTH` to 80 columns by 24 rows. Ensure all outputs stay within these constraints for better readability.
 
 ## Requirements
 
