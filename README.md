@@ -69,7 +69,8 @@ You'll also need to install the necessary Python packages listed in requirements
 * **datetime library** import classes for manipulating dates and times.
 * **Google oauth2 service account** implements the JWT Profile for OAuth 2.0 Authorization Grants as defined by RFC 7523.
 * **gspread.exceptions** import APIError to handle application errors.
-* **import gspread**  a Python API for Google Sheets.
+* **import gspread** a Python API for Google Sheets.
+* **os** and **sys** for System-specific parameters and functions (clearing of the console)
 
 # Import colorama for console colorization
 from colorama import Fore, Back, Style
@@ -239,6 +240,7 @@ Upon launching the application, you will see a main menu with several options. E
 
 7. Enhanced Console Output:
     * Headers, tasks, and priorities are formatted with colors and underlining for a visually appealing and user-friendly experience.
+    * Option `9` clears console and displays the main menu
 
 ### How to Navigate
 
@@ -276,6 +278,7 @@ To run this project, you’ll need:
 * **google.oauth2.service_account** for importing Credentials
 * **gspread.exceptions** for handling APIErrors
 * **gspread** for connecting to Google Sheets
+* **os** and **sys** for ability to clear console
 * **colorama Library** for colorising ouput in the console
   * Install the `colorama` library using:
     * bash:
@@ -293,7 +296,7 @@ This application relies on following web services and external libraries:
 * **Datetime** library is used for handling date and time-related data
 * **Colorama** used for better styling of the terminal UI
 
-Many thanks to Rory Patrick Sheridan (https://github.com/Ri-Dearg) for his help with project development and validation!
+Many thanks to **Rory Patrick Sheridan** (https://github.com/Ri-Dearg) for his help with project development and validation!
 
 ## License
 
