@@ -27,6 +27,9 @@ Classes and Functions:
 
 # Daytime library for manipulating dates and time
 from datetime import datetime
+# adding ability to clear console
+import os
+import sys
 # Google Auth service for importing Credentials
 from google.oauth2.service_account import Credentials
 # Google gspread service for handling APIErrors
@@ -123,6 +126,14 @@ class TaskManager:
         # Load tasks into memory as Task objects
         self.TASKS = self.load_tasks()
 
+    def clear_console(self):
+        """Clears the console screen."""
+        if sys.platform.startswith('win'):
+            os.system('cls')  # Windows
+        else:
+            os.system('clear')  # macOS/Linux
+
+    
     def load_and_cache_data(self):
         """
         Fetch and cache task, project, and category data from Google Sheets.
@@ -890,16 +901,18 @@ def main():
     option6 = Fore.BLUE + "6 - Update a task" + Style.RESET_ALL + "\n"
     option7 = Fore.BLUE + "7 - Mark task as completed" + Style.RESET_ALL + "\n"
     option8 = Fore.RED + "8 - Delete (archive) a task" + Style.RESET_ALL + "\n"
-    option9 = Fore.BLUE + "9 - Exit" + Style.RESET_ALL + "\n"
+    option9 = Fore.BLUE + "9 - Clear screen and redisplay menu" + \
+        Style.RESET_ALL + "\n"
+    option10 = Fore.BLUE + "10 - Exit" + Style.RESET_ALL + "\n"
     mainMenu = option1 + option2 + option3 + option4 + option5 + \
-        option6 + option7 + option8 + option9
+        option6 + option7 + option8 + option9 + option10
 
     print(welcome_message)
     print("\nPlease select an option:")
     print(mainMenu)
 
     while True:
-        choice = input("Enter your choice (scroll up for options): ").strip()
+        choice = input("Enter your choice: 1 - 10 (9 - back to menu) ").strip()
         if choice == "1":
             manager.create_task_from_input()
         elif choice == "2":
@@ -917,6 +930,11 @@ def main():
         elif choice == "8":
             manager.delete_task()
         elif choice == "9":
+            manager.clear_console()
+            print(welcome_message)
+            print("\nPlease select an option:")
+            print(mainMenu)
+        elif choice == "10":
             print("Exiting Task Manager. Goodbye!")
             break
         else:
