@@ -452,7 +452,7 @@ class TaskManager:
         # Filter out tasks with the status 'Deleted'
         visible_tasks = [
             task for task
-                in self.task_list if task.status.lower() != "deleted"]
+            in self.task_list if task.status.lower() != "deleted"]
 
         if not visible_tasks:
             print("No tasks available to display. all are marked as 'Deleted'")
