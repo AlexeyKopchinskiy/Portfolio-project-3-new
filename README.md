@@ -12,11 +12,12 @@ Welcome to the `Task Manager`, a Python command-line application designed to cre
   * (Built with…)
 * Project Requirements and Dependencies
 * Installation Instructions
-* Usage Instructions
 * Testing
+* Usage Instructions
 * Common problems and bugs
-* Acknowledgments
-* License
+* Project Constraints
+* Requirements
+* Credits & Acknowledgments
 
 ## Project Description
 
@@ -59,7 +60,18 @@ You'll also need to install the necessary Python packages listed in requirements
 * **GitHub repository:** a pubic repository that hosts the program code
 * **Heroku account:** the program requires active Hroku account connected to the program's GitHub repository as well as heroku/python and heroku/nodejs Buildpacks activated in the Heroku settings.
 * **Google Sheets:** the project relies on a user's Google account with an existing Google Sheet formated in specific way (see below). The Google Sheet used by the program has to be shared in a way that allows to connect it with Heroku app via Heroku Config vars.
+* **Google API Console** the API key is needed for connection to the Google Sheets
 * **Colorama:** Colorama ANSI escape character sequences needed for adding colors to the console
+
+**Libraries used**
+
+* **datetime library** import classes for manipulating dates and times.
+* **Google oauth2 service account** implements the JWT Profile for OAuth 2.0 Authorization Grants as defined by RFC 7523.
+* **gspread.exceptions** import APIError to handle application errors.
+* **import gspread**  a Python API for Google Sheets.
+
+# Import colorama for console colorization
+from colorama import Fore, Back, Style
 
 ## Deployment
 
@@ -244,6 +256,13 @@ Upon launching the application, you will see a main menu with several options. E
 4. Real-Time Google Sheets Sync:
     * All changes are immediately synchronized with the Google Sheets file, ensuring your data is always up-to-date.
 
+## Common problems and bugs
+
+
+
+
+
+
 ## Project Constraints
 
 The command-line interface is set to 80 columns by 24 rows. Ensure all outputs stay within these constraints for better readability.
@@ -255,9 +274,14 @@ To run this project, you’ll need:
 * Python 3.8 or higher
 * Required libraries (install using `pip install -r requirements.txt`)
 * Google Sheets credentials for API integration
-* **colorama Library**: Install the `colorama` library using:
-  * bash:
-  * `pip install colorama`
+* **datetime library** for manipulating dates and time
+* **google.oauth2.service_account** for importing Credentials
+* **gspread.exceptions** for handling APIErrors
+* **gspread** for connecting to Google Sheets
+* **colorama Library** for colorising ouput in the console
+  * Install the `colorama` library using:
+    * bash:
+    * `pip install colorama`
 
 ## Credits & Acknowledgments
 
