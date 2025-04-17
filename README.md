@@ -18,6 +18,7 @@ Welcome to the `Task Manager`, a Python command-line application designed to cre
 * Project Constraints
 * Requirements
 * Credits & Acknowledgments
+* License
 
 ## Project Description
 
@@ -296,6 +297,10 @@ This application relies on following web services and external libraries:
 * **Colorama** used for better styling of the terminal UI
 
 Many thanks to Rory Patrick Sheridan (https://github.com/Ri-Dearg) for his help with project developemen and validation!
+
+## License
+
+The Task Management Console is covered by MIT License. Details can be found in license.txt file in the root directory.
 
 **Happy Task managing!**
 
