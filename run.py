@@ -50,9 +50,9 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Python Task Manager')
 
-TASKS = SHEET.worksheet('tasks')
-PROJECTS = SHEET.worksheet('project')
-CATEGORIES = SHEET.worksheet('category')
+task_list = SHEET.worksheet('tasks')
+projects = SHEET.worksheet('project')
+categories = SHEET.worksheet('category')
 
 CONSOLE_WIDTH = 79  # Force fixed width for Heroku console
 
@@ -124,7 +124,7 @@ class TaskManager:
         # Load and cache data from Google Sheets
         self.load_and_cache_data()
         # Load tasks into memory as Task objects
-        self.TASKS = self.load_tasks()
+        self.task_list = self.load_tasks()
 
     def clear_console(self):
         """Clears the console screen."""
@@ -133,7 +133,6 @@ class TaskManager:
         else:
             os.system('clear')  # macOS/Linux
 
-    
     def load_and_cache_data(self):
         """
         Fetch and cache task, project, and category data from Google Sheets.
@@ -309,7 +308,7 @@ class TaskManager:
         existing task ID.
         """
         existing_ids = [int(task.task_id)
-                        for task in self.TASKS if task.task_id.isdigit()]
+                        for task in self.task_list if task.task_id.isdigit()]
         # If there are no existing IDs, start with 1
         next_id = max(existing_ids, default=0) + 1
         return str(next_id)
@@ -350,7 +349,7 @@ class TaskManager:
         )
 
         # Add the new task to the task list
-        self.TASKS.append(new_task)
+        self.task_list.append(new_task)
 
         # Sync with Google Sheets or other storage
         self.tasks_sheet.append_row([
@@ -446,13 +445,14 @@ class TaskManager:
         Display tasks in a table-like format with sorting options.
         Default sorting is by priority.
         """
-        if not self.TASKS:
+        if not self.task_list:
             print("No tasks found.")
             return
 
         # Filter out tasks with the status 'Deleted'
         visible_tasks = [
-            task for task in self.TASKS if task.status.lower() != "deleted"]
+            task for task
+                in self.task_list if task.status.lower() != "deleted"]
 
         if not visible_tasks:
             print("No tasks available to display. all are marked as 'Deleted'")
@@ -560,7 +560,7 @@ class TaskManager:
         Update an existing task by modifying its attributes.
         Changes are saved to both the in-memory list and Google Sheets.
         """
-        if not self.TASKS:
+        if not self.task_list:
             print("No tasks available to update.")
             return
 
@@ -573,7 +573,7 @@ class TaskManager:
         while True:
             task_id = input(
                 "Enter the ID of the task you want to update: ").strip()
-            task = next((t for t in self.TASKS if str(
+            task = next((t for t in self.task_list if str(
                 t.task_id) == task_id), None)
             if not task:
                 print("Task ID not found. Please try again.")
@@ -825,7 +825,7 @@ class TaskManager:
 
             # Refresh cached data and in-memory tasks
             self.load_and_cache_data()  # Refresh cached data
-            self.TASKS = self.load_tasks()  # Refresh in-memory tasks
+            self.task_list = self.load_tasks()  # Refresh in-memory tasks
 
             print(f"Task '{task_to_update[1]}' has been marked as 'Deleted'.")
         except Exception as e:
@@ -835,14 +835,14 @@ class TaskManager:
         """
         Mark a task as completed by updating the status and completion date.
         """
-        if not self.TASKS:
+        if not self.task_list:
             print("No tasks available to mark as completed.")
             return
 
         # Display tasks to help the user choose
         print("\n--- Mark a Task as Completed ---")
         print("Available Tasks:")
-        for task in self.TASKS:
+        for task in self.task_list:
             if task.status != "Completed":  # Only show incomplete tasks
                 print(
                     f"ID: {task.task_id},"
@@ -853,7 +853,7 @@ class TaskManager:
         # Get Task ID from the user
         task_id = input(
             "Enter the ID of the task you want to mark as completed: ").strip()
-        task = next((t for t in self.TASKS if str(
+        task = next((t for t in self.task_list if str(
             t.task_id) == task_id), None)
 
         if not task:
@@ -884,7 +884,7 @@ def main():
     Entry point for the Task Manager application.
     """
     # Initialize the TaskManager
-    manager = TaskManager(TASKS, PROJECTS, CATEGORIES)
+    manager = TaskManager(task_list, projects, categories)
 
     welcome_message = '''\n
         Welcome to Python Project Manager!
@@ -904,12 +904,12 @@ def main():
     option9 = Fore.BLUE + "9 - Clear screen and redisplay menu" + \
         Style.RESET_ALL + "\n"
     option10 = Fore.BLUE + "10 - Exit" + Style.RESET_ALL + "\n"
-    mainMenu = option1 + option2 + option3 + option4 + option5 + \
+    main_menu = option1 + option2 + option3 + option4 + option5 + \
         option6 + option7 + option8 + option9 + option10
 
     print(welcome_message)
     print("\nPlease select an option:")
-    print(mainMenu)
+    print(main_menu)
 
     while True:
         choice = input("Enter your choice: 1 - 10 (9 - back to menu) ").strip()
@@ -933,7 +933,7 @@ def main():
             manager.clear_console()
             print(welcome_message)
             print("\nPlease select an option:")
-            print(mainMenu)
+            print(main_menu)
         elif choice == "10":
             print("Exiting Task Manager. Goodbye!")
             break
